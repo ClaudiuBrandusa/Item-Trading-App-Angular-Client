@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -16,7 +17,8 @@ import { SharedModule } from './modules/shared/shared.module';
     AppRoutingModule,
     SharedModule,
     IdentityModule,
-    NgbModule
+    NgbModule,
+    ReactiveFormsModule
   ],
   providers: [],
   exports: [AppRoutingModule],

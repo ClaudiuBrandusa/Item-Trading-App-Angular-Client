@@ -5,17 +5,21 @@
     <!-- Form part -->
     
     <form [formGroup]="form" (ngSubmit)="login()">
-        <div class="row d-flex justify-content-center">
-            <div class="form-group text-left col-md-7">
-                <label class="control-label">Username</label><br>
-                <input type="text" placeholder="Username" formControlName="username">
-            </div>
-            <div class="form-group text-left col-md-7">
-                <label class="control-label">Password</label><br>
-                <input type="password" placeholder="Password" formControlName="password">
+        <div class="row d-flex justify-content-center flex-nowrap flex-column">
+            <div class="col">
+                <div class="form-group text-left d-inline-block">
+                    <label class="control-label">Username</label><br>
+                    <input type="text" placeholder="Username" formControlName="username"><br>
+                    <app-error [controlName]="form.controls['username']"></app-error>
+                </div><br>
+                <div class="form-group text-left d-inline-block">
+                    <label class="control-label">Password</label><br>
+                    <input type="password" placeholder="Password" formControlName="password"><br>
+                    <app-error [controlName]="form.controls['password']"></app-error>
+                </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Login</button>
     </form>
 
     <!-- Navigation -->

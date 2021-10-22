@@ -6,7 +6,6 @@ import { IdentityRoutingModule } from './identity-routing.module';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { SharedModule } from '../shared/shared.module';
-import { DialogComponent } from '../shared/dialog/dialog.component';
 
 
 @NgModule({

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TitleComponent } from './title/title.component';
-import { DialogComponent } from './dialog/dialog.component';
+import { TitleComponent } from './components/title/title.component';
+import { DialogComponent } from './components/dialog/dialog.component';
 
 
 

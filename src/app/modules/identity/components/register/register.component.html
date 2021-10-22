@@ -1,13 +1,34 @@
-<br>
-<app-title></app-title>
-<br>
-<app-dialog>
-    <h3>Login</h3>
+<app-identity-dialog>
+    <h3>Register</h3>
+    <br>
 
     <!-- Form part -->
 
+    <form [formGroup]="form" (ngSubmit)="register()">
+        <div class="row d-flex justify-content-center">
+            <div class="form-group text-left col-md-7">
+                <label class="control-label">Username</label><br>
+                <input type="text" placeholder="Username" formControlName="username">
+            </div>
+            <div class="form-group text-left col-md-7">
+                <label class="control-label">Email</label><br>
+                <input type="email" placeholder="Email" formControlName="email">
+            </div>
+            <div class="form-group text-left col-md-7">
+                <label class="control-label">Password</label><br>
+                <input type="password" placeholder="Password" formControlName="password">
+            </div>
+            <div class="form-group text-left col-md-7">
+                <label class="control-label">Confirm Password</label><br>
+                <input type="password" placeholder="Confirm Password" formControlName="confirm_password">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+
     <!-- Navigation -->
 
+    <br>
     <p>Already have an account, then 
     <a routerLink="/login">login</a></p>
-</app-dialog>
+</app-identity-dialog>

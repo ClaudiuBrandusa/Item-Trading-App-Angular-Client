@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, AbstractControlOptions, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AtLeastADigitValidator } from 'src/app/validators/at-least-a-digit.validator';
+import { AtLeastALowercaseValidator } from 'src/app/validators/at-least-a-lowercase.validator';
+import { AtLeastASpecialCharacterValidator } from 'src/app/validators/at-least-a-special-character.validator';
+import { AtLeastAnUppercaseValidator } from 'src/app/validators/at-least-an-uppercase.validator';
 import { ConfirmPasswordValidator } from 'src/app/validators/confirm-password.validator';
 import { RegisterService } from '../../services/register.service';
 
@@ -13,13 +17,19 @@ export class RegisterComponent implements OnInit {
   constructor(private fb: FormBuilder, private service: RegisterService) {}
 
   form = this.fb.group({
-    username: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4)])),
+    username: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(30)])),
     email: new FormControl('', Validators.compose([Validators.required, Validators.email])),
-    password: new FormControl('', Validators.compose([Validators.required, Validators.pattern(/((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=]).{8,30})/)])),
+    password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(30)])),
     confirm_password: new FormControl('', Validators.required)
   },
   {
-    validator: ConfirmPasswordValidator("password", "confirm_password")
+    validators: [
+      AtLeastAnUppercaseValidator("password"),
+      AtLeastALowercaseValidator("password"),
+      AtLeastADigitValidator("password"),
+      AtLeastASpecialCharacterValidator("password"),
+      ConfirmPasswordValidator("password", "confirm_password")
+    ]
   } as AbstractControlOptions);
 
   confirmPasswordValid: AbstractControl = this.form.controls["confirm_password"];

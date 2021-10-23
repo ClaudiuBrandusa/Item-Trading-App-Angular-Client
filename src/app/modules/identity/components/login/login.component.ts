@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControlOptions, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { AtLeastADigitValidator } from 'src/app/validators/at-least-a-digit.validator';
+import { AtLeastALowercaseValidator } from 'src/app/validators/at-least-a-lowercase.validator';
+import { AtLeastASpecialCharacterValidator } from 'src/app/validators/at-least-a-special-character.validator';
+import { AtLeastAnUppercaseValidator } from 'src/app/validators/at-least-an-uppercase.validator';
 import { LoginService } from '../../services/login.service';
 
 @Component({
@@ -9,14 +13,22 @@ import { LoginService } from '../../services/login.service';
 })
 export class LoginComponent {
 
-  constructor(private service: LoginService) {
+  constructor(private fb: FormBuilder, private service: LoginService) {
     
   }
 
-  form = new FormGroup({
-    username: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4)])),
-    password: new FormControl('', Validators.compose([Validators.required, Validators.pattern(/((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=]).{8,30})/)]))
-  })
+  form = this.fb.group({
+    username: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(30)])),
+    password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(30)]))
+  },
+  {
+    validators: [
+      AtLeastAnUppercaseValidator("password"),
+      AtLeastALowercaseValidator("password"),
+      AtLeastADigitValidator("password"),
+      AtLeastASpecialCharacterValidator("password")
+    ]
+  } as AbstractControlOptions);
 
   login() {
     this.service.login(this.form);

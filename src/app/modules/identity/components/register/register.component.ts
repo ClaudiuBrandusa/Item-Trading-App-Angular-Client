@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, AbstractControlOptions, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmPasswordValidator } from 'src/app/validators/confirm-password.validator';
-import { IdentityService } from '../../services/identity.service';
+import { RegisterService } from '../../services/register.service';
 
 @Component({
   selector: 'app-register',
@@ -10,7 +10,7 @@ import { IdentityService } from '../../services/identity.service';
 })
 export class RegisterComponent implements OnInit {
 
-  constructor(private fb: FormBuilder, private service: IdentityService) {}
+  constructor(private fb: FormBuilder, private service: RegisterService) {}
 
   form = this.fb.group({
     username: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4)])),

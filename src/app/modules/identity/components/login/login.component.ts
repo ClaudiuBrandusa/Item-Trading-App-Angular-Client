@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { IdentityService } from '../../services/identity.service';
+import { LoginService } from '../../services/login.service';
 
 @Component({
   selector: 'app-login',
@@ -9,7 +9,7 @@ import { IdentityService } from '../../services/identity.service';
 })
 export class LoginComponent {
 
-  constructor(private service: IdentityService) {
+  constructor(private service: LoginService) {
     
   }
 

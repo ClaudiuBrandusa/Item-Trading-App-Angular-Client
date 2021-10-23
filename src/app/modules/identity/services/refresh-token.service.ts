@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { RefreshTokenRequest } from 'src/app/models/request/identity/refresh-token-request.model';
 import { IdentityService } from './identity.service';
 
@@ -8,18 +9,18 @@ import { IdentityService } from './identity.service';
 })
 export class RefreshTokenService extends IdentityService {
 
-  constructor(protected http: HttpClient) {
+  constructor(protected http: HttpClient, private router: Router) {
     super(http);
   }
 
   private refresh_path = this.base_path + "refresh";
 
-  private getToken() {
+  getToken() {
     var result = localStorage.getItem("token");
     return result === null ? "" : result.toString();
   }
 
-  private getRefreshToken() {
+  getRefreshToken() {
     var result = localStorage.getItem("refreshToken");
     return result === null ? "" : result.toString();
   }
@@ -31,12 +32,21 @@ export class RefreshTokenService extends IdentityService {
     return request;
   }
 
+  updateRefreshToken(refreshToken: string) {
+    localStorage.setItem("refreshToken", refreshToken);
+  }
+
   canRefreshTokens() {
     // if we have token and refresh token then it means that we have the necessarily data for token refresh
     return this.getToken() !== "" && this.getRefreshToken() !== "";
   }
 
   refreshTokens() {
-    this.http.post(this.refresh_path, this.getRefreshTokenRequest())
+    return this.http.post(this.refresh_path, this.getRefreshTokenRequest())
+  }
+
+  signOut() {
+    localStorage.clear();
+    this.router.navigate(['']);
   }
 }

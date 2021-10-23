@@ -32,6 +32,10 @@ export class RefreshTokenService extends IdentityService {
     return request;
   }
 
+  updateToken(token: string) {
+    localStorage.setItem("token", token);
+  }
+
   updateRefreshToken(refreshToken: string) {
     localStorage.setItem("refreshToken", refreshToken);
   }
@@ -41,8 +45,20 @@ export class RefreshTokenService extends IdentityService {
     return this.getToken() !== "" && this.getRefreshToken() !== "";
   }
 
-  refreshTokens() {
+  getRefreshTokensRequest() {
     return this.http.post(this.refresh_path, this.getRefreshTokenRequest())
+  }
+
+  refreshTokens() {
+    this.getRefreshTokensRequest().subscribe(result => {
+      this.setTokens(result);
+    }, err => {
+      this.signOut();
+    });
+  }
+
+  isLoggedIn() {
+    return this.canRefreshTokens();
   }
 
   signOut() {

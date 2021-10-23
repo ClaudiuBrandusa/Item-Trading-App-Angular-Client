@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 
 import { IdentityRoutingModule } from './identity-routing.module';
 import { LoginComponent } from './components/login/login.component';
@@ -21,8 +20,7 @@ import { IdentityDialogComponent } from './identity-dialog/identity-dialog.compo
     RouterModule,
     IdentityRoutingModule,
     SharedModule,
-    ReactiveFormsModule,
-    HttpClientModule
+    ReactiveFormsModule
   ],
   exports: [
     LoginComponent,

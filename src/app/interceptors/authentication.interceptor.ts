@@ -18,7 +18,7 @@ export class AuthenticationInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
-  constructor(private tokenService: RefreshTokenService) {}
+  constructor(private tokenService: RefreshTokenService) { }
 
   intercept(request: HttpRequest<Object>, next: HttpHandler): Observable<HttpEvent<Object>> {
     let authReq = request;
@@ -27,10 +27,11 @@ export class AuthenticationInterceptor implements HttpInterceptor {
       authReq = this.addTokenHeader(request, token);
     }
 
-    return next.handle(request).pipe(catchError(error => {
+    return next.handle(authReq).pipe(catchError(error => {
       if(error instanceof HttpErrorResponse && !authReq.url.includes('auth/singin') && error.status === 401) {
         return this.handle401Error(authReq, next);
       }
+      return throwError(error);
     }));
   
   }
@@ -43,29 +44,30 @@ export class AuthenticationInterceptor implements HttpInterceptor {
       const token = this.tokenService.getRefreshToken();
 
       if(token) {
-        return this.tokenService.refreshTokens().pipe(
+        return this.tokenService.getRefreshTokensRequest().pipe(
           switchMap((token: any) => {
             this.isRefreshing = false;
-
-            this.tokenService.updateRefreshToken(token);
+            this.tokenService.updateToken(token.token);
+            this.tokenService.updateRefreshToken(token.refreshToken);
             this.refreshTokenSubject.next(token.token);
-            return next.handle(this.addTokenHeader(request, token.token))
+            
+            return next.handle(this.addTokenHeader(request, token.token));
           }),
           catchError((err) => {
             this.isRefreshing = false;
-
             this.tokenService.signOut();
             return throwError(err);
           })
         );
+      } else {
+        this.isRefreshing = false;
       }
-
-      return this.refreshTokenSubject.pipe(
-        filter(token => token !== null),
-        take(1),
-        switchMap((token) => next.handle(this.addTokenHeader(request, token)))
-      );
     }
+    return this.refreshTokenSubject.pipe(
+      filter(token => token !== null),
+      take(1),
+      switchMap((token) => next.handle(this.addTokenHeader(request, token)))
+    );
   }
 
   private addTokenHeader(request: HttpRequest<any>, token: string) {

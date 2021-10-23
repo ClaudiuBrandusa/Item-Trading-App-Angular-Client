@@ -9,7 +9,9 @@ import { AppComponent } from './app.component';
 import { IdentityModule } from './modules/identity/identity.module';
 import { SharedModule } from './modules/shared/shared.module';
 import { RouterModule } from '@angular/router';
-import { AuthguardService } from './guards/authguard.service';
+import { AuthGuardService } from './guards/authguard.service';
+import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -31,6 +33,7 @@ export function refreshTokenGetter() {
     NgbModule,
     ReactiveFormsModule,
     RouterModule,
+    HttpClientModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -39,7 +42,8 @@ export function refreshTokenGetter() {
       }
     })
   ],
-  providers: [AuthguardService],
+  providers: [AuthGuardService,
+     { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true } ],
   exports: [AppRoutingModule],
   bootstrap: [AppComponent]
 })

@@ -18,9 +18,7 @@ export class LoginService extends IdentityService {
   login(form: FormGroup) {
     this.http.post(this.login_path, this.form2LoginRequest(form)).subscribe(response => {
       this.setTokens(response);
-    }, err => {
-      // something went wrong
-    })
+    }, err => {})
   }
 
   private form2LoginRequest(form: FormGroup) {

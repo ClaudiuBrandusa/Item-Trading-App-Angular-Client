@@ -34,5 +34,4 @@ export class LoginComponent {
     this.service.login(this.form);
     this.form.reset();
   }
-
 }

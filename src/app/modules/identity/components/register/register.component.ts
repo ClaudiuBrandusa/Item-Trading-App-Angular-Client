@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, AbstractControlOptions, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { RegisterRequest } from 'src/app/models/request/identity/registerRequest.model';
 import { ConfirmPasswordValidator } from 'src/app/validators/confirm-password.validator';
+import { IdentityService } from '../../services/identity.service';
 
 @Component({
   selector: 'app-register',
@@ -10,9 +10,7 @@ import { ConfirmPasswordValidator } from 'src/app/validators/confirm-password.va
 })
 export class RegisterComponent implements OnInit {
 
-  constructor(private fb: FormBuilder) {}
-
-  model: RegisterRequest = new RegisterRequest();
+  constructor(private fb: FormBuilder, private service: IdentityService) {}
 
   form = this.fb.group({
     username: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4)])),
@@ -27,7 +25,7 @@ export class RegisterComponent implements OnInit {
   confirmPasswordValid: AbstractControl = this.form.controls["confirm_password"];
 
   register() {
-    console.warn(this.form.value);
+    this.service.register(this.form);
     this.form.reset();
   }
 

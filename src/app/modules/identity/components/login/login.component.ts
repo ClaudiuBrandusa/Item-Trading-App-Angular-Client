@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { LoginRequest } from 'src/app/models/request/identity/loginRequest.model';
+import { IdentityService } from '../../services/identity.service';
 
 @Component({
   selector: 'app-login',
@@ -9,7 +9,9 @@ import { LoginRequest } from 'src/app/models/request/identity/loginRequest.model
 })
 export class LoginComponent {
 
-  model: LoginRequest = new LoginRequest();
+  constructor(private service: IdentityService) {
+    
+  }
 
   form = new FormGroup({
     username: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4)])),
@@ -17,7 +19,7 @@ export class LoginComponent {
   })
 
   login() {
-    console.warn(this.form.value);
+    this.service.login(this.form);
     this.form.reset();
   }
 

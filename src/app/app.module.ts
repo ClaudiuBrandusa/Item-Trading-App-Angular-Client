@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 import { AuthGuardService } from './guards/authguard.service';
 import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { EventBusService } from './modules/shared/services/event-bus.service';
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -42,7 +43,7 @@ export function refreshTokenGetter() {
       }
     })
   ],
-  providers: [AuthGuardService,
+  providers: [AuthGuardService, EventBusService,
      { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true } ],
   exports: [AppRoutingModule],
   bootstrap: [AppComponent]

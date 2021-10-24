@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { RefreshTokenRequest } from 'src/app/models/request/identity/refresh-token-request.model';
+import { EventData } from 'src/app/models/utils/event';
+import { EventBusService } from '../../shared/services/event-bus.service';
 import { IdentityService } from './identity.service';
 
 @Injectable({
@@ -9,7 +11,7 @@ import { IdentityService } from './identity.service';
 })
 export class RefreshTokenService extends IdentityService {
 
-  constructor(protected http: HttpClient, private router: Router) {
+  constructor(protected http: HttpClient, private router: Router, private eventBusService: EventBusService) {
     super(http);
   }
 
@@ -46,15 +48,17 @@ export class RefreshTokenService extends IdentityService {
   }
 
   getRefreshTokensRequest() {
-    return this.http.post(this.refresh_path, this.getRefreshTokenRequest())
+    return this.http.post(this.refresh_path, this.getRefreshTokenRequest());
   }
 
-  refreshTokens() {
-    this.getRefreshTokensRequest().subscribe(result => {
-      this.setTokens(result);
-    }, err => {
-      this.signOut();
-    });
+  async refreshTokens() {
+    if(this.canRefreshTokens())
+      this.getRefreshTokensRequest().subscribe(result => {
+        this.setTokens(result);
+      }, err => {
+        this.eventBusService.emit(new EventData("logout", null));
+        //this.signOut();
+      });
   }
 
   isLoggedIn() {

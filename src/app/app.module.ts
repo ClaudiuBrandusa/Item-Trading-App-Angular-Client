@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -13,6 +13,8 @@ import { AuthGuardService } from './guards/authguard.service';
 import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { EventBusService } from './modules/shared/services/event-bus.service';
+import { ConfigService } from './modules/shared/services/config.service';
+import { RefreshTokenOptions } from './models/configs/refresh-token-options.config';
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -43,9 +45,32 @@ export function refreshTokenGetter() {
       }
     })
   ],
-  providers: [AuthGuardService, EventBusService,
-     { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true } ],
+  providers: [AuthGuardService, EventBusService, ConfigService,
+    {
+      provide: RefreshTokenOptions,
+      deps: [ConfigService],
+      useFactory: (configService: ConfigService) => refreshTokenOptionsFactory(configService)
+    },
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      deps: [ConfigService],
+      useFactory: (configService: ConfigService) => configureServicesFactory(configService)
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true } ],
   exports: [AppRoutingModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+// factory functions
+
+export function configureServicesFactory(configService: ConfigService) {
+  return () => configService.load();
+}
+
+export function refreshTokenOptionsFactory(configService: ConfigService) {
+  let options = new RefreshTokenOptions(); 
+  options.silentRefreshIntervalInSeconds = (<any>configService.app_config).refreshTokenOptions.silentRefreshIntervalInSeconds;
+  return options;
+}

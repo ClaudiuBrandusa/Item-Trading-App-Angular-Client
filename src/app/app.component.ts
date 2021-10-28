@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { RefreshTokenService } from './modules/identity/services/refresh-token.service';
 import { EventBusService } from './modules/shared/services/event-bus.service';
 import { interval } from "rxjs";
-import { takeWhile } from 'rxjs/operators';
+import { RefreshTokenOptions } from './models/configs/refresh-token-options.config';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +20,7 @@ export class AppComponent implements OnInit, OnDestroy {
   eventBusSub?: Subscription;
   eventBusSilentRefreshSub?: Subscription;
 
-  constructor(private eventBusService: EventBusService, private tokenService: RefreshTokenService) {}
+  constructor(private eventBusService: EventBusService, private tokenService: RefreshTokenService, private refreshTokenOptions: RefreshTokenOptions) {}
   
   ngOnInit() {
     this.initEventBusSubscriptions();
@@ -55,7 +55,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   
   startSilentRefresh() {
-    this.silentRefresh = interval(5 * 1000)
+    this.silentRefresh = interval(this.refreshTokenOptions.silentRefreshIntervalInSeconds * 1000)
     .subscribe(() => {
       this.tokenService.refreshTokens()
     });

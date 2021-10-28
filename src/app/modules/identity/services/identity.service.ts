@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
-import { RefreshTokenRequest } from 'src/app/models/request/identity/refresh-token-request.model';
 
 @Injectable({
   providedIn: 'root'

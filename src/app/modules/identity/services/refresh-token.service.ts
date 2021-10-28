@@ -57,7 +57,6 @@ export class RefreshTokenService extends IdentityService {
         this.setTokens(result);
       }, err => {
         this.eventBusService.emit(new EventData("logout", null));
-        //this.signOut();
       });
   }
 

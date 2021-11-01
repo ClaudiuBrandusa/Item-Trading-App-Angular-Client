@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControlOptions, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { AtLeastADigitValidator } from 'src/app/validators/at-least-a-digit.validator';
 import { AtLeastALowercaseValidator } from 'src/app/validators/at-least-a-lowercase.validator';
 import { AtLeastASpecialCharacterValidator } from 'src/app/validators/at-least-a-special-character.validator';
 import { AtLeastAnUppercaseValidator } from 'src/app/validators/at-least-an-uppercase.validator';
+import { CurrentIdentityPageService } from '../../services/current-identity-page.service';
 import { LoginService } from '../../services/login.service';
 
 @Component({
@@ -11,10 +12,11 @@ import { LoginService } from '../../services/login.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
-  constructor(private fb: FormBuilder, private service: LoginService) {
-    
+  constructor(private fb: FormBuilder, private service: LoginService, private currentIdentityPageService: CurrentIdentityPageService) {}
+  ngOnInit() {
+    this.currentIdentityPageService.setPage(0);
   }
 
   form = this.fb.group({

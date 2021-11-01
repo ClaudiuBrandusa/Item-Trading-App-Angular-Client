@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TitleComponent } from './components/title/title.component';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { ErrorComponent } from './components/error/error.component';
+import { ButtonComponent } from './components/button/button.component';
 
 
 
@@ -10,7 +11,8 @@ import { ErrorComponent } from './components/error/error.component';
   declarations: [
     DialogComponent,
     TitleComponent,
-    ErrorComponent
+    ErrorComponent,
+    ButtonComponent
   ],
   imports: [
     CommonModule
@@ -18,7 +20,8 @@ import { ErrorComponent } from './components/error/error.component';
   exports: [
     ErrorComponent,
     DialogComponent,
-    TitleComponent
+    TitleComponent,
+    ButtonComponent
   ]
 })
 export class SharedModule { }

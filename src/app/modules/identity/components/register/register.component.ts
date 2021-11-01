@@ -5,6 +5,7 @@ import { AtLeastALowercaseValidator } from 'src/app/validators/at-least-a-lowerc
 import { AtLeastASpecialCharacterValidator } from 'src/app/validators/at-least-a-special-character.validator';
 import { AtLeastAnUppercaseValidator } from 'src/app/validators/at-least-an-uppercase.validator';
 import { ConfirmPasswordValidator } from 'src/app/validators/confirm-password.validator';
+import { CurrentIdentityPageService } from '../../services/current-identity-page.service';
 import { RegisterService } from '../../services/register.service';
 
 @Component({
@@ -14,7 +15,7 @@ import { RegisterService } from '../../services/register.service';
 })
 export class RegisterComponent implements OnInit {
 
-  constructor(private fb: FormBuilder, private service: RegisterService) {}
+  constructor(private fb: FormBuilder, private service: RegisterService, private currentIdentityPageService: CurrentIdentityPageService) {}
 
   form = this.fb.group({
     username: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(30)])),
@@ -47,6 +48,8 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.form.get('password').valueChanges.subscribe(() => this.confirmPasswordValid.updateValueAndValidity());
+  
+    this.currentIdentityPageService.setPage(1);
   }
 }
 

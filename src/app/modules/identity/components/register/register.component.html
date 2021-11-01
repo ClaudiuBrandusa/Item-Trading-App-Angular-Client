@@ -1,40 +1,23 @@
-<app-identity-dialog>
-    <h3>Register</h3>
-    <br>
-
-    <!-- Form part -->
-
-    <form [formGroup]="form" (ngSubmit)="register()">
-        <div class="row d-flex justify-content-center flex-nowrap flex-column">
-            <div class="col">
-                <div class="form-group text-left d-inline-block">
-                    <label class="control-label">Username</label><br>
-                    <input type="text" placeholder="Username" formControlName="username"><br>
-                    <app-error [controlName]="form.controls['username']"></app-error>
-                </div><br>
-                <div class="form-group text-left d-inline-block">
-                    <label class="control-label">Email</label><br>
-                    <input type="email" placeholder="Email" formControlName="email"><br>
-                    <app-error [controlName]="form.controls['email']"></app-error>
-                </div><br>
-                <div class="form-group text-left d-inline-block">
-                    <label class="control-label">Password</label><br>
-                    <input type="password" placeholder="Password" formControlName="password"><br>
-                    <app-error [controlName]="form.controls['password']"></app-error>
-                </div><br>
-                <div class="form-group text-left d-inline-block">
-                    <label class="control-label">Confirm Password</label><br>
-                    <input type="password" placeholder="Confirm Password" formControlName="confirm_password"><br>
-                    <app-error [controlName]="form.controls['confirm_password']"></app-error>
-                </div>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Register</button>
-    </form>
-
-    <!-- Navigation -->
-
-    <br>
-    <p>Already have an account, then 
-    <a routerLink="/login">login</a></p>
+<app-title></app-title><br><br><br>
+<app-identity-dialog [formGroup]="form" (submit)="register()" [submitButtonText]="'Register'">    
+    <div class="d-flex flex-column mx-auto">
+        <label class="control-label">Username</label>
+        <input class="border rounded-pill border-normal" type="text" placeholder="Username" formControlName="username">
+        <app-error class="text-center" [controlName]="form.controls['username']"></app-error>
+    </div>
+    <div class="d-flex flex-column mx-auto">
+        <label class="control-label">Email</label>
+        <input class="border rounded-pill border-normal" type="email" placeholder="Email" formControlName="email">
+        <app-error class="text-center"  [controlName]="form.controls['email']"></app-error>
+    </div>
+    <div class="d-flex flex-column mx-auto">
+        <label class="control-label">Password</label>
+        <input class="border rounded-pill border-normal" type="password" placeholder="Password" formControlName="password">
+        <app-error class="text-center"  [controlName]="form.controls['password']"></app-error>
+    </div>
+    <div class="d-flex flex-column mx-auto">
+        <label class="control-label">Confirm Password</label>
+        <input class="border rounded-pill border-normal" type="password" placeholder="Confirm Password" formControlName="confirm_password">
+        <app-error class="text-center"  [controlName]="form.controls['confirm_password']"></app-error>
+    </div>
 </app-identity-dialog>

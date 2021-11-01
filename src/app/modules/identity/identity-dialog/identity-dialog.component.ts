@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-identity-dialog',
@@ -6,6 +7,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./identity-dialog.component.css']
 })
 export class IdentityDialogComponent implements OnInit {
+
+  @Input()
+  formGroup: FormGroup;
+
+  @Output()
+  submit: EventEmitter<any> = new EventEmitter<any>();
+
+  @Input()
+  submitButtonText ='';
 
   constructor() { }
 

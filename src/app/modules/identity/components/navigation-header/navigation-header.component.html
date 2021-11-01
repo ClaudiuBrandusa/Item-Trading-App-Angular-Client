@@ -1,0 +1,10 @@
+<div class="container">
+    <div class="row">
+        <div class="col-6 p-2 text-center border-radius-rounded-bottom-right" [ngClass]="this.isOnPage(1) ? this.enabledLeftDivClasses : this.disabledLeftDivClasses">
+            <a routerLink="/register" [ngClass]="this.isOnPage(1) ? this.disabledAnchorClasses : this.enabledAnchorClasses" (click)="this.setPage(1)"><h4>Register</h4></a>
+        </div>
+        <div class="col-6 p-2 text-center border-radius-rounded-bottom-left" [ngClass]="this.isOnPage(0) ? this.enabledRightDivClasses : this.disabledRightDivClasses">
+            <a routerLink="/login" [ngClass]="this.isOnPage(0) ? this.disabledAnchorClasses : this.enabledAnchorClasses" (click)="this.setPage(0)"><h4>Login</h4></a>
+        </div>
+    </div>
+</div>

@@ -1,10 +1,63 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { RefreshTokenService } from './modules/identity/services/refresh-token.service';
+import { EventBusService } from './modules/shared/services/event-bus.service';
+import { interval } from "rxjs";
+import { RefreshTokenOptions } from './models/configs/refresh-token-options.config';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  title = 'Item-Trading-App';
+export class AppComponent implements OnInit, OnDestroy {
+  title = 'Item Trading App';
+
+  isLoggedId = false;
+
+  silentRefresh: Subscription;
+
+  eventBusSub?: Subscription;
+  eventBusSilentRefreshSub?: Subscription;
+
+  constructor(private eventBusService: EventBusService, private tokenService: RefreshTokenService, private refreshTokenOptions: RefreshTokenOptions) {}
+  
+  ngOnInit() {
+    this.initEventBusSubscriptions();
+  }
+  
+  ngOnDestroy(): void {
+    this.clearEventBusSubscriptions();
+  }
+
+  private initEventBusSubscriptions() {
+    this.eventBusSub = this.eventBusService.on('logout', () => {
+      this.logout();
+    });
+
+    this.eventBusSilentRefreshSub = this.eventBusService.on("silentRefresh", async () => {
+      this.startSilentRefresh();
+    });
+}
+
+  private clearEventBusSubscriptions() {
+    if(this.eventBusSub) {
+      this.eventBusSub.unsubscribe();
+    }
+    if(this.eventBusSilentRefreshSub) {
+      this.eventBusSilentRefreshSub.unsubscribe();
+    }
+  }
+
+  logout() {
+    this.silentRefresh.unsubscribe();
+    this.tokenService.signOut();
+  }
+  
+  startSilentRefresh() {
+    this.silentRefresh = interval(this.refreshTokenOptions.silentRefreshIntervalInSeconds * 1000)
+    .subscribe(() => {
+      this.tokenService.refreshTokens()
+    });
+  }
 }

@@ -1,0 +1,6 @@
+/* outline */
+
+.outline-rounded {
+    outline-style: solid;
+    outline-width: 0.3rem;
+}

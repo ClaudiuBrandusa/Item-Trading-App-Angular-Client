@@ -28,7 +28,11 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.css"
+              "src/css/general.css",
+              "src/css/sizes.css",
+              "src/css/borders.css",
+              "src/css/outlines.css",
+              "src/css/colors.css"
             ],
             "scripts": []
           },

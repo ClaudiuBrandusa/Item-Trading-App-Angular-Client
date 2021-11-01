@@ -1,24 +1,4 @@
-body {
-    background-color: #292f36;
-}
 
-input {
-    text-indent: 0.5rem;
-}
-
-.w-45 { width: 45vw; }
-.w-20rem { width: 20rem; }
-.w-25rem { width: 25rem; }
-.w-30rem { width: 30rem; }
-.w-max { width: 100%; }
-.h-max { height: 100%; }
-
-/* outline */
-
-.outline-rounded {
-    outline-style: solid;
-    outline-width: 0.3rem;
-}
 
 .outline-red {
     outline-color:#f2545b;
@@ -148,36 +128,4 @@ input {
 
 .border-indigo {
     border-color: #083d77 !important;
-}
-
-/* border radius */
-
-.border-radius-rounded {
-    border-radius: 2rem !important;
-}
-
-.border-radius-rounded-bottom-right {
-    border-bottom-right-radius: 2rem !important;
-}
-
-.border-radius-rounded-top-left {
-    border-top-left-radius: 2rem !important;
-}
-
-.border-radius-rounded-top-right {
-    border-top-right-radius: 2rem !important;
-}
-
-.border-radius-rounded-bottom-left {
-    border-bottom-left-radius: 2rem !important;
-}
-
-/* borders */
-
-.border-bold {
-    border-width: 0.3rem !important;
-}
-
-.border-normal {
-    border-width: 0.2rem !important;
 }

@@ -1,22 +1,27 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { RegisterRequest } from 'src/app/models/request/identity/registerRequest.model';
+import { Interval } from 'src/app/models/utils/async-utils';
+import { ConfigService } from '../../shared/services/config.service';
+import { EventBusService } from '../../shared/services/event-bus.service';
 import { IdentityService } from './identity.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class RegisterService extends IdentityService {
 
-  constructor(protected http: HttpClient) {
-    super(http);
+  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService) {
+    super(http, configService, injector, eventBus);
   }
 
-  private register_path = this.base_path + "register";
+  private register_path = "";
 
-  register(form: FormGroup) {
-    this.http.post(this.register_path, this.form2RegisterRequest(form)).subscribe(response => {
+  async register(form: FormGroup) {
+    let model = this.form2RegisterRequest(form);
+
+    await this.WaitUntilIsLoaded();
+    
+    this.http.post(this.register_path, model).subscribe(response => {
       this.setTokens(response);
     }, err => {
       // something went wrong
@@ -30,5 +35,13 @@ export class RegisterService extends IdentityService {
     model.password = form.get('password').value;
     model.confirmPassword = form.get('confirm_password').value;
     return model;
+  }
+
+  protected async LoadEndpoints() {
+    await Interval(() => this.identityEndpoints == null, 10, 1000);
+    if(this.identityEndpoints == null)
+      return;
+
+    this.register_path = this.base_path + this.identityEndpoints.register;
   }
 }

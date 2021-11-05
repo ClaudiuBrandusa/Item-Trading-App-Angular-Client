@@ -4,9 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { LoginRequest } from 'src/app/models/request/identity/loginRequest.model';
 import { IdentityService } from './identity.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
-import { EventData } from 'src/app/models/utils/event';
 import { ConfigService } from '../../shared/services/config.service';
-import { Interval } from 'src/app/models/utils/async-utils';
 
 @Injectable()
 export class LoginService extends IdentityService {
@@ -35,10 +33,12 @@ export class LoginService extends IdentityService {
   }
 
   protected async LoadEndpoints() {
-    await Interval(() => this.identityEndpoints == null, 10, 1000);
-    if(this.identityEndpoints == null)
-      return;
+    await this.WaitUntilIsLoaded();
 
-    this.login_path = this.base_path + this.identityEndpoints.login;
+    // if it's still not loaded
+    if(this.endpointsModel == null)
+      return; // then something went wrong
+
+    this.login_path = this.base_path + this.endpointsModel.login;
   }
 }

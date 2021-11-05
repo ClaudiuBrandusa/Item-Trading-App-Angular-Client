@@ -143,7 +143,12 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
     return this.options;
   }
 
-  protected LoadEndpoints() {
-    this.refresh_path = this.base_path + "refresh";
+  protected async LoadEndpoints() {
+    await this.WaitUntilIsLoaded();
+    
+    if(this.endpointsModel == null)
+      return;
+
+    this.refresh_path = this.base_path + this.endpointsModel.refresh;
   }
 }

@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { RegisterRequest } from 'src/app/models/request/identity/registerRequest.model';
-import { Interval } from 'src/app/models/utils/async-utils';
 import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { IdentityService } from './identity.service';
@@ -38,10 +37,11 @@ export class RegisterService extends IdentityService {
   }
 
   protected async LoadEndpoints() {
-    await Interval(() => this.identityEndpoints == null, 10, 1000);
-    if(this.identityEndpoints == null)
+    await this.WaitUntilIsLoaded();
+
+    if(this.endpointsModel == null)
       return;
 
-    this.register_path = this.base_path + this.identityEndpoints.register;
+    this.register_path = this.base_path + this.endpointsModel.register;
   }
 }

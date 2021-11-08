@@ -4,6 +4,7 @@ import { TitleComponent } from './components/title/title.component';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { ErrorComponent } from './components/error/error.component';
 import { ButtonComponent } from './components/button/button.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 
 
@@ -12,7 +13,8 @@ import { ButtonComponent } from './components/button/button.component';
     DialogComponent,
     TitleComponent,
     ErrorComponent,
-    ButtonComponent
+    ButtonComponent,
+    NavbarComponent
   ],
   imports: [
     CommonModule

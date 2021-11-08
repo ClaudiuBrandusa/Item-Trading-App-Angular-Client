@@ -5,12 +5,13 @@ import { LoginRequest } from 'src/app/models/request/identity/loginRequest.model
 import { IdentityService } from './identity.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { ConfigService } from '../../shared/services/config.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class LoginService extends IdentityService {
 
-  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService){
-    super(http, configService, injector, eventBus);
+  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, protected router: Router){
+    super(http, configService, injector, eventBus, router);
   }
 
   private login_path = "";

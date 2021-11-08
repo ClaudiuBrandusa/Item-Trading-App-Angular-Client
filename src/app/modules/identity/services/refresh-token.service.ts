@@ -13,8 +13,8 @@ import { IdentityService } from './identity.service';
 @Injectable()
 export class RefreshTokenService extends IdentityService implements OnInit, OnDestroy {
 
-  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, private router: Router, private eventBusService: EventBusService) {
-    super(http, configService, injector, eventBus);
+  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, protected router: Router, private eventBusService: EventBusService) {
+    super(http, configService, injector, eventBus, router);
     this.InitOptions();
   }
 

@@ -32,7 +32,8 @@
               "src/css/sizes.css",
               "src/css/borders.css",
               "src/css/outlines.css",
-              "src/css/colors.css"
+              "src/css/colors.css",
+              "src/css/position.css"
             ],
             "scripts": []
           },

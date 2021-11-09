@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Injector, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { interval, Subscription } from 'rxjs';
+import { interval, Observable, Subscription } from 'rxjs';
 import { RefreshTokenOptions } from 'src/app/models/configs/options/refresh-token-options.config';
 import { RefreshTokenRequest } from 'src/app/models/request/identity/refresh-token-request.model';
 import { Interval} from 'src/app/models/utils/async-utils';
@@ -75,12 +75,21 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
   }
 
   async refreshTokens() {
-    if(this.canRefreshTokens())
-      (await this.getRefreshTokensRequest()).subscribe(result => {
+    if(this.canRefreshTokens()) {
+      let result: Observable<Object>;
+      await Interval(() => {
+        result = this.getRefreshTokensRequest(); 
+        return result == null; // we will continue until we get a non null result
+      }, 100, 4000);
+      if(result == null) {
+        return; 
+      }
+      result.subscribe(result => {
         this.setTokens(result);
       }, err => {
         this.eventBusService.emit(new EventData("logout", null));
       });
+    }
   }
 
   isLoggedIn() {

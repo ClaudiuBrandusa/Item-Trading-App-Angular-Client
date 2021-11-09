@@ -10,12 +10,15 @@ import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { IdentityService } from './identity.service';
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class RefreshTokenService extends IdentityService implements OnInit, OnDestroy {
 
   constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, private router: Router, private eventBusService: EventBusService) {
     super(http, configService, injector, eventBus);
     this.InitOptions();
+    this.initBackgroundEventBusSubscription();
   }
 
   ngOnInit(): void {
@@ -86,25 +89,24 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
 
   signOut() {
     localStorage.clear();
-    this.router.navigate(['']);
+    this.router.navigate(['login']);
   }
 
-  private initEventBusSubscription() {
+  // subscriptions could be triggered even if the service is destroyed
+  private initBackgroundEventBusSubscription() {
     this.eventBusSignOutSub = this.eventBusService.on('logout', () => {
       this.signOut();
       this.endSilentRefresh();
     });
+  }
 
+  private initEventBusSubscription() {
     this.eventBusSilentRefreshSub = this.eventBusService.on('silentRefresh', async () => {
       this.startSilentRefresh();
     });
   }
 
   private clearEventBusSubscription() {
-    if(this.eventBusSignOutSub) {
-      this.eventBusSignOutSub.unsubscribe();
-    }
-
     if(this.eventBusSilentRefreshSub) {
       this.eventBusSilentRefreshSub.unsubscribe();
     }

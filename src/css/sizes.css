@@ -6,6 +6,12 @@
 
 .w-30rem { width: 30rem; }
 
+.h-3\.5rem { height: 3.5rem; }
+
 .w-max { width: 100%; }
 
 .h-max { height: 100%; }
+
+.w-v-max { width: 100vw; } /* v comes from virtual */
+
+.h-v-max { height: 100vh; }

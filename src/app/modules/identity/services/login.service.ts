@@ -5,6 +5,7 @@ import { LoginRequest } from 'src/app/models/request/identity/loginRequest.model
 import { IdentityService } from './identity.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { ConfigService } from '../../shared/services/config.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class LoginService extends IdentityService {
@@ -21,7 +22,10 @@ export class LoginService extends IdentityService {
     await this.WaitUntilIsLoaded();
 
     this.http.post(this.login_path, model).subscribe(response => {
-      this.setTokens(response);
+      if(this.setTokens(response)) {
+        let router = this.injector.get(Router);
+        router.navigate([""]);
+      }
     }, err => {})
   }
 

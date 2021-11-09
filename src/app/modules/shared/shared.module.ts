@@ -4,6 +4,8 @@ import { TitleComponent } from './components/title/title.component';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { ErrorComponent } from './components/error/error.component';
 import { ButtonComponent } from './components/button/button.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { NavbarButtonComponent } from './components/navbar/navbar-button/navbar-button.component';
 
 
 
@@ -12,7 +14,9 @@ import { ButtonComponent } from './components/button/button.component';
     DialogComponent,
     TitleComponent,
     ErrorComponent,
-    ButtonComponent
+    ButtonComponent,
+    NavbarComponent,
+    NavbarButtonComponent
   ],
   imports: [
     CommonModule
@@ -21,7 +25,8 @@ import { ButtonComponent } from './components/button/button.component';
     ErrorComponent,
     DialogComponent,
     TitleComponent,
-    ButtonComponent
+    ButtonComponent,
+    NavbarComponent
   ]
 })
 export class SharedModule { }

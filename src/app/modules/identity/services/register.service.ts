@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { RegisterRequest } from 'src/app/models/request/identity/registerRequest.model';
 import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
@@ -21,7 +22,10 @@ export class RegisterService extends IdentityService {
     await this.WaitUntilIsLoaded();
     
     this.http.post(this.register_path, model).subscribe(response => {
-      this.setTokens(response);
+      if(this.setTokens(response)) {
+        let router = this.injector.get(Router);
+        router.navigate([""]);
+      }
     }, err => {
       // something went wrong
     })

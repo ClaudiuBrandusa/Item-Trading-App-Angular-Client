@@ -12,7 +12,6 @@ import { NavigationHeaderComponent } from './components/navigation-header/naviga
 import { CurrentIdentityPageService } from './services/current-identity-page.service';
 import { LoginService } from './services/login.service';
 import { RegisterService } from './services/register.service';
-import { RefreshTokenService } from './services/refresh-token.service';
 
 @NgModule({
   declarations: [
@@ -33,6 +32,6 @@ import { RefreshTokenService } from './services/refresh-token.service';
     RegisterComponent,
     IdentityRoutingModule
   ],
-  providers: [CurrentIdentityPageService, LoginService, RegisterService, RefreshTokenService]
+  providers: [CurrentIdentityPageService, LoginService, RegisterService]
 })
 export class IdentityModule { }

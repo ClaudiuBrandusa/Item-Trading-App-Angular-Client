@@ -16,6 +16,7 @@ import { EventBusService } from './modules/shared/services/event-bus.service';
 import { ConfigService } from './modules/shared/services/config.service';
 import { EndpointsService } from './modules/shared/services/endpoints.service';
 import { UnauthGuardService } from './guards/unauth-guard.service';
+import { IndexModule } from './modules/index/index.module';
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -43,7 +44,8 @@ export function refreshTokenGetter() {
         tokenGetter: tokenGetter,
         disallowedRoutes: []
       }
-    })
+    }),
+    IndexModule
   ],
   providers: [AuthGuardService, UnauthGuardService, EventBusService, ConfigService, EndpointsService,
     {

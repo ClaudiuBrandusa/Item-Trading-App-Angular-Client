@@ -22,7 +22,10 @@ export class LoginService extends IdentityService {
     await this.WaitUntilIsLoaded();
 
     this.http.post(this.login_path, model).subscribe(response => {
-      this.setTokens(response);
+      if(this.setTokens(response)) {
+        let router = this.injector.get(Router);
+        router.navigate([""]);
+      }
     }, err => {})
   }
 

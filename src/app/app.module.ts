@@ -17,6 +17,7 @@ import { ConfigService } from './modules/shared/services/config.service';
 import { EndpointsService } from './modules/shared/services/endpoints.service';
 import { UnauthGuardService } from './guards/unauth-guard.service';
 import { ItemModule } from './modules/item/item.module';
+import { IndexModule } from './modules/index/index.module';
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -45,7 +46,8 @@ export function refreshTokenGetter() {
         disallowedRoutes: []
       }
     }),
-    ItemModule
+    ItemModule,
+    IndexModule
   ],
   providers: [AuthGuardService, UnauthGuardService, EventBusService, ConfigService, EndpointsService,
     {

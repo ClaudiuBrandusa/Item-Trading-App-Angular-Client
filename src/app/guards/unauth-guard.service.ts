@@ -7,8 +7,9 @@ export class UnauthGuardService implements CanActivate {
 
   constructor(private router: Router, private refreshTokenService: RefreshTokenService) { }
 
-  canActivate() {
-    if(this.refreshTokenService.isLoggedIn()) {    
+  canActivate() {  
+    if(this.refreshTokenService.isLoggedIn()) {
+      // return to the index page
       this.router.navigate([""]);
       return false;
     }

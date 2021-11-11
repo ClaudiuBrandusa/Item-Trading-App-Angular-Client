@@ -1,7 +1,27 @@
-<div class="color-white">
-    Id: {{ item.id }}
-    <br>
-    Name: {{ item.name }}
-    <br>
-    Description: {{ item.description }}
+<div class="d-flex row color-black position-relative m-3 p-2 bg-white border-thin border-style-solid border-red">
+    <div class="col flex-0 p-0">
+        <div class="position-relative border-bold border-style-solid bg-gunmetal border-dark-red w-5rem h-5rem">
+            <div class="position-absolute transform-center color-white">
+                Item
+            </div>
+        </div>
+    </div>
+    <div class="col mr-2 flex-grow-1">
+        <strong>Name</strong>:
+        {{ item.name }}
+        <br>
+        <strong>Description</strong>:
+        {{ item.description }}
+    </div>
+    <div class="col flex-0 p-1 text-center">
+        <div class="m-2 p-2 bg-cadet-blue color-white">
+            <strong>Edit</strong>
+        </div>
+        <div class="m-2 p-2 bg-dark-red color-white">
+            <strong>Delete</strong>
+        </div>
+    </div>
+    <div class="col flex-0 position-relative mr-2 bg-red p-0">
+        <div class="position-absolute bg-gunmetal border-normal border-style-solid border-gunmetal h-max"></div>
+    </div>
 </div>

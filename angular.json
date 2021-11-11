@@ -33,7 +33,9 @@
               "src/css/borders.css",
               "src/css/outlines.css",
               "src/css/colors.css",
-              "src/css/position.css"
+              "src/css/position.css",
+              "src/css/font-sizes.css",
+              "src/css/display.css"
             ],
             "scripts": []
           },

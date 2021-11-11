@@ -1,4 +1,6 @@
-<div *ngFor="let id of itemsIdList; let i=index">
-    <app-item [itemId]="id"></app-item>
-    <br *ngIf="i != itemsIdList.length-1">
+<div class="container">
+    <div *ngFor="let id of itemsIdList; let i=index">
+        <app-item [itemId]="id"></app-item>
+    </div>
 </div>
+    

@@ -46,7 +46,6 @@ export class NavbarButtonComponent implements OnInit, OnDestroy {
     if(!this.OnSelectSubscription)
       this.OnSelectSubscription = this.eventBusService.on("select_navbar_button", () => {
         this.selected = false;
-        this.ngOnInit();
     });
 
     this.CheckIfIsSelected();
@@ -61,7 +60,7 @@ export class NavbarButtonComponent implements OnInit, OnDestroy {
     if(this.selected)
       return; // then we cannot use this button
     
-    if(this.route)
+    if(this.route != null)
       await this.router.navigate([this.route]);
     this.AnnounceSelection();
     if(this.eventId != "")

@@ -10,3 +10,13 @@ body {
 input {
     text-indent: 0.5rem;
 }
+
+.no-select {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

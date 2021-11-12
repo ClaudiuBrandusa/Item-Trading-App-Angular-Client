@@ -17,7 +17,7 @@ export class ListItemsComponent implements OnInit {
     this.listItems();
   }
 
-  async listItems() {
+  async listItems(searchString: string = "") {
     let list = await this.service.listItems(); /* list of items id */
   
     if(list == null)
@@ -34,6 +34,13 @@ export class ListItemsComponent implements OnInit {
     while(this.itemsIdList.length > 0) {
       this.itemsIdList.pop();
     }
+  }
+
+  getEventValue(event: Event) {
+    let str = event as unknown as string;
+    if(str != null)
+      return str;
+    return (event.target as HTMLInputElement).value;
   }
 
 }

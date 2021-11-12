@@ -1,4 +1,6 @@
-<div class="container">
+<app-navbar-search-bar placeholder="Enter item name" (searchFunction)="listItems(getEventValue($event))"></app-navbar-search-bar>
+
+<div class="container mt-5">
     <div *ngFor="let id of itemsIdList; let i=index">
         <app-item [itemId]="id"></app-item>
     </div>

@@ -6,6 +6,8 @@ import { ErrorComponent } from './components/error/error.component';
 import { ButtonComponent } from './components/button/button.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { NavbarButtonComponent } from './components/navbar/navbar-button/navbar-button.component';
+import { SearchBarComponent } from './components/navbar/search-bar/search-bar.component';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -16,17 +18,20 @@ import { NavbarButtonComponent } from './components/navbar/navbar-button/navbar-
     ErrorComponent,
     ButtonComponent,
     NavbarComponent,
-    NavbarButtonComponent
+    NavbarButtonComponent,
+    SearchBarComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule
   ],
   exports: [
     ErrorComponent,
     DialogComponent,
     TitleComponent,
     ButtonComponent,
-    NavbarComponent
+    NavbarComponent,
+    SearchBarComponent
   ]
 })
 export class SharedModule { }

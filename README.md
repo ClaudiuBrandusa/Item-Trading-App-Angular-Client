@@ -11,6 +11,10 @@ This client consumes the Item-Trading-App-REST-API which can be found here: http
 ### Index part
 #### Index
 ![image](https://drive.google.com/uc?export=view&id=1FuUFJz2phyLlbnXqRhfwA52grS7php3s)
+### Items part
+#### List Items
+Here we are listing all of the items available in the application  
+![image](https://drive.google.com/uc?export=view&id=1EXHMVfGclntqW1_1ZMJhia2ydCQjSaKg)
 
 ## References
 I used [coolors.co](https://coolors.co/) for the css color classes from [colors.css](src/css/colors.css).

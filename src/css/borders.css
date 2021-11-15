@@ -45,3 +45,9 @@
     border-right-width: 0 !important;
     border-left-width: 0 !important;
 }
+
+.border-top {
+    border-bottom-width: 0 !important;
+    border-right-width: 0 !important;
+    border-left-width: 0 !important;
+}

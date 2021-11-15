@@ -8,6 +8,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { NavbarButtonComponent } from './components/navbar/navbar-button/navbar-button.component';
 import { SearchBarComponent } from './components/navbar/search-bar/search-bar.component';
 import { FormsModule } from '@angular/forms';
+import { MenuBarComponent } from './components/menu-bar/menu-bar.component';
+import { MenuButtonComponent } from './components/menu-bar/menu-button/menu-button.component';
 
 
 
@@ -19,7 +21,9 @@ import { FormsModule } from '@angular/forms';
     ButtonComponent,
     NavbarComponent,
     NavbarButtonComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    MenuBarComponent,
+    MenuButtonComponent
   ],
   imports: [
     CommonModule,
@@ -31,7 +35,9 @@ import { FormsModule } from '@angular/forms';
     TitleComponent,
     ButtonComponent,
     NavbarComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    MenuBarComponent,
+    MenuButtonComponent
   ]
 })
 export class SharedModule { }

@@ -27,7 +27,7 @@ export class ItemService extends NetworkService<ItemEndpoints> {
   }
 
   async getItem(itemId: string): Promise<Item> {
-    await this.WaitUntilIsLoaded();
+    await this.waitUntilIsLoaded();
 
     let result: any;
 
@@ -41,7 +41,7 @@ export class ItemService extends NetworkService<ItemEndpoints> {
   }
 
   async listItems() {
-    await this.WaitUntilIsLoaded();
+    await this.waitUntilIsLoaded();
 
     let result: any;
 
@@ -59,7 +59,7 @@ export class ItemService extends NetworkService<ItemEndpoints> {
   }
 
   protected async LoadEndpoints() {
-    await this.WaitUntilIsLoaded();
+    await this.waitUntilIsLoaded();
 
     if(this.endpointsModel == null)
       return;

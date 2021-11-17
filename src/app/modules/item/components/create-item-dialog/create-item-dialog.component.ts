@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { AbstractControlOptions, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ItemService } from '../../services/item.service';
 
 @Component({
   selector: 'dialog-create-item',
@@ -7,5 +9,16 @@ import { Component } from '@angular/core';
 })
 export class CreateItemDialogComponent {
 
-  constructor() { }
+  constructor(private fb: FormBuilder, private service: ItemService) { }
+
+  form = this.fb.group({
+    itemName: new FormControl('', Validators.required),
+    itemDescription: new FormControl('', null)
+  });
+
+  async submit() {
+    await this.service.waitUntilIsLoaded();
+    await this.service.createItem();
+    this.form.reset();
+  }
 }

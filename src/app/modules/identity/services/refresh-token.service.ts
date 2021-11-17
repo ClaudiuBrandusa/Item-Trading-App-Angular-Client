@@ -155,7 +155,7 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
   }
 
   protected async LoadEndpoints() {
-    await this.WaitUntilIsLoaded();
+    await this.waitUntilIsLoaded();
     
     if(this.endpointsModel == null)
       return;

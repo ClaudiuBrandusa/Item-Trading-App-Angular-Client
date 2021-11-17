@@ -1,3 +1,25 @@
 /* flexbox */
 
 .flex-0 { flex: 0 0 0; }
+
+/* opacity */
+
+.opacity-25 {
+    opacity: .25;
+}
+
+.opacity-50 {
+    opacity: .5;
+}
+
+.opacity-75 {
+    opacity: .75;
+}
+
+.opacity-100 {
+    opacity: 1;
+}
+
+/* overflow */
+
+.overflow-y-auto { overflow-y: auto; }

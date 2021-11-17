@@ -56,6 +56,10 @@
 
 /* background colors */
 
+.bg-black {
+    background-color: black !important;
+}
+
 .bg-light-blue {
     background-color: #4fa6f7 !important;
 }

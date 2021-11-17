@@ -19,7 +19,7 @@ export class LoginService extends IdentityService {
   async login(form: FormGroup) {
     let model = this.form2LoginRequest(form);
 
-    await this.WaitUntilIsLoaded();
+    await this.waitUntilIsLoaded();
 
     this.http.post(this.login_path, model).subscribe(response => {
       if(this.setTokens(response)) {
@@ -37,7 +37,7 @@ export class LoginService extends IdentityService {
   }
 
   protected async LoadEndpoints() {
-    await this.WaitUntilIsLoaded();
+    await this.waitUntilIsLoaded();
 
     // if it's still not loaded
     if(this.endpointsModel == null)

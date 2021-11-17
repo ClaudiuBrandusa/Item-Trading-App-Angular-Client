@@ -10,6 +10,7 @@ import { SearchBarComponent } from './components/navbar/search-bar/search-bar.co
 import { FormsModule } from '@angular/forms';
 import { MenuBarComponent } from './components/menu-bar/menu-bar.component';
 import { MenuButtonComponent } from './components/menu-bar/menu-button/menu-button.component';
+import { EventDialogComponent } from './components/event-dialog/event-dialog.component';
 
 
 
@@ -23,7 +24,8 @@ import { MenuButtonComponent } from './components/menu-bar/menu-button/menu-butt
     NavbarButtonComponent,
     SearchBarComponent,
     MenuBarComponent,
-    MenuButtonComponent
+    MenuButtonComponent,
+    EventDialogComponent
   ],
   imports: [
     CommonModule,
@@ -37,7 +39,8 @@ import { MenuButtonComponent } from './components/menu-bar/menu-button/menu-butt
     NavbarComponent,
     SearchBarComponent,
     MenuBarComponent,
-    MenuButtonComponent
+    MenuButtonComponent,
+    EventDialogComponent
   ]
 })
 export class SharedModule { }

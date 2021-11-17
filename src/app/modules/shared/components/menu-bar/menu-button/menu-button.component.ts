@@ -11,23 +11,32 @@ import { EventBusService } from '../../../services/event-bus.service';
 export class MenuButtonComponent implements OnInit, OnDestroy {
 
   @Input()
-  eventId = "";
+  eventId: string;
 
   @Output()
   selected = false;
 
-  OnSelectSubscription: Subscription;
-
+  private onSelectSubscription: Subscription;
+  private onDeselectDialogSubscription: Subscription;
+  
   constructor(protected eventBusService: EventBusService) { }
 
 
   ngOnInit(): void {
-    this.initOnSelection();
-    
+    this.initEvents();
   }
   
   ngOnDestroy(): void {
+    this.clearEvents();
+  }
+
+  protected initEvents() {
+    this.initOnSelection();
+  }
+
+  protected clearEvents() {
     this.clearOnSelection();
+    this.clearOnDeselection();
   }
 
   @HostListener('click', ['$event'])
@@ -35,34 +44,59 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
     await this.select();
   }
 
-  private async select() {
+  protected async select() {
     if(this.selected)
       return; // then we cannot use this button
     
     await this.onSelect();
 
     if(this.hasEventId())
-      this.eventBusService.emit(new EventData(this.eventId, null));
+      this.announceSelection();
     // then we mark the current button as selected
     this.selected = true;
   }
 
+  protected async deselect() {
+    if(!this.selected)
+      return;
+    
+    await this.onDeselect();
+
+    this.selected = false;
+  }
+
   private initOnSelection() {
-    if(!this.OnSelectSubscription)
-      this.OnSelectSubscription = this.eventBusService.on(this.getAnnounceSelectionEventId(), () => {
-        this.selected = false;
+    if(!this.onSelectSubscription)
+      this.onSelectSubscription = this.eventBusService.on(this.eventId, () => {
+        this.initOnDeselection();
     });
 
     this.checkIfIsSelected();
   }
 
+  private initOnDeselection() {
+    if(!this.onDeselectDialogSubscription)
+      this.onDeselectDialogSubscription = this.eventBusService.on("exit_dialog", () => {
+        this.deselect();
+      });
+  }
+
   private clearOnSelection() {
-    if(this.OnSelectSubscription)
-      this.OnSelectSubscription.unsubscribe();
+    if(this.onSelectSubscription) {
+      this.onSelectSubscription.unsubscribe();
+      this.onSelectSubscription = null;
+    }
+  }
+
+  private clearOnDeselection() {
+    if(this.onDeselectDialogSubscription) {
+      this.onDeselectDialogSubscription.unsubscribe();
+      this.onDeselectDialogSubscription = null;
+    }
   }
 
   protected announceSelection() {
-    this.eventBusService.emit(new EventData(this.getAnnounceSelectionEventId(), null));
+    this.eventBusService.emit(new EventData(this.eventId, null));
   }
 
   private checkIfIsSelected(): void {
@@ -76,11 +110,10 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
   }
 
   protected isSelected() {
-    return true;
+    return false;
   }
 
   protected onSelect() {}
 
-  protected getAnnounceSelectionEventId() { return ""; }
-
+  protected onDeselect() {}
 }

@@ -5,13 +5,15 @@ import { SharedModule } from '../shared/shared.module';
 import { ItemRoutingModule } from './item-routing.module';
 import { ItemComponent } from './components/item/item.component';
 import { ItemService } from './services/item.service';
+import { CreateItemDialogComponent } from './components/create-item-dialog/create-item-dialog.component';
 
 
 
 @NgModule({
   declarations: [
     ListItemsComponent,
-    ItemComponent
+    ItemComponent,
+    CreateItemDialogComponent
   ],
   imports: [
     CommonModule,

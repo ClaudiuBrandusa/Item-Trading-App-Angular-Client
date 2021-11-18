@@ -1,14 +1,8 @@
-<div class="w-100 h-3rem bg-outer-space-crayola fixed-top-below-navbar z-index-10 border-style-solid border-thin border-red border-bottom">
-    <div class="d-flex row w-max h-auto pt-2 pb-2 pl-2">
-        <div class="col flex-grow-1">
-            <div class="float-left w-100">
-                <input placeholder="{{placeholder}}" [(ngModel)]="searchString" class="border w-100 rounded-pill border-thin border-dark-red bg-gunmetal pb-1" type="text" />
-            </div>
-        </div>
-        <div class="col p-0 flex-0">
-            <div class="float-right">
-                <button class="bg-dark-red rounded-pill border-normal color-white border-0 p-1 pl-3 pr-3 no-select" (click)="search()" >Search</button>
-            </div>
-        </div>
+<div class="d-flex bg-outer-space-crayola border-style-solid border-thin border-red border-bottom p-2">
+    <div class="d-flex flex-grow-1 pr-2">
+        <input placeholder="{{placeholder}}" [(ngModel)]="searchString" class="border w-100 rounded-pill border-thin border-dark-red bg-gunmetal pb-1" type="text" />
+    </div>
+    <div class="d-flex ml-auto p-0 flex-0">
+        <button class="bg-dark-red rounded-pill border-normal color-white border-0 p-1 pl-3 pr-3 no-select" (click)="search()">Search</button>
     </div>
 </div>

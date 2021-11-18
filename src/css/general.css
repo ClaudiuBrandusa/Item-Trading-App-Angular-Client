@@ -1,14 +1,31 @@
 html, body {
-    min-height: 100% !important;
     margin: 0;
+    padding: 0;
+}
+
+html, body, app-root {
+    height: 100%;
 }
 
 body {
+    overflow: hidden;
+    flex-direction: column;
+    align-self: stretch;
+    flex-grow: 1;
     background-color: #292f36; /* gunmetal */
 }
 
 input {
     text-indent: 0.5rem;
+}
+
+app-root, body {
+    display: flex;
+    flex-direction: column;
+}
+
+app-root {
+    flex-direction: column;
 }
 
 .no-select {

@@ -30,11 +30,15 @@
 
 .w-35rem { width: 35rem; }
 
-.h-3rem { width: 3rem; }
+.h-3rem { height: 3rem; }
 
 .h-3\.5rem { height: 3.5rem; }
 
 .h-5rem { height: 5rem; }
+
+.h-8rem {
+    height: 8rem;
+}
 
 /* percent */
 

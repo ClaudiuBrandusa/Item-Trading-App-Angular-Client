@@ -2,6 +2,8 @@
 
 .flex-0 { flex: 0 0 0; }
 
+.flex-fill { flex: 1 1 auto; }
+
 /* opacity */
 
 .opacity-25 {
@@ -22,4 +24,4 @@
 
 /* overflow */
 
-.overflow-y-auto { overflow-y: auto; }
+.overflow-y-auto { overflow-y: auto !important; }

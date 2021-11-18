@@ -15,6 +15,7 @@ export class EventDialogComponent extends DialogComponent implements OnDestroy {
   @Input()
   public eventId: string;
   private initSubscription: Subscription;
+  private exitSubscription: Subscription;
   public active = false;
 
   constructor(protected eventBus: EventBusService) {
@@ -30,10 +31,7 @@ export class EventDialogComponent extends DialogComponent implements OnDestroy {
   }
 
   public cancelDialog() {
-    if(this.active) {
-      this.setActiveStatus(false);
-      this.eventBus.emit(new EventData("exit_dialog", null));
-    }
+    this.eventBus.emit(new EventData("exit_dialog", null));
   }
 
   private init() {
@@ -41,6 +39,12 @@ export class EventDialogComponent extends DialogComponent implements OnDestroy {
       this.initSubscription = this.eventBus.on(this.eventId, () => {
         this.execute();
       })
+    }
+
+    if(this.exitSubscription == null) {
+      this.exitSubscription = this.eventBus.on("exit_dialog", () => {
+        this.exit();
+      });
     }
   }
 
@@ -57,6 +61,12 @@ export class EventDialogComponent extends DialogComponent implements OnDestroy {
     }
 
     this.setActiveStatus(true);
+  }
+
+  private exit() {
+    if(this.active) {
+      this.setActiveStatus(false);
+    }
   }
 
   private setActiveStatus(status: boolean) {

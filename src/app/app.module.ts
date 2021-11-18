@@ -49,7 +49,7 @@ export function refreshTokenGetter() {
     ItemModule,
     IndexModule
   ],
-  providers: [AuthGuardService, UnauthGuardService, EventBusService, ConfigService, EndpointsService,
+  providers: [AuthGuardService, UnauthGuardService, ConfigService, EndpointsService,
     {
       provide: APP_INITIALIZER,
       multi: true,

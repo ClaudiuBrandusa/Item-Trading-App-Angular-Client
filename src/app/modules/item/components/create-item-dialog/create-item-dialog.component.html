@@ -1,9 +1,11 @@
 <app-event-dialog eventId="create_item_dialog">
     <app-medium-dialog class="position-fixed transform-center">
         <div class="color-black">
-            Create item
             <form [formGroup]="form" (ngSubmit)="submit()">
-                <div class="d-flex flex-wrap flex-column justify-content-center py-3">
+                <div class="d-flex flex-wrap flex-column justify-content-center">
+                    <div class="text-center py-3">    
+                        Create item
+                    </div>
                     <div class="d-flex flex-column mx-auto">
                         <label>Item name</label>
                         <input class="border rounded-pill border-normal" placeholder="Name" formControlName="itemName">
@@ -15,7 +17,7 @@
                         <app-error class="text-center" [controlName]="form.controls['itemDescription']"></app-error>
                     </div>
                 </div>
-                <div class="d-flex justify-content-center pb-1">
+                <div class="d-flex justify-content-center pt-3 pb-1">
                     <app-button [disabled]="!form.valid">Create</app-button>
                 </div>
             </form>

@@ -5,9 +5,11 @@ import { Router } from '@angular/router';
 import { ItemEndpoints } from 'src/app/models/configs/endpoints/item-endpoints.config';
 import { CreateItemRequest } from 'src/app/models/request/item/create-item-request.model';
 import { Item } from 'src/app/models/response/item/item';
+import { EventData } from 'src/app/models/utils/event';
 import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
+import { ItemEvents } from '../enums/events';
 
 @Injectable()
 export class ItemService extends NetworkService<ItemEndpoints> {
@@ -24,7 +26,6 @@ export class ItemService extends NetworkService<ItemEndpoints> {
     let result: any = null;
 
     await this.http.post(this.base_path + this.endpointsModel.create, model).toPromise().then(response => {
-      console.log(response);
       result = response;
     }).catch();
 
@@ -32,6 +33,8 @@ export class ItemService extends NetworkService<ItemEndpoints> {
 
     // if the request had failed
     if(!result.hasOwnProperty("itemId")) return false;
+
+    this.eventBus.emit(new EventData(ItemEvents.CreateItem, result.itemId.toString()));
 
     return true; // for now we are just returning boolean results
   }

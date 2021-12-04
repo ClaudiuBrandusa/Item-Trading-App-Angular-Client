@@ -56,10 +56,8 @@ export class ListItemsComponent implements OnInit, OnDestroy {
   }
 
   private initSubscription() {
-    this.refreshItemsListSubscription = this.eventBus.on(ItemEvents.RefreshItemsList, (searchString) => {
-      if(isString(searchString)) {
-        this.listItems(searchString);
-      }
+    this.refreshItemsListSubscription = this.eventBus.on(ItemEvents.RefreshItemsList, (searchString) => { 
+      this.listItems(searchString);
     });
     
     this.createItemSubscription = this.eventBus.on(ItemEvents.CreateItem, (value) => {

@@ -4,7 +4,7 @@
             <form [formGroup]="form" (ngSubmit)="submit()">
                 <div class="d-flex flex-wrap flex-column justify-content-center">
                     <div class="text-center py-3">    
-                        Create item
+                        Edit item
                     </div>
                     <div class="d-flex flex-column mx-auto">
                         <label>Item name</label>
@@ -18,7 +18,12 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-center pt-3 pb-1">
-                    <app-button [disabled]="!form.valid">Create</app-button>
+                    <div class="mr-1">
+                        <app-button type="submit" [disabled]="!form.valid">Update</app-button>
+                    </div>
+                    <div class="ml-1">
+                        <app-button type="button" (click)="cancel($event)">Cancel</app-button>
+                    </div>
                 </div>
             </form>
         </div>

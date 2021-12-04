@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { BaseDialogComponent } from 'src/app/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
+import { ItemDialogEvents } from '../../enums/item-dialog-events';
 import { ItemService } from '../../services/item.service';
 
 @Component({
@@ -15,6 +16,7 @@ export class CreateItemDialogComponent extends BaseDialogComponent {
   constructor(private fb: FormBuilder, private service: ItemService, protected eventBus: EventBusService) 
   {
     super(eventBus);
+    this.eventId = ItemDialogEvents.CreateItem
   }
 
   form = this.fb.group({

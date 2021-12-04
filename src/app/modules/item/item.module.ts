@@ -8,6 +8,7 @@ import { ItemService } from './services/item.service';
 import { CreateItemDialogComponent } from './components/create-item-dialog/create-item-dialog.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DeleteItemDialogComponent } from './components/delete-item-dialog/delete-item-dialog.component';
+import { EditItemDialogComponent } from './components/edit-item-dialog/edit-item-dialog.component';
 
 
 
@@ -16,7 +17,8 @@ import { DeleteItemDialogComponent } from './components/delete-item-dialog/delet
     ListItemsComponent,
     ItemComponent,
     CreateItemDialogComponent,
-    DeleteItemDialogComponent
+    DeleteItemDialogComponent,
+    EditItemDialogComponent
   ],
   imports: [
     CommonModule,

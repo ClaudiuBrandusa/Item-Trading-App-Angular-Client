@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ItemEndpoints } from 'src/app/models/configs/endpoints/item-endpoints.config';
 import { CreateItemRequest } from 'src/app/models/request/item/create-item-request.model';
+import { UpdateItemRequest } from 'src/app/models/request/item/update-item-request.model';
 import { Item } from 'src/app/models/response/item/item';
 import { EventData } from 'src/app/models/utils/event';
 import { ConfigService } from '../../shared/services/config.service';
@@ -44,6 +45,19 @@ export class ItemService extends NetworkService<ItemEndpoints> {
   async updateItem(form: FormGroup) {
     await this.waitUntilIsLoaded();
 
+    let model = this.form2UpdateItemRequest(form);
+    let result = false;
+
+    await this.http.patch(this.base_path + this.endpointsModel.update, model).toPromise().then(response => {
+      if(response != null && !response.hasOwnProperty("errors")) {
+        // then it worked
+        result = true;
+        // event name + item id will get an unique event id for each item for a better decoupling
+        this.eventBus.emit(new EventData(ItemEvents.UpdateItem+model.itemId, null));
+      }
+    });
+
+    return result;
   }
 
   async deleteItem(itemId: string) {
@@ -129,6 +143,18 @@ export class ItemService extends NetworkService<ItemEndpoints> {
 
     let model = new CreateItemRequest();
 
+    model.itemName = form.get('itemName').value;
+    model.itemDescription = form.get('itemDescription').value;
+
+    return model;
+  }
+
+  private form2UpdateItemRequest(form: FormGroup) {
+    if(form == null) return null;
+
+    let model = new UpdateItemRequest();
+
+    model.itemId = form.get("itemId").value;
     model.itemName = form.get('itemName').value;
     model.itemDescription = form.get('itemDescription').value;
 

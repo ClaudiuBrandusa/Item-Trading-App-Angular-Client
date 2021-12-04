@@ -48,19 +48,15 @@ export class ItemService extends NetworkService<ItemEndpoints> {
 
   async deleteItem(itemId: string) {
     await this.waitUntilIsLoaded();
-
-    const options = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      }),
-      body: {
-        itemId: itemId
-      }
-    }
+    
+    const options = this.getOptions({
+      itemId: itemId
+    });
 
     await this.http.delete(this.base_path + this.endpointsModel.delete, options).toPromise().then(response => {
       if(response != null && !response.hasOwnProperty("errors")) {
         // then it succeeded
+        this.eventBus.emit(new EventData(ItemEvents.RefreshItemsList, null));
       }
     })
   }
@@ -115,6 +111,15 @@ export class ItemService extends NetworkService<ItemEndpoints> {
 
     if(this.endpointsModel == null)
       return;
+  }
+
+  private getOptions(content: any) {
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: content
+    }
   }
 
   // form2model

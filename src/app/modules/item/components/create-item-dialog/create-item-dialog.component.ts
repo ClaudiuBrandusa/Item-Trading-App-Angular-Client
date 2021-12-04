@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { EventData } from 'src/app/models/utils/event';
+import { BaseDialogComponent } from 'src/app/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
 import { ItemService } from '../../services/item.service';
 
@@ -10,39 +9,26 @@ import { ItemService } from '../../services/item.service';
   templateUrl: './create-item-dialog.component.html',
   styleUrls: ['./create-item-dialog.component.css']
 })
-export class CreateItemDialogComponent implements OnInit, OnDestroy {
+export class CreateItemDialogComponent extends BaseDialogComponent {
 
-  onHideSubscription: Subscription;
 
-  constructor(private fb: FormBuilder, private service: ItemService, private eventBus: EventBusService) { }
+  constructor(private fb: FormBuilder, private service: ItemService, protected eventBus: EventBusService) 
+  {
+    super(eventBus);
+  }
 
   form = this.fb.group({
     itemName: new FormControl('', Validators.required),
     itemDescription: new FormControl('', null)
   });
 
-  ngOnInit() {
-    if(!this.onHideSubscription) {
-      this.onHideSubscription = this.eventBus.on("exit_dialog", () => {
-        this.form.reset();
-      });
-    }
-  }  
-  
-  ngOnDestroy() {
-    if(this.onHideSubscription != null) {
-      this.onHideSubscription.unsubscribe();
-      this.onHideSubscription = null;
-    }
+  protected override onHide() {
+    this.form.reset();
   }
 
   async submit() {
     let result = await this.service.createItem(this.form);
     if(result)
-      this.cancelDialog();
-  }
-
-  private cancelDialog() {
-    this.eventBus.emit(new EventData("exit_dialog", null));
+      this.exitDialog();
   }
 }

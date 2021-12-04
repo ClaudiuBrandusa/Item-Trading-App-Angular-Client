@@ -53,6 +53,10 @@ export class ItemComponent implements OnInit, OnDestroy {
     this.select(ItemDialogEvents.DeleteItem);
   }
 
+  details() {
+    this.select(ItemDialogEvents.DetailsItem);
+  }
+
   private select(eventId: string) {
     this.service.select(this.item.id);
     this.eventBus.emit(new EventData(eventId, this.item.id));

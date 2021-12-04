@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,10 +9,12 @@ import { EventData } from 'src/app/models/utils/event';
 import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
-import { ItemEvents } from '../enums/events';
+import { ItemEvents } from '../enums/item-events';
 
 @Injectable()
 export class ItemService extends NetworkService<ItemEndpoints> {
+
+  selectedItemId = "";
 
   constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, protected router: Router) {
     super(http, configService, injector, eventBus);
@@ -47,6 +49,20 @@ export class ItemService extends NetworkService<ItemEndpoints> {
   async deleteItem(itemId: string) {
     await this.waitUntilIsLoaded();
 
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: {
+        itemId: itemId
+      }
+    }
+
+    await this.http.delete(this.base_path + this.endpointsModel.delete, options).toPromise().then(response => {
+      if(response != null && !response.hasOwnProperty("errors")) {
+        // then it succeeded
+      }
+    })
   }
 
   async getItem(itemId: string): Promise<Item> {
@@ -76,6 +92,18 @@ export class ItemService extends NetworkService<ItemEndpoints> {
     }).catch();
 
     return result;
+  }
+
+  select(itemId: string) {
+    this.selectedItemId = itemId;
+  }
+
+  getSelectedItemId() {
+    return this.selectedItemId
+  }
+
+  deselect() {
+    this.selectedItemId = "";
   }
 
   protected async SetEndpointsModel() {

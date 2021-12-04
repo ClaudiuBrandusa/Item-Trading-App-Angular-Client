@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { isString } from 'src/app/models/utils/async-utils';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
-import { ItemEvents } from '../../enums/events';
+import { ItemEvents } from '../../enums/item-events';
 import { ItemService } from '../../services/item.service';
 
 @Component({

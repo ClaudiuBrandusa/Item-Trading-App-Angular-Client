@@ -1,6 +1,7 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { EventData } from 'src/app/models/utils/event';
+import { DialogEventsId } from '../../enums/dialog-events-id.enum';
 import { EventBusService } from '../../services/event-bus.service';
 import { DialogComponent } from '../dialog/dialog.component';
 
@@ -31,7 +32,7 @@ export class EventDialogComponent extends DialogComponent implements OnDestroy {
   }
 
   public cancelDialog() {
-    this.eventBus.emit(new EventData("exit_dialog", null));
+    this.eventBus.emit(new EventData(DialogEventsId.Exit, null));
   }
 
   private init() {
@@ -42,7 +43,7 @@ export class EventDialogComponent extends DialogComponent implements OnDestroy {
     }
 
     if(this.exitSubscription == null) {
-      this.exitSubscription = this.eventBus.on("exit_dialog", () => {
+      this.exitSubscription = this.eventBus.on(DialogEventsId.Exit, () => {
         this.exit();
       });
     }

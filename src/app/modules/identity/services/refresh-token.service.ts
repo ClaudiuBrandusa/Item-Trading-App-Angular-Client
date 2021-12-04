@@ -15,8 +15,8 @@ import { IdentityService } from './identity.service';
 })
 export class RefreshTokenService extends IdentityService implements OnInit, OnDestroy {
 
-  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, private router: Router, private eventBusService: EventBusService) {
-    super(http, configService, injector, eventBus);
+  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, protected router: Router, private eventBusService: EventBusService) {
+    super(http, configService, injector, eventBus, router);
     this.InitOptions();
     this.initBackgroundEventBusSubscription();
   }
@@ -155,7 +155,7 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
   }
 
   protected async LoadEndpoints() {
-    await this.WaitUntilIsLoaded();
+    await this.waitUntilIsLoaded();
     
     if(this.endpointsModel == null)
       return;

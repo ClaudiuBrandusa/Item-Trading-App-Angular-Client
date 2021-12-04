@@ -10,8 +10,8 @@ import { IdentityService } from './identity.service';
 @Injectable()
 export class RegisterService extends IdentityService {
 
-  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService) {
-    super(http, configService, injector, eventBus);
+  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, protected router: Router) {
+    super(http, configService, injector, eventBus, router);
   }
 
   private register_path = "";
@@ -19,7 +19,7 @@ export class RegisterService extends IdentityService {
   async register(form: FormGroup) {
     let model = this.form2RegisterRequest(form);
 
-    await this.WaitUntilIsLoaded();
+    await this.waitUntilIsLoaded();
     
     this.http.post(this.register_path, model).subscribe(response => {
       if(this.setTokens(response)) {
@@ -41,7 +41,7 @@ export class RegisterService extends IdentityService {
   }
 
   protected async LoadEndpoints() {
-    await this.WaitUntilIsLoaded();
+    await this.waitUntilIsLoaded();
 
     if(this.endpointsModel == null)
       return;

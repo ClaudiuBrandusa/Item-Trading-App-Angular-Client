@@ -16,6 +16,7 @@ import { EventBusService } from './modules/shared/services/event-bus.service';
 import { ConfigService } from './modules/shared/services/config.service';
 import { EndpointsService } from './modules/shared/services/endpoints.service';
 import { UnauthGuardService } from './guards/unauth-guard.service';
+import { ItemModule } from './modules/item/item.module';
 import { IndexModule } from './modules/index/index.module';
 
 export function tokenGetter() {
@@ -45,9 +46,10 @@ export function refreshTokenGetter() {
         disallowedRoutes: []
       }
     }),
+    ItemModule,
     IndexModule
   ],
-  providers: [AuthGuardService, UnauthGuardService, EventBusService, ConfigService, EndpointsService,
+  providers: [AuthGuardService, UnauthGuardService, ConfigService, EndpointsService,
     {
       provide: APP_INITIALIZER,
       multi: true,

@@ -5,11 +5,12 @@ import { IdentityEndpoints } from 'src/app/models/configs/endpoints/identity-end
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { EventData } from 'src/app/models/utils/event';
 import { NetworkService } from '../../shared/services/network.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export abstract class IdentityService extends NetworkService<IdentityEndpoints> {
 
-  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService) {
+  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, protected router: Router) {
     super(http, configService, injector, eventBus);
    }
 
@@ -30,7 +31,10 @@ export abstract class IdentityService extends NetworkService<IdentityEndpoints> 
       somethingWentWrong = true;
     }
 
-    this.eventBus.emit(new EventData("silentRefresh", null));
+    if(!somethingWentWrong)
+      this.eventBus.emit(new EventData("silentRefresh", null));
+
+    this.RedirectToDefaultPage();
 
     return !somethingWentWrong;
   }
@@ -42,5 +46,9 @@ export abstract class IdentityService extends NetworkService<IdentityEndpoints> 
 
   protected async SetEndpointsModel() {
     this.endpointsModel = await this.endpointsService.GetIdentity();
+  }
+
+  private RedirectToDefaultPage() {
+    this.router.navigate([""]);
   }
 }

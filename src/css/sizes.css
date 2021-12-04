@@ -1,4 +1,26 @@
+.w-auto { width: auto; }
+
+.h-auto { height: min-content; }
+
+.h-max-inherit { max-height: inherit; }
+
+/* virtual */
+
 .w-45 { width: 45vw; }
+
+.w-v-max { width: 100vw; }
+
+.h-v-max { height: 100vh; }
+
+.h-v-65 { max-height: 65vh; }
+
+/* rem */
+
+.w-5rem { width: 5rem; }
+
+.w-10rem { width: 10rem; }
+
+.w-15rem { width: 15rem; }
 
 .w-20rem { width: 20rem; }
 
@@ -6,12 +28,24 @@
 
 .w-30rem { width: 30rem; }
 
+.w-35rem { width: 35rem; }
+
+.h-3rem { height: 3rem; }
+
 .h-3\.5rem { height: 3.5rem; }
+
+.h-5rem { height: 5rem; }
+
+.h-10rem { height: 10rem; }
+
+.h-8rem {
+    height: 8rem;
+}
+
+/* percent */
+
+.w-99 { width: 99%;}
 
 .w-max { width: 100%; }
 
 .h-max { height: 100%; }
-
-.w-v-max { width: 100vw; } /* v comes from virtual */
-
-.h-v-max { height: 100vh; }

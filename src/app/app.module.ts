@@ -9,12 +9,14 @@ import { AppComponent } from './app.component';
 import { IdentityModule } from './modules/identity/identity.module';
 import { SharedModule } from './modules/shared/shared.module';
 import { RouterModule } from '@angular/router';
-import { AuthGuardService } from './guards/authguard.service';
+import { AuthGuardService } from './guards/auth-guard.service';
 import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { EventBusService } from './modules/shared/services/event-bus.service';
 import { ConfigService } from './modules/shared/services/config.service';
 import { EndpointsService } from './modules/shared/services/endpoints.service';
+import { UnauthGuardService } from './guards/unauth-guard.service';
+import { ItemModule } from './modules/item/item.module';
+import { IndexModule } from './modules/index/index.module';
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -40,12 +42,13 @@ export function refreshTokenGetter() {
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        allowedDomains: ["localhost:5000"],
         disallowedRoutes: []
       }
-    })
+    }),
+    ItemModule,
+    IndexModule
   ],
-  providers: [AuthGuardService, EventBusService, ConfigService, EndpointsService,
+  providers: [AuthGuardService, UnauthGuardService, ConfigService, EndpointsService,
     {
       provide: APP_INITIALIZER,
       multi: true,

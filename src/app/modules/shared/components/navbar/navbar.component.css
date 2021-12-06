@@ -1,0 +1,16 @@
+* {
+    color: white;
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+}
+
+ul {
+    list-style-type: none;
+    display: inline-block;
+    margin-right: 1.5rem;
+    margin-left: 1.5rem;
+    padding: 0;
+}

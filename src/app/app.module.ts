@@ -12,7 +12,6 @@ import { RouterModule } from '@angular/router';
 import { AuthGuardService } from './guards/auth-guard.service';
 import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { EventBusService } from './modules/shared/services/event-bus.service';
 import { ConfigService } from './modules/shared/services/config.service';
 import { EndpointsService } from './modules/shared/services/endpoints.service';
 import { UnauthGuardService } from './guards/unauth-guard.service';

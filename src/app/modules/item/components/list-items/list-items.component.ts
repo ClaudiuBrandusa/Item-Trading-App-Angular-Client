@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit, Output } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { isString } from 'src/app/models/utils/async-utils';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { EventSubscription } from 'src/app/models/utils/event-subscription';
+import { ListDirective } from 'src/app/modules/shared/directives/list/list.directive';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
 import { ItemEvents } from '../../enums/item-events';
 import { ItemService } from '../../services/item.service';
@@ -10,74 +10,60 @@ import { ItemService } from '../../services/item.service';
   templateUrl: './list-items.component.html',
   styleUrls: ['./list-items.component.css']
 })
-export class ListItemsComponent implements OnInit, OnDestroy {
+export class ListItemsComponent extends ListDirective implements OnInit, OnDestroy {
 
-  @Output()
-  itemsIdList = new Array<string>();
+  refreshItemsListSubscription: EventSubscription;
+  createItemSubscription: EventSubscription;
 
-  refreshItemsListSubscription: Subscription;
-  createItemSubscription: Subscription;
-
-  constructor(private service: ItemService, private eventBus: EventBusService) { }
+  constructor(private service: ItemService, private eventBus: EventBusService) {
+    super();
+    this.initSubscriptionsFactory();
+  }
 
   async ngOnInit(): Promise<void> {
-    this.initSubscription();
+    this.initSubscriptions();
     this.listItems();
   }
 
   ngOnDestroy(): void {
-    this.clearSubscription();
+    this.clearSubscriptions();
   }
 
   async listItems(searchString: string = "") {
     let list = await this.service.listItems(); /* list of items id */
-  
+    
     if(list == null)
       return;
+    
+    this.clear();
 
-    this.clearList();
-
-    list.forEach(async element => {
-      this.itemsIdList.push(element);
+    list.forEach(elementId => {
+      this.add(elementId);
     });
   }
 
-  clearList() {
-    while(this.itemsIdList.length > 0) {
-      this.itemsIdList.pop();
-    }
+  addItem(itemId: string) {
+    this.add(itemId);
   }
 
-  getEventValue(event: Event) {
-    let str = event as unknown as string;
-    if(str != null)
-      return str;
-    return (event.target as HTMLInputElement).value;
-  }
-
-  private initSubscription() {
-    this.refreshItemsListSubscription = this.eventBus.on(ItemEvents.RefreshItemsList, (searchString) => { 
+  private initSubscriptionsFactory() {
+    this.refreshItemsListSubscription = new EventSubscription(this.eventBus, ItemEvents.RefreshItemsList, (searchString) => { 
       this.listItems(searchString);
     });
     
-    this.createItemSubscription = this.eventBus.on(ItemEvents.CreateItem, (value) => {
-      if(isString(value)) {
-        if(!this.itemsIdList.includes(value))
-          this.itemsIdList.push(value);
-      }
+    this.createItemSubscription = new EventSubscription(this.eventBus, ItemEvents.CreateItem, (value) => {
+      this.addItem(value);
     });
   }
 
-  private clearSubscription() {
-    if(this.refreshItemsListSubscription != null) {
-      this.refreshItemsListSubscription.unsubscribe();
-      this.refreshItemsListSubscription = null;
-    }
-    
-    if(this.createItemSubscription != null) {
-      this.createItemSubscription.unsubscribe();
-      this.createItemSubscription = null;
-    }
+  private initSubscriptions() {
+    this.refreshItemsListSubscription.init();
+    this.createItemSubscription.init();
+  }
+
+  private clearSubscriptions() {
+    this.refreshItemsListSubscription.clear();
+    this.createItemSubscription.clear();
   }
 
 }

@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DeleteItemDialogComponent } from './components/delete-item-dialog/delete-item-dialog.component';
 import { EditItemDialogComponent } from './components/edit-item-dialog/edit-item-dialog.component';
 import { DetailsItemDialogComponent } from './components/details-item-dialog/details-item-dialog.component';
+import { ItemsComponent } from './components/items/items.component';
 
 
 
@@ -20,7 +21,8 @@ import { DetailsItemDialogComponent } from './components/details-item-dialog/det
     CreateItemDialogComponent,
     DeleteItemDialogComponent,
     EditItemDialogComponent,
-    DetailsItemDialogComponent
+    DetailsItemDialogComponent,
+    ItemsComponent
   ],
   imports: [
     CommonModule,
@@ -28,7 +30,7 @@ import { DetailsItemDialogComponent } from './components/details-item-dialog/det
     ReactiveFormsModule
   ],
   exports: [
-    ListItemsComponent,
+    ItemsComponent,
     ItemRoutingModule
   ],
   providers: [ItemService]

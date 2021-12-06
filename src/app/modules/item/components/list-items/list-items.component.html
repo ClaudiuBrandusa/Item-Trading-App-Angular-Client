@@ -1,21 +1,3 @@
-<div class="d-flex h-v-max flex-column align-self-stretch">
-    <app-navbar-search-bar placeholder="Enter item name" (searchFunction)="listItems(getEventValue($event))"></app-navbar-search-bar>
-    
-    <div class="flex-grow-1 overflow-y-auto">
-        <div class="container">
-            <div *ngFor="let id of itemsIdList; let i=index">
-                <app-item id="id" [itemId]="id"></app-item>
-            </div>
-        </div>
-    </div>
-    
-    <app-menu-bar>
-        <app-menu-button eventId="create_item_dialog">Create item</app-menu-button>
-    </app-menu-bar>
+<div *ngFor="let id of ItemsIdList; let i=index">
+    <app-item [ItemId]="id"></app-item>
 </div>
-
-<!-- Dialogs -->
-<dialog-create-item></dialog-create-item>
-<dialog-details-item></dialog-details-item>
-<dialog-edit-item></dialog-edit-item>
-<dialog-delete-item></dialog-delete-item>

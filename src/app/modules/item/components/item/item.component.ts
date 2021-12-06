@@ -1,7 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { Item } from 'src/app/models/response/item/item';
 import { EventData } from 'src/app/models/utils/event';
+import { EventSubscription } from 'src/app/models/utils/event-subscription';
+import { ListItemDirective } from 'src/app/modules/shared/directives/list/list-item/list-item.directive';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
 import { ItemDialogEvents } from '../../enums/item-dialog-events';
 import { ItemEvents } from '../../enums/item-events';
@@ -12,33 +13,33 @@ import { ItemService } from '../../services/item.service';
   templateUrl: './item.component.html',
   styleUrls: ['./item.component.css']
 })
-export class ItemComponent implements OnInit, OnDestroy {
-
-  @Input()
-  itemId = "";
+export class ItemComponent extends ListItemDirective implements OnInit, OnDestroy {
 
   @Input()
   item = new Item();
 
-  itemUpdateSubscription: Subscription;
+  itemUpdateSubscription: EventSubscription;
 
-  constructor(private service: ItemService, private eventBus: EventBusService) { }
+  constructor(private service: ItemService, private eventBus: EventBusService) {
+    super();
+  }
+
+  protected override onSetItemId() {
+    console.log(this.itemId);
+    this.initSubscriptionsFactory()
+  }
+
+  protected override loadData() {
+    this.getItem();
+  }
 
   ngOnInit(): void {
     this.getItem();
-    if(!this.itemUpdateSubscription) {
-      this.itemUpdateSubscription = this.eventBus.on(ItemEvents.UpdateItem+this.itemId, () => {
-        this.getItem();
-      });
-    }
+    this.itemUpdateSubscription.init();
   }
 
   ngOnDestroy(): void {
-    if(this.itemUpdateSubscription != null)
-    {
-      this.itemUpdateSubscription.unsubscribe();
-      this.itemUpdateSubscription = null;
-    }
+    this.itemUpdateSubscription.clear();
   }
 
   async getItem() {
@@ -56,6 +57,16 @@ export class ItemComponent implements OnInit, OnDestroy {
   details() {
     this.select(ItemDialogEvents.DetailsItem);
   }
+
+  // Subscriptions methods
+
+  private initSubscriptionsFactory() {
+    this.itemUpdateSubscription = new EventSubscription(this.eventBus, ItemEvents.UpdateItem+this.itemId, () => {
+      this.getItem();
+    })
+  }
+
+  // Utils
 
   private select(eventId: string) {
     this.service.select(this.item.id);

@@ -23,6 +23,17 @@ export abstract class ListDirective {
     this.itemsIdList.push(itemId);
   }
 
+  addList(itemsId: Array<string>) {
+    if(itemsId == null)
+      return;
+
+    this.clear();
+
+    itemsId.forEach(async elementId => {
+      this.add(elementId);
+    });
+  }
+
   remove(itemId: string) {
     if(this.contains(itemId))
       this.itemsIdList.splice(this.itemsIdList.indexOf(itemId), 0);

@@ -25,8 +25,7 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
   }
 
   protected override onSetItemId() {
-    console.log(this.itemId);
-    this.initSubscriptionsFactory()
+    this.initSubscriptionsFactory();
   }
 
   protected override loadData() {

@@ -12,10 +12,12 @@
         <br>
         <strong>Quantity</strong>:
         {{ item.quantity }}
+        <span *ngIf="!isShort">
         <br>
         <div (click)="details()" class="d-inline-block pr-2 pb-2 color-blue no-select cursor-pointer"><strong>Details</strong></div>
+    </span>
     </div>
-    <div class="col flex-0 p-0 pl-1 text-center no-select cursor-pointer">
+    <div *ngIf="hasControls" class="col flex-0 p-0 pl-1 text-center no-select cursor-pointer">
         <div class="mb-1 p-2 bg-cadet-blue color-white" (click)="add()">
             <strong>Add</strong>
         </div>

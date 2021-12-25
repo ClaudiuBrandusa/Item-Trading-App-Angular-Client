@@ -58,7 +58,7 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
 
     await this.http.get(this.base_path + this.endpointsModel.get + "?itemId=" + itemId).toPromise().then(response => {
       if(this.gotNoError(response)) {
-        result = response as InventoryItem;
+        result = this.response2Item(response);
       }
     }).catch();
 
@@ -127,6 +127,17 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
 
     model.itemId = form.get("itemId").value;
     model.itemQuantity = form.get('itemQuantity').value;
+
+    return model;
+  }
+
+  // response to model
+  response2Item(response: any) {
+    let model = new InventoryItem();
+
+    model.id = response.itemId;
+    model.name = response.itemName;
+    model.quantity = response.quantity;
 
     return model;
   }

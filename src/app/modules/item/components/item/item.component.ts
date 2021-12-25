@@ -16,6 +16,12 @@ import { ItemService } from '../../services/item.service';
 export class ItemComponent extends ListItemDirective implements OnInit, OnDestroy {
 
   @Input()
+  hasControls = true;
+
+  @Input()
+  isShort = false;
+  
+  @Input()
   item = new Item();
 
   itemUpdateSubscription: EventSubscription;

@@ -1,0 +1,6 @@
+<strong>{{title}}</strong>
+<ng-content></ng-content>
+<span *ngIf="isRoot(); then cancelContent else backContent"></span>
+<ng-template #backContent><app-button (click)="back()">Back</app-button></ng-template>
+<ng-template #cancelContent><app-button (click)="cancel()">Cancel</app-button></ng-template>
+<app-button *ngIf="!noNext" [disabled]="form == undefined ? false : !form.valid" (click)="next()">Next</app-button>

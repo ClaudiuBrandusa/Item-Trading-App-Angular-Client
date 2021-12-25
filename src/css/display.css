@@ -25,3 +25,5 @@
 /* overflow */
 
 .overflow-y-auto { overflow-y: auto !important; }
+
+.overflow-y-scroll { overflow-y: scroll !important; }

@@ -17,6 +17,7 @@ export class EventDialogComponent extends DialogComponent implements OnDestroy {
   public eventId: string;
   private initSubscription: Subscription;
   private exitSubscription: Subscription;
+  private backSubscription: Subscription;
   public active = false;
 
   constructor(protected eventBus: EventBusService) {
@@ -43,7 +44,14 @@ export class EventDialogComponent extends DialogComponent implements OnDestroy {
     }
 
     if(this.exitSubscription == null) {
-      this.exitSubscription = this.eventBus.on(DialogEventsId.Exit, () => {
+      this.exitSubscription = this.eventBus.on(DialogEventsId.Exit+this.eventId, () => {
+        this.exit();
+      });
+    }
+
+    if(this.backSubscription == null) {
+      this.backSubscription = this.eventBus.on(DialogEventsId.Back+this.eventId, () => {
+        // the dialog will just close itself
         this.exit();
       });
     }
@@ -53,6 +61,16 @@ export class EventDialogComponent extends DialogComponent implements OnDestroy {
     if(this.initSubscription) {
       this.initSubscription.unsubscribe();
       this.initSubscription = null;
+    }
+
+    if(this.exitSubscription) {
+      this.exitSubscription.unsubscribe();
+      this.exitSubscription = null;
+    }
+
+    if(this.backSubscription) {
+      this.backSubscription.unsubscribe();
+      this.backSubscription = null;
     }
   }
 

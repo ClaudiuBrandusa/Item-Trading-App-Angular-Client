@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-button',
@@ -18,6 +18,9 @@ export class ButtonComponent implements OnInit {
 
   @Input()
   background_color_class = "";
+
+  @Input()
+  rounded = false;
 
   constructor() { }
 

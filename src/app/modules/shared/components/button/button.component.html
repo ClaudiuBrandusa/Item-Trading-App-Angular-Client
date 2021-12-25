@@ -1,3 +1,3 @@
-<button type="submit" class="btn btn-primary bg-red font-weight-bold border-dark-red border-normal" [disabled]="disabled" [ngClass]="this.background_color_class != '' ? this.background_color_class : ''">
+<button type="submit" class="btn btn-primary bg-red font-weight-bold border-dark-red border-normal" [disabled]="disabled" [ngClass]="this.background_color_class != '' ? this.background_color_class : ''" [ngClass]="this.rounded == true ? 'border-normal rounded-pill' : ''">
     <ng-content></ng-content>
 </button>

@@ -6,6 +6,10 @@ import { InventoryRoutingModule } from './inventory-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { InventoryItemComponent } from './components/inventory-item/inventory-item.component';
 import { InventoryService } from './services/inventory.service';
+import { AddItemQuantityDialogComponent } from './components/dialogs/add-item/add-item-quantity-dialog/add-item-quantity-dialog.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AddItemSelectDialogComponent } from './components/dialogs/add-item/add-item-select-dialog/add-item-select-dialog.component';
+import { ItemModule } from '../item/item.module';
 
 
 
@@ -13,11 +17,16 @@ import { InventoryService } from './services/inventory.service';
   declarations: [
     ListInventoryComponent,
     InventoryComponent,
-    InventoryItemComponent
+    InventoryItemComponent,
+    AddItemQuantityDialogComponent,
+    AddItemSelectDialogComponent
   ],
   imports: [
     CommonModule,
-    SharedModule
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ItemModule
   ],
   exports: [
     InventoryComponent,

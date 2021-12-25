@@ -16,6 +16,12 @@ import { InventoryService } from '../../services/inventory.service';
 export class InventoryItemComponent extends ListItemDirective implements OnInit, OnDestroy {
  
   @Input()
+  hasControls = true;
+
+  @Input()
+  isShort = false;
+
+  @Input()
   item = new InventoryItem();
 
   itemAddSubscription: EventSubscription;
@@ -49,7 +55,7 @@ export class InventoryItemComponent extends ListItemDirective implements OnInit,
   }
 
   add() {
-    this.select(InventoryDialogEvents.Add);
+    this.select(InventoryDialogEvents.AddQuantity);
   }
 
   drop() {

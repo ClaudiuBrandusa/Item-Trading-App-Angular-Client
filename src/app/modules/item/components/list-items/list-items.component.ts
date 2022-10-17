@@ -30,7 +30,7 @@ export class ListItemsComponent extends ListDirective implements OnInit, OnDestr
   }
 
   async listItems(searchString: string = "") {
-    let list = await this.service.listItems(); /* list of items id */
+    let list = await this.service.listItems(searchString); /* list of items id */
     
     if(list == null)
       return;

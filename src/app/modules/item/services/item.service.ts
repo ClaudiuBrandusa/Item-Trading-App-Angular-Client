@@ -90,12 +90,18 @@ export class ItemService extends NetworkService<ItemEndpoints> {
     return result;
   }
 
-  async listItems() {
+  async listItems(searchString: string = "") {
     await this.waitUntilIsLoaded();
 
     let result: any;
 
-    await this.http.get<any>(this.base_path + this.endpointsModel.list).toPromise().then(response => {
+    const params : any = {}
+
+    if (searchString) {
+      params.searchString = searchString
+    }
+
+    await this.http.get<any>(this.base_path + this.endpointsModel.list, { params }).toPromise().then(response => {
       if(response != null && response.hasOwnProperty("itemsId")) {
         result = response.itemsId;
       }

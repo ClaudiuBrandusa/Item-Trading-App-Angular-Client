@@ -33,4 +33,8 @@ export class CreateItemDialogComponent extends BaseDialogComponent {
     if(result)
       this.exitDialog();
   }
+
+  cancel() {
+    this.exitDialog();
+  }
 }

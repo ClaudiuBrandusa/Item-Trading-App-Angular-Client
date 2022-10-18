@@ -16,6 +16,16 @@ export class ButtonComponent implements OnInit {
     return this._disabled;
   }
 
+  private _type: string = "button"
+
+  @Input() set type(value: string) {
+    this._type = value;
+  }
+
+  get type(): string {
+    return this._type
+  }
+
   @Input()
   background_color_class = "";
 

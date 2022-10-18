@@ -8,7 +8,7 @@ export class AuthGuardService implements CanActivate {
 
   constructor(private router: Router, private jwtHelper: JwtHelperService, private refreshTokenService: RefreshTokenService) { }
 
-  canActivate() {
+  async canActivate() {
     const token = localStorage.getItem("token");
 
     if(token && !this.jwtHelper.isTokenExpired(token)) {
@@ -17,7 +17,7 @@ export class AuthGuardService implements CanActivate {
 
     if(this.refreshTokenService.canRefreshTokens())
     {
-      this.refreshTokenService.refreshTokens();
+      await this.refreshTokenService.refreshTokens();
 
       if(this.refreshTokenService.isLoggedIn)
         return true;

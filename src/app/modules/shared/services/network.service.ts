@@ -48,7 +48,7 @@ export abstract class NetworkService<T> {
   // the subclass will define it's model 
   protected abstract SetEndpointsModel();
 
-  async WaitUntilIsLoaded() {
+  async waitUntilIsLoaded() {
     return Interval(() => !this.loaded, 25, 3000);
   }
 

@@ -1,0 +1,22 @@
+<app-event-dialog eventId={{eventId}}>
+    <app-medium-dialog class="position-fixed transform-center">
+        <div class="color-black">
+            <div class="d-flex flex-wrap flex-column justify-content-center">
+                <div class="text-center py-3">    
+                    Delete item
+                </div>
+                <div class="d-flex flex-column mx-auto">
+                    <label>Do you wish to delete the item with the name <strong>{{itemName}}</strong>?</label>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center pt-3 pb-1">
+                <div class="mr-1">
+                    <app-button (click)="delete()">Yes</app-button>
+                </div>
+                <div class="ml-1">
+                    <app-button (click)="cancel()">No</app-button>
+                </div>
+            </div>
+        </div>
+    </app-medium-dialog>
+</app-event-dialog>

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Injector, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { interval, Subscription } from 'rxjs';
+import { interval, Observable, Subscription } from 'rxjs';
 import { RefreshTokenOptions } from 'src/app/models/configs/options/refresh-token-options.config';
 import { RefreshTokenRequest } from 'src/app/models/request/identity/refresh-token-request.model';
 import { Interval} from 'src/app/models/utils/async-utils';
@@ -10,12 +10,15 @@ import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { IdentityService } from './identity.service';
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class RefreshTokenService extends IdentityService implements OnInit, OnDestroy {
 
-  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, private router: Router, private eventBusService: EventBusService) {
-    super(http, configService, injector, eventBus);
+  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, protected router: Router, private eventBusService: EventBusService) {
+    super(http, configService, injector, eventBus, router);
     this.InitOptions();
+    this.initBackgroundEventBusSubscription();
   }
 
   ngOnInit(): void {
@@ -72,12 +75,21 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
   }
 
   async refreshTokens() {
-    if(this.canRefreshTokens())
-      (await this.getRefreshTokensRequest()).subscribe(result => {
+    if(this.canRefreshTokens()) {
+      let result: Observable<Object>;
+      await Interval(() => {
+        result = this.getRefreshTokensRequest(); 
+        return result == null; // we will continue until we get a non null result
+      }, 100, 4000);
+      if(result == null) {
+        return; 
+      }
+      result.subscribe(result => {
         this.setTokens(result);
       }, err => {
         this.eventBusService.emit(new EventData("logout", null));
       });
+    }
   }
 
   isLoggedIn() {
@@ -86,25 +98,24 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
 
   signOut() {
     localStorage.clear();
-    this.router.navigate(['']);
+    this.router.navigate(['login']);
   }
 
-  private initEventBusSubscription() {
+  // subscriptions could be triggered even if the service is destroyed
+  private initBackgroundEventBusSubscription() {
     this.eventBusSignOutSub = this.eventBusService.on('logout', () => {
       this.signOut();
       this.endSilentRefresh();
     });
+  }
 
+  private initEventBusSubscription() {
     this.eventBusSilentRefreshSub = this.eventBusService.on('silentRefresh', async () => {
       this.startSilentRefresh();
     });
   }
 
   private clearEventBusSubscription() {
-    if(this.eventBusSignOutSub) {
-      this.eventBusSignOutSub.unsubscribe();
-    }
-
     if(this.eventBusSilentRefreshSub) {
       this.eventBusSilentRefreshSub.unsubscribe();
     }
@@ -144,7 +155,7 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
   }
 
   protected async LoadEndpoints() {
-    await this.WaitUntilIsLoaded();
+    await this.waitUntilIsLoaded();
     
     if(this.endpointsModel == null)
       return;

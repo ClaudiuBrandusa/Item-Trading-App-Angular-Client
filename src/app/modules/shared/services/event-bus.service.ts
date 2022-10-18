@@ -23,4 +23,23 @@ export class EventBusService {
       filter((e: EventData) => e.name === eventName),
       map((e: EventData) => e["value"])).subscribe(action);
   }
+
+  // utils
+  initSubscription(subscription: Subscription, eventId: string, callback: (any?) => any) : Subscription {
+    if(subscription != null) {
+        // then it means that the subscription had already been set
+        return subscription;
+    }
+
+    return this.on(eventId, callback);
+  }
+
+  clearSubscription(subscription: Subscription) {
+    if(subscription != null) {
+        subscription.unsubscribe();
+        subscription = null;
+    }
+
+    return subscription;
+  }
 }

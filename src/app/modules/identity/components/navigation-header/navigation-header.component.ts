@@ -11,12 +11,12 @@ export class NavigationHeaderComponent implements OnInit {
 
   public disabledAnchorClasses = "disabled color-black";
   public enabledAnchorClasses = "color-white";
-  private enabledDivClasses = "border-normal border-red border-top";
-  public enabledLeftDivClasses = this.enabledDivClasses + " border-left border-radius-rounded-top-left";
-  public enabledRightDivClasses = this.enabledDivClasses + " border-right border-radius-rounded-top-right";
-  private disabledDivClasses = "bg-sizzling-red border-bottom border-normal border-red";
-  public disabledLeftDivClasses = this.disabledDivClasses + " border-right border-radius-rounded-top-left";
-  public disabledRightDivClasses = this.disabledDivClasses + " border-left border-radius-rounded-top-right";
+  private enabledDivClasses = "border-normal border-dark-red border-style-solid border-bottom-0 ";
+  public enabledLeftDivClasses = this.enabledDivClasses + " border-right-0 border-radius-rounded-top-left";
+  public enabledRightDivClasses = this.enabledDivClasses + " border-left-0 border-radius-rounded-top-right";
+  private disabledDivClasses = "bg-red border border-top-0 border-normal border-dark-red";
+  public disabledLeftDivClasses = this.disabledDivClasses + " border-left-0 border-radius-rounded-top-left";
+  public disabledRightDivClasses = this.disabledDivClasses + " border-right-0 border-radius-rounded-top-right";
 
   constructor(private currentIdentityPageService: CurrentIdentityPageService) { }
 

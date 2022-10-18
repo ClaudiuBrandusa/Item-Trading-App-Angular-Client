@@ -30,8 +30,24 @@
     border-width: 0.2rem !important;
 }
 
+.border-thin {
+    border-width: 0.1rem !important;
+}
+
 /* border type */
 
 .border-style-solid {
     border-style: solid;
+}
+
+.border-bottom {
+    border-top-width: 0 !important;
+    border-right-width: 0 !important;
+    border-left-width: 0 !important;
+}
+
+.border-top {
+    border-bottom-width: 0 !important;
+    border-right-width: 0 !important;
+    border-left-width: 0 !important;
 }

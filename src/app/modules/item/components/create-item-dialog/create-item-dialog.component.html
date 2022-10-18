@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <div class="d-flex d-row justify-content-around pt-3 pb-1">
-                    <app-button [disabled]="!form.valid">Create</app-button>
+                    <app-button type="submit" [disabled]="!form.valid">Create</app-button>
                     <app-button (click)="cancel()">Cancel</app-button>
                 </div>
             </form>

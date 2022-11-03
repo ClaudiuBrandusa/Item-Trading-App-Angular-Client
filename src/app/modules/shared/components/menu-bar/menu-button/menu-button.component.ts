@@ -1,6 +1,7 @@
 import { Component, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { EventData } from 'src/app/models/utils/event';
+import { DialogEventsId } from '../../../enums/dialog-events-id.enum';
 import { EventBusService } from '../../../services/event-bus.service';
 
 @Component({
@@ -24,6 +25,8 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initEvents();
+    
+    this.checkIfIsSelected();
   }
   
   ngOnDestroy(): void {
@@ -31,16 +34,31 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
   }
 
   protected initEvents() {
-    this.initOnSelection();
+    if(!this.onSelectSubscription)
+        this.onSelectSubscription = this.eventBusService.on(this.eventId, () => {
+          this.select();
+      });
+
+    if(!this.onDeselectDialogSubscription)
+      this.onDeselectDialogSubscription = this.eventBusService.on(DialogEventsId.Exit + this.eventId, () => {
+        this.deselect();
+      });
   }
 
   protected clearEvents() {
-    this.clearOnSelection();
-    this.clearOnDeselection();
+    if(this.onSelectSubscription) {
+      this.onSelectSubscription.unsubscribe();
+      this.onSelectSubscription = null;
+    }
+
+    if(this.onDeselectDialogSubscription) {
+      this.onDeselectDialogSubscription.unsubscribe();
+      this.onDeselectDialogSubscription = null;
+    }
   }
 
   @HostListener('click', ['$event'])
-  async click(e) {
+  async click(_e) {
     await this.select();
   }
 
@@ -63,36 +81,6 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
     await this.onDeselect();
 
     this.selected = false;
-  }
-
-  private initOnSelection() {
-    if(!this.onSelectSubscription)
-      this.onSelectSubscription = this.eventBusService.on(this.eventId, () => {
-        this.initOnDeselection();
-    });
-
-    this.checkIfIsSelected();
-  }
-
-  private initOnDeselection() {
-    if(!this.onDeselectDialogSubscription)
-      this.onDeselectDialogSubscription = this.eventBusService.on("exit_dialog", () => {
-        this.deselect();
-      });
-  }
-
-  private clearOnSelection() {
-    if(this.onSelectSubscription) {
-      this.onSelectSubscription.unsubscribe();
-      this.onSelectSubscription = null;
-    }
-  }
-
-  private clearOnDeselection() {
-    if(this.onDeselectDialogSubscription) {
-      this.onDeselectDialogSubscription.unsubscribe();
-      this.onDeselectDialogSubscription = null;
-    }
   }
 
   protected announceSelection() {

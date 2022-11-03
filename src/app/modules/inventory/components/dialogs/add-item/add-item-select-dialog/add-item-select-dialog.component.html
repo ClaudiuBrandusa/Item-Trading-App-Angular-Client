@@ -2,9 +2,6 @@
     <app-medium-dialog class="position-fixed transform-center">
         <app-back-next-dialog title="Select item" [noNext]="true" dialogId={{eventId}}>
             <div class="d-flex flex-column h-min-5rem h-max-35rem">
-                <div class="flex-0 text-center">
-                    <h4>Select item</h4>
-                </div>
                 <div class="d-flex flex-row flex-0 m-2">
                     <div class="d-flex flex-grow-1 mr-1">
                         <input [(ngModel)]="searchString" type="search" class="w-100 border rounded-pill border-normal" (keyup.enter)="search()" placeholder="Enter item name" />

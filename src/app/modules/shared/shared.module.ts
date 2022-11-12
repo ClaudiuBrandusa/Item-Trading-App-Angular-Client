@@ -16,8 +16,10 @@ import { MediumDialogComponent } from './components/dialog/medium-dialog/medium-
 import { HugeDialogComponent } from './components/dialog/huge-dialog/huge-dialog.component';
 import { BaseDialogComponent } from './components/dialog/base-dialog/base-dialog.component';
 import { BackNextDialogComponent } from './components/dialogs/back-next-dialog/back-next-dialog.component';
-import { NavigationStackService } from './services/navigation-stack.service';
+import { DialogNavigationStackService } from './services/dialog-navigation-stack.service';
 import { BaseNavigableDialogComponent } from './components/dialog/base-navigable-dialog/base-navigable-dialog.component';
+import { DialogNavigationService } from './services/dialog-navigation.service';
+import { PageNavigationService } from './services/page-navigation.service';
 
 
 
@@ -60,6 +62,8 @@ import { BaseNavigableDialogComponent } from './components/dialog/base-navigable
     BackNextDialogComponent,
     BaseNavigableDialogComponent
   ],
-  providers: [NavigationStackService]
+  providers: [DialogNavigationStackService, DialogNavigationService]
 })
-export class SharedModule { }
+export class SharedModule {
+  constructor(_: DialogNavigationService, __: PageNavigationService) {}
+ }

@@ -4,15 +4,15 @@ import { Stack } from 'src/app/models/utils/stack';
 @Injectable({
   providedIn: "root"
 })
-export class NavigationStackService {
+export class DialogNavigationStackService {
 
   // here we keep the id of the navigated pages
   private stack = new Stack<string>();
 
   constructor() { }
 
-  navigate(pageId: string) {
-    this.stack.add(pageId);
+  navigate(dialogPageId: string) {
+    this.stack.add(dialogPageId);
     // adds the page that is previous to the current one
     // in short terms, the current page is not in the stack
   }
@@ -23,9 +23,8 @@ export class NavigationStackService {
   }
 
   isRoot() {
-    let current = this.current();
-    return current == null || current == undefined;
-    // root means that there is no history in the navigation stack
+    return !this.stack.hasMoreThanOneElements();
+    // root means that there is at least one element in the stack
   }
 
   clear() {

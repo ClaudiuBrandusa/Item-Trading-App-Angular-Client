@@ -1,7 +1,7 @@
 import { Component, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { EventData } from 'src/app/models/utils/event';
-import { DialogEventsId } from '../../../enums/dialog-events-id.enum';
+import { DialogEvents } from '../../../enums/dialog-events.enum';
 import { EventBusService } from '../../../services/event-bus.service';
 
 @Component({
@@ -17,9 +17,15 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
   @Output()
   selected = false;
 
+  private locked = false;
+
   private onSelectSubscription: Subscription;
   private onDeselectDialogSubscription: Subscription;
   
+  protected openSubscriptionId: string;
+  protected exitSubscriptionId: string;
+  protected openEventId: string;
+
   constructor(protected eventBusService: EventBusService) { }
 
 
@@ -34,49 +40,50 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
   }
 
   protected initEvents() {
-    if(!this.onSelectSubscription)
-        this.onSelectSubscription = this.eventBusService.on(this.eventId, () => {
-          this.select();
-      });
+    if (!this.openSubscriptionId)
+      this.openSubscriptionId = DialogEvents.Open;
+    if (!this.exitSubscriptionId)
+      this.exitSubscriptionId = DialogEvents.Exit;
+    if (!this.openEventId)
+      this.openEventId = DialogEvents.Open;
 
-    if(!this.onDeselectDialogSubscription)
-      this.onDeselectDialogSubscription = this.eventBusService.on(DialogEventsId.Exit + this.eventId, () => {
-        this.deselect();
-      });
+    this.onSelectSubscription = this.eventBusService.on(this.openSubscriptionId, (_data) => {
+      this.select();
+    })
+
+    this.onDeselectDialogSubscription = this.eventBusService.on(this.exitSubscriptionId, (_data) => {
+      this.deselect();
+    })
   }
 
   protected clearEvents() {
-    if(this.onSelectSubscription) {
-      this.onSelectSubscription.unsubscribe();
-      this.onSelectSubscription = null;
-    }
-
-    if(this.onDeselectDialogSubscription) {
-      this.onDeselectDialogSubscription.unsubscribe();
-      this.onDeselectDialogSubscription = null;
-    }
+    this.onSelectSubscription && this.eventBusService.clearSubscription(this.onSelectSubscription);
+    this.onDeselectDialogSubscription && this.eventBusService.clearSubscription(this.onDeselectDialogSubscription);
   }
 
   @HostListener('click', ['$event'])
   async click(_e) {
-    await this.select();
+    this.announceSelection();
+    this.locked = true;
+    setTimeout(() => this.locked = false, 100);
+    // await this.select(this.eventId);
   }
 
   protected async select() {
-    if(this.selected)
-      return; // then we cannot use this button
+    if(this.selected) {
+      return;
+    }
     
     await this.onSelect();
-
-    if(this.hasEventId())
-      this.announceSelection();
+      
     // then we mark the current button as selected
     this.selected = true;
   }
 
   protected async deselect() {
-    if(!this.selected)
+    if(!this.selected) {
       return;
+    }
     
     await this.onDeselect();
 
@@ -84,17 +91,13 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
   }
 
   protected announceSelection() {
-    this.eventBusService.emit(new EventData(this.eventId, null));
+    this.eventBusService.emit(new EventData(this.openEventId, this.eventId));
   }
 
   private checkIfIsSelected(): void {
     if(this.isSelected()) {
-      this.select();
+      this.announceSelection();
     }
-  }
-
-  private hasEventId() {
-    return this.eventId != "";
   }
 
   protected isSelected() {

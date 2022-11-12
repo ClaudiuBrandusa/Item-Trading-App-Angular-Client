@@ -1,10 +1,9 @@
 <app-event-dialog eventId={{eventId}}>
     <app-medium-dialog class="position-fixed transform-center">
-        <app-back-next-dialog [form]="form" dialogId={{eventId}}>
+        <app-back-next-dialog title="Choose quantity" [form]="form" dialogId={{eventId}} [nextButtonCallback]="next.bind(this)">
             <form [formGroup]="form">
                 <div class="d-flex flex-column mx-auto">
-                    <label class="control-label">Quantity</label>
-                    <input class="border rounded-pill border-normal" type="number" placeholder="Quantity" formControlName="quantity">
+                    <input class="border rounded-pill border-normal m-2" type="number" placeholder="Quantity" formControlName="itemQuantity">
                     <app-error class="text-center" [controlName]="form.controls['quantity']"></app-error>
                 </div>
             </form>

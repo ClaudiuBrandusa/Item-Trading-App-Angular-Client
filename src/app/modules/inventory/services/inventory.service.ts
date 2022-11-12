@@ -22,6 +22,15 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
   async addItem(form: FormGroup) {
     let model = this.form2AddItemRequest(form);
 
+    if (!model.itemId) {
+      if (!this.selectedItemId) {
+        console.log('unable to add item to inventory.');
+        return;
+      }
+
+      model.itemId = this.selectedItemId;
+    }
+
     await this.waitUntilIsLoaded();
     
     let result: any = null;
@@ -114,8 +123,8 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
 
     let model = new AddItemRequest();
 
-    model.itemId = form.get('itemId').value;
-    model.itemQuantity = form.get('itemQuantity').value;
+    model.itemId = form.get('itemId')?.value;
+    model.quantity = form.get('itemQuantity')?.value;
 
     return model;
   }

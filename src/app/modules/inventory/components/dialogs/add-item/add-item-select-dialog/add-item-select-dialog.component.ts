@@ -2,9 +2,8 @@ import { Component } from '@angular/core';
 import { InventoryDialogEvents } from 'src/app/modules/inventory/enums/InventoryDialogEvents';
 import { InventoryService } from 'src/app/modules/inventory/services/inventory.service';
 import { ItemService } from 'src/app/modules/item/services/item.service';
-import { BaseNavigableDialogComponent } from 'src/app/modules/shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
-import { NavigationStackService } from 'src/app/modules/shared/services/navigation-stack.service';
+import { BaseNavigableDialogComponent } from '../../../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
 
 @Component({
   selector: 'dialog-add-item-select',
@@ -17,10 +16,10 @@ export class AddItemSelectDialogComponent extends BaseNavigableDialogComponent {
 
   searchString = "";
 
-  nextPageId = InventoryDialogEvents.AddQuantity;
+  nextDialogId = InventoryDialogEvents.AddQuantity;
 
-  constructor(protected eventBus: EventBusService, protected navigationStack: NavigationStackService, private itemService: ItemService, private inventoryService: InventoryService) { 
-    super(eventBus, navigationStack);
+  constructor(protected eventBus: EventBusService, private itemService: ItemService, private inventoryService: InventoryService) { 
+    super(eventBus);
     this.eventId = InventoryDialogEvents.AddSelect;
   }
 
@@ -33,7 +32,7 @@ export class AddItemSelectDialogComponent extends BaseNavigableDialogComponent {
       return;
     }
 
-    let result = await this.itemService.listItems();
+    let result = await this.itemService.listItems(this.searchString);
 
     if(result == null)
       return;
@@ -45,16 +44,20 @@ export class AddItemSelectDialogComponent extends BaseNavigableDialogComponent {
 
   select(id: string) {
     this.inventoryService.select(id);
-    this.navigate(this.nextPageId);
+    this.navigate(this.nextDialogId);
   }
 
   cancel() {
-    this.cancelDialog();
+    this.exitDialog();
   }
 
   private clearResults() {
     while(this.foundItems.length > 0)
       this.foundItems.pop();
+  }
+
+  protected override onHide() {
+    this.clearResults();
   }
 
 }

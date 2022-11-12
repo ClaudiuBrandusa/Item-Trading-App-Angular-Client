@@ -27,4 +27,8 @@ export class Stack<T> {
         while(this.peek() != null || this.peek() != undefined)
             this.pop();
     }
+
+    hasMoreThanOneElements() {
+        return !!this.top && !!this.top.next;
+    }
 }

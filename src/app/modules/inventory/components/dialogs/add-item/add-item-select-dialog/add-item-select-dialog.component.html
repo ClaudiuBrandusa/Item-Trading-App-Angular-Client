@@ -10,7 +10,7 @@
                         <app-button (click)="search()" [rounded]="true">Search</app-button>
                     </div>
                 </div>
-                <div class="flex-grow-1 overflow-y-auto">
+                <div class="flex-grow-1 overflow-y-auto mx-2">
                     <div class="container">
                         <div *ngFor="let id of foundItems; let i=index">
                             <app-item (click)="select(id)" class="cursor-pointer no-select" [ItemId]="id" [isShort]="true" [hasControls]="false"></app-item>

@@ -1,4 +1,4 @@
 export class AddItemRequest {
     itemId: string = "";
-    itemQuantity: number = 0;
+    quantity: number = 0;
 }

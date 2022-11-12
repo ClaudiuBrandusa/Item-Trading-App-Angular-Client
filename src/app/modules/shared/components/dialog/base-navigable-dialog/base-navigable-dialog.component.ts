@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { EventBusService } from '../../../services/event-bus.service';
-import { NavigationStackService } from '../../../services/navigation-stack.service';
 import { BaseDialogComponent } from '../base-dialog/base-dialog.component';
+import { DialogEvents } from '../../../enums/dialog-events.enum';
 
 @Component({
   selector: 'app-base-navigable-dialog',
@@ -10,36 +10,21 @@ import { BaseDialogComponent } from '../base-dialog/base-dialog.component';
 })
 export class BaseNavigableDialogComponent extends BaseDialogComponent {
 
-  constructor(protected eventBus: EventBusService, protected navigationStack: NavigationStackService) {
+  constructor(protected eventBus: EventBusService) {
     super(eventBus);
   }
 
   protected navigate(pageId: string) {
     this.emitNavigation(pageId);
-    this.exitDialog();
   }
 
-  back() {
-    if(this.hasBackButton()) {
-      this.emitNavigation(this.navigationStack.back(), null);
-      this.exitDialog();
-    }
+  override exitDialog() {
+    this.emit(DialogEvents.Exit, this.eventId);
+    super.exitDialog();
   }
 
-  hasBackButton() {
-    return !this.navigationStack.isRoot();
-  }
-
-  protected cancelDialog() {
-    this.navigationStack.clear();
-    this.exitDialog();
-  }
-
-  private emitNavigation(pageId: string, withoutStackPush: boolean = false) {
-    if(!withoutStackPush)
-      this.navigationStack.navigate(this.eventId);
-    // emits the instantiation event of the requested page's id 
-    this.emit(pageId, null);
+  private emitNavigation(pageId: string) {
+    this.emit(DialogEvents.Open, pageId);
   }
 
 }

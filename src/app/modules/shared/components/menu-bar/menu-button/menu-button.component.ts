@@ -41,9 +41,9 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
 
   protected initEvents() {
     if (!this.openSubscriptionId)
-      this.openSubscriptionId = DialogEvents.Open;
+      this.openSubscriptionId = `${DialogEvents.Open}/${this.eventId}`;
     if (!this.exitSubscriptionId)
-      this.exitSubscriptionId = DialogEvents.Exit;
+      this.exitSubscriptionId = `${DialogEvents.Exit}/${this.eventId}`;
     if (!this.openEventId)
       this.openEventId = DialogEvents.Open;
 
@@ -66,7 +66,6 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
     this.announceSelection();
     this.locked = true;
     setTimeout(() => this.locked = false, 100);
-    // await this.select(this.eventId);
   }
 
   protected async select() {

@@ -1,21 +1,19 @@
 import { Component, Output } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { AddItemRequest } from 'src/app/models/request/inventory/add-item-request.model';
-import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
-import { InventoryDialogEvents } from '../../../../enums/InventoryDialogEvents';
-import { InventoryService } from '../../../../services/inventory.service';
 import { BaseNavigableDialogComponent } from '../../../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
-import { EventData } from 'src/app/models/utils/event';
+import { InventoryDialogEvents } from '../../../../enums/InventoryDialogEvents';
 import { InventoryEvents } from '../../../../enums/InventoryEvents';
+import { EventData } from 'src/app/models/utils/event';
+import { EventBusService } from '../../../../../shared/services/event-bus.service';
+import { InventoryService } from '../../../../services/inventory.service';
 
 @Component({
-  selector: 'dialog-add-item-quantity',
-  templateUrl: './add-item-quantity-dialog.component.html',
-  styleUrls: ['./add-item-quantity-dialog.component.css']
+  selector: 'dialog-drop-item-quantity',
+  templateUrl: './drop-item-quantity-dialog.component.html',
+  styleUrls: ['./drop-item-quantity-dialog.component.css']
 })
-export class AddItemQuantityDialogComponent extends BaseNavigableDialogComponent {
-
-  model = new AddItemRequest();
+export class DropItemQuantityDialogComponent extends BaseNavigableDialogComponent {
+  
   _itemName
 
   @Output()
@@ -25,7 +23,7 @@ export class AddItemQuantityDialogComponent extends BaseNavigableDialogComponent
 
   constructor(private fb: FormBuilder, private service: InventoryService, protected eventBus: EventBusService) {
     super(eventBus);
-    this.eventId = InventoryDialogEvents.AddQuantity;
+    this.eventId = InventoryDialogEvents.Drop;
   }
 
   form = this.fb.group({
@@ -37,7 +35,7 @@ export class AddItemQuantityDialogComponent extends BaseNavigableDialogComponent
   }
 
   async next() {
-    if (await this.service.addItem(this.form))
+    if (await this.service.dropItem(this.form))
       this.eventBus.emit(new EventData(InventoryEvents.Refresh, ''));
     this.exitDialog();
   }

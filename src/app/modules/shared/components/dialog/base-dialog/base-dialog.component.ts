@@ -27,14 +27,14 @@ export class BaseDialogComponent implements OnInit, OnDestroy {
     }
 
     if(!this.onDisplaySubscription) {
-      this.onDisplaySubscription = this.on(DialogEvents.Open+this.eventId, () => {
+      this.onDisplaySubscription = this.on(`${DialogEvents.Open}/${this.eventId}`, () => {
         this.isActive = true;
         this.onDisplay();
       })
     }
     
     if(!this.onHideSubscription) {
-      this.onHideSubscription = this.on(DialogEvents.Exit+this.eventId, () => {
+      this.onHideSubscription = this.on(`${DialogEvents.Exit}/${this.eventId}`, () => {
         if(this.isActive) {
           this.onHide();
           this.isActive = false;
@@ -82,7 +82,7 @@ export class BaseDialogComponent implements OnInit, OnDestroy {
   }
 
   protected exitDialog() {
-    this.emit(DialogEvents.Exit + this.eventId, null);
+    this.emit(`${DialogEvents.Exit}/${this.eventId}`, null);
   }
 
 }

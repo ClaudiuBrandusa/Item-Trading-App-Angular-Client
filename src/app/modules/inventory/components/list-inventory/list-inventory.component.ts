@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EventSubscription } from 'src/app/models/utils/event-subscription';
 import { ListDirective } from 'src/app/modules/shared/directives/list/list.directive';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
 import { InventoryEvents } from '../../enums/InventoryEvents';
 import { InventoryService } from '../../services/inventory.service';
+import { EventData } from 'src/app/models/utils/event';
 
 @Component({
   selector: 'app-list-inventory',
@@ -14,6 +15,7 @@ export class ListInventoryComponent extends ListDirective implements OnInit, OnD
 
   refreshItemsListSubscription: EventSubscription;
   createItemSubscription: EventSubscription;
+  removeItemSubscription: EventSubscription;
   
   constructor(private service: InventoryService, private eventBus: EventBusService) {
     super();
@@ -30,30 +32,40 @@ export class ListInventoryComponent extends ListDirective implements OnInit, OnD
   }
 
   async listItems(searchString: string = "") {
-    let list = await this.service.list(); /* list of items id */
-  
+    const list = await this.service.list(searchString); /* list of items id */
     this.addList(list);
   }
+
+  protected override onAddElement(itemId: string) {
+    this.eventBus.emit(new EventData(InventoryEvents.RefreshItem+itemId, null));
+  }
+
 
   // Subscriptions
   
   private initSubscriptionsFactory() {
-    this.refreshItemsListSubscription = new EventSubscription(this.eventBus, InventoryEvents.Refresh, (searchString) => { 
+    this.refreshItemsListSubscription = new EventSubscription(this.eventBus, InventoryEvents.Refresh, (searchString) => {
       this.listItems(searchString);
     });
     
     this.createItemSubscription = new EventSubscription(this.eventBus, InventoryEvents.Add, (value) => {
       this.add(value);
     });
+
+    this.removeItemSubscription = new EventSubscription(this.eventBus, InventoryEvents.Remove, (value) => {
+      this.remove(value);
+    });
   }
 
   private initSubscriptions() {
     this.refreshItemsListSubscription.init();
     this.createItemSubscription.init();
+    this.removeItemSubscription.init();
   }
 
   private clearSubscriptions() {
     this.refreshItemsListSubscription.clear();
     this.createItemSubscription.clear();
+    this.removeItemSubscription.clear();
   }
 }

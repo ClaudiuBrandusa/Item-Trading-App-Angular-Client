@@ -44,10 +44,8 @@ export class BackNextDialogComponent implements OnInit {
     if (this.nextButtonCallback) {
       this.nextButtonCallback();
     } else if (this.nextPageId) {
-      this.navigationStack.navigate(this.nextPageId);
-      this.emit(DialogEvents.Open+this.nextPageId)
+      this.emit(DialogEvents.Open, this.nextPageId)
     }
-
   }
 
   back() {
@@ -64,7 +62,7 @@ export class BackNextDialogComponent implements OnInit {
     return this.navigationStack.isRoot();
   }
 
-  private emit(eventId: string, data = null) {
+  private emit(eventId: string, data: any = null) {
     this.eventBus.emit(new EventData(eventId, data));
   }
 

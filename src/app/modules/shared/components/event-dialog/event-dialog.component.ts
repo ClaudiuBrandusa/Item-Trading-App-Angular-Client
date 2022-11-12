@@ -41,22 +41,20 @@ export class EventDialogComponent extends DialogComponent implements OnDestroy {
 
   private init() {
     if(this.initSubscription == null) {
-      this.initSubscription = this.eventBus.on(DialogEvents.Open+this.eventId, () => {
+      this.initSubscription = this.eventBus.on(`${DialogEvents.Open}/${this.eventId}`, () => {
         this.execute();
       })
     }
 
     if(this.exitSubscription == null) {
-      this.exitSubscription = this.eventBus.on(DialogEvents.Exit+this.eventId, () => {
+      this.exitSubscription = this.eventBus.on(`${DialogEvents.Exit}/${this.eventId}`, () => {
         this.exit();
       });
     }
 
     if(this.backSubscription == null) {
-      this.backSubscription = this.eventBus.on(DialogEvents.Back+this.eventId, () => {
-        // the dialog will just close itself
+      this.backSubscription = this.eventBus.on(`${DialogEvents.Back}/${this.eventId}`, () => {
         this.exit();
-        // then it should open the dialog that was present before
       });
     }
   }

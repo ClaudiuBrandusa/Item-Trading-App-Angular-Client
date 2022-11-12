@@ -23,14 +23,13 @@ export class DialogNavigationService {
 
   private registerSubscriptions() {
     this.onOpenDialogSubscription = this.eventBus.on(DialogEvents.Open, (data) => {
-      const currentPage = this.navigationStack.current();
-      if (currentPage) {
-        //this.navigationStack.back();
-        this.eventBus.emit(new EventData(DialogEvents.Exit+currentPage, null));
+      const currentDialog = this.navigationStack.current();
+      if (currentDialog) {
+        this.eventBus.emit(new EventData(`${DialogEvents.Exit}/${currentDialog}`, null));
       }
 
       this.navigationStack.navigate(data);
-      this.eventBus.emit(new EventData(DialogEvents.Open+data, null));
+      this.eventBus.emit(new EventData(`${DialogEvents.Open}/${data}`, null));
     });
 
     this.onBackDialogSubscription = this.eventBus.on(DialogEvents.Back, (data) => {
@@ -40,16 +39,16 @@ export class DialogNavigationService {
         return;
       }
       
-      this.eventBus.emit(new EventData(DialogEvents.Exit+currentDialog, null));
+      this.eventBus.emit(new EventData(`${DialogEvents.Exit}/${currentDialog}`, null));
       this.navigationStack.back();
       const previousDialog = this.navigationStack.current();
 
       if(previousDialog)
-        this.eventBus.emit(new EventData(DialogEvents.Open+previousDialog, null));
+        this.eventBus.emit(new EventData(`${DialogEvents.Open}/${previousDialog}`, null));
     })
 
     this.onCloseDialogSubscription = this.eventBus.on(DialogEvents.Exit, (data) => {
-      this.eventBus.emit(new EventData(DialogEvents.Exit+data, null));
+      this.eventBus.emit(new EventData(`${DialogEvents.Exit}/${data}`, null));
       
       this.navigationStack.clear();
     })

@@ -9,6 +9,7 @@ import { InventoryItem } from 'src/app/models/response/inventory/inventory-item'
 import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
+import { ItemError } from '../../../models/errors/item-error';
 
 @Injectable()
 export class InventoryService extends NetworkService<InventoryEndpoints> {
@@ -41,12 +42,21 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
       }
     }).catch();
 
+    this.selectedItemId = '';
     return result;
   }
 
   async dropItem(form: FormGroup) {
     let model = this.form2DropItemRequest(form);
 
+    if (!model.itemId) {
+      if (!this.selectedItemId) {
+        console.log('unable to drop quantity from inventory.');
+        return;
+      }
+
+      model.itemId = this.selectedItemId;
+    }
     await this.waitUntilIsLoaded();
     
     let result: any = null;
@@ -69,17 +79,25 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
       if(this.gotNoError(response)) {
         result = this.response2Item(response);
       }
-    }).catch();
+    }).catch((error) => {
+      result = Object.assign(new ItemError(), { itemId, errorCode: error.status });
+    });
 
     return result;
   }
 
-  async list() {
+  async list(searchString: string = "") {
     await this.waitUntilIsLoaded();
 
     let result: any = null;
 
-    await this.http.get(this.base_path + this.endpointsModel.list).toPromise().then((response : any) => {
+    const params : any = {}
+
+    if (searchString) {
+      params.searchString = searchString
+    }
+
+    await this.http.get(this.base_path + this.endpointsModel.list, { params }).toPromise().then((response : any) => {
       if(this.gotNoError(response) && response.hasOwnProperty("itemsId")) {
         result = response.itemsId // a list of the items' id from the user's inventory
       }
@@ -134,8 +152,8 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
 
     let model = new DropItemRequest();
 
-    model.itemId = form.get("itemId").value;
-    model.itemQuantity = form.get('itemQuantity').value;
+    model.itemId = form.get("itemId")?.value;
+    model.itemQuantity = form.get('itemQuantity')?.value;
 
     return model;
   }

@@ -4,6 +4,7 @@ import { EventData } from 'src/app/models/utils/event';
 import { EventSubscription } from 'src/app/models/utils/event-subscription';
 import { ListItemDirective } from 'src/app/modules/shared/directives/list/list-item/list-item.directive';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
+import { DialogEvents } from '../../../shared/enums/dialog-events.enum';
 import { InventoryDialogEvents } from '../../enums/InventoryDialogEvents';
 import { InventoryEvents } from '../../enums/InventoryEvents';
 import { InventoryService } from '../../services/inventory.service';
@@ -24,22 +25,18 @@ export class InventoryItemComponent extends ListItemDirective implements OnInit,
   @Input()
   item = new InventoryItem();
 
-  itemAddSubscription: EventSubscription;
-  itemDropSubscription: EventSubscription;
+  itemRefreshSubscription: EventSubscription;
   
   constructor(private service: InventoryService, private eventBus: EventBusService) {
     super();
   }
 
   ngOnInit(): void {
-    this.getItem();
-    this.itemAddSubscription.init();
-    this.itemDropSubscription.init();
+    this.itemRefreshSubscription.init();
   }
 
   ngOnDestroy(): void {
-    this.itemAddSubscription.clear();
-    this.itemDropSubscription.clear();
+    this.itemRefreshSubscription.clear();
   }
 
   protected override onSetItemId() {
@@ -51,38 +48,40 @@ export class InventoryItemComponent extends ListItemDirective implements OnInit,
   }
 
   async getItem() {
-    this.item = await this.service.getItem(this.itemId);
+    const response = await this.service.getItem(this.itemId);
+
+    if (response.hasOwnProperty('errorCode')) {
+      if (response.errorCode === 400)
+        this.eventBus.emit(new EventData(InventoryEvents.Remove, this.itemId));
+    } else {
+      this.item = response;
+    }
   }
 
   add() {
-    this.select(InventoryDialogEvents.AddQuantity);
+    this.selectItemOption(InventoryDialogEvents.AddQuantity);
   }
 
   drop() {
-    this.select(InventoryDialogEvents.Drop);
+    this.selectItemOption(InventoryDialogEvents.Drop);
   }
 
   details() {
-    this.select(InventoryDialogEvents.Details);
+    this.selectItemOption(InventoryDialogEvents.Details);
   }
 
   // Subscriptions methods
 
   private initSubscriptionsFactory() {
-    this.itemAddSubscription = new EventSubscription(this.eventBus, InventoryEvents.Add+this.itemId, () => {
-      this.getItem();
-    });
-
-    this.itemDropSubscription = new EventSubscription(this.eventBus, InventoryEvents.Drop+this.itemId, () => {
+    this.itemRefreshSubscription = new EventSubscription(this.eventBus, InventoryEvents.RefreshItem+this.itemId, () => {
       this.getItem();
     });
   }
 
   // Utils
 
-  private select(eventId: string) {
+  private selectItemOption(eventId: string) {
     this.service.select(this.item.id);
-    this.eventBus.emit(new EventData(eventId, this.item.id));
+    this.eventBus.emit(new EventData(DialogEvents.Open, eventId));
   }
-
 }

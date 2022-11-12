@@ -10,6 +10,7 @@ import { AddItemQuantityDialogComponent } from './components/dialogs/add-item/ad
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddItemSelectDialogComponent } from './components/dialogs/add-item/add-item-select-dialog/add-item-select-dialog.component';
 import { ItemModule } from '../item/item.module';
+import { DropItemQuantityDialogComponent } from './components/dialogs/drop-item/drop-item-dialog-quantity/drop-item-quantity-dialog.component';
 
 
 
@@ -19,7 +20,8 @@ import { ItemModule } from '../item/item.module';
     InventoryComponent,
     InventoryItemComponent,
     AddItemQuantityDialogComponent,
-    AddItemSelectDialogComponent
+    AddItemSelectDialogComponent,
+    DropItemQuantityDialogComponent
   ],
   imports: [
     CommonModule,

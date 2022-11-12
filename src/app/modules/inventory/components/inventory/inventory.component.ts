@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { EventData } from 'src/app/models/utils/event';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
 import { InventoryEvents } from '../../enums/InventoryEvents';

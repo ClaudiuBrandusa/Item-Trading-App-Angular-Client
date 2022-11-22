@@ -17,6 +17,7 @@ import { EndpointsService } from './modules/shared/services/endpoints.service';
 import { UnauthGuardService } from './guards/unauth-guard.service';
 import { ItemModule } from './modules/item/item.module';
 import { IndexModule } from './modules/index/index.module';
+import { InventoryModule } from './modules/inventory/inventory.module';
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -46,7 +47,8 @@ export function refreshTokenGetter() {
       }
     }),
     ItemModule,
-    IndexModule
+    IndexModule,
+    InventoryModule
   ],
   providers: [AuthGuardService, UnauthGuardService, ConfigService, EndpointsService,
     {

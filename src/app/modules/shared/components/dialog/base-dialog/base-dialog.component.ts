@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { EventData } from 'src/app/models/utils/event';
-import { DialogEventsId } from '../../../enums/dialog-events-id.enum';
+import { DialogEvents } from '../../../enums/dialog-events.enum';
 import { EventBusService } from '../../../services/event-bus.service';
 
 @Component({
@@ -22,20 +22,24 @@ export class BaseDialogComponent implements OnInit, OnDestroy {
   constructor(protected eventBus: EventBusService) { }
 
   ngOnInit() {
+    if(!!!this.eventId) {
+      return;
+    }
+
+    if(!this.onDisplaySubscription) {
+      this.onDisplaySubscription = this.on(`${DialogEvents.Open}/${this.eventId}`, () => {
+        this.isActive = true;
+        this.onDisplay();
+      })
+    }
+    
     if(!this.onHideSubscription) {
-      this.onHideSubscription = this.on(DialogEventsId.Exit, () => {
+      this.onHideSubscription = this.on(`${DialogEvents.Exit}/${this.eventId}`, () => {
         if(this.isActive) {
           this.onHide();
           this.isActive = false;
         }
       });
-    }
-
-    if(!this.onDisplaySubscription) {
-      this.onDisplaySubscription = this.on(this.eventId, () => {
-        this.isActive = true;
-        this.onDisplay();
-      })
     }
   }  
   
@@ -78,7 +82,7 @@ export class BaseDialogComponent implements OnInit, OnDestroy {
   }
 
   protected exitDialog() {
-    this.emit(DialogEventsId.Exit, null);
+    this.emit(`${DialogEvents.Exit}/${this.eventId}`, null);
   }
 
 }

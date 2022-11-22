@@ -110,5 +110,8 @@
       }
     }
   },
-  "defaultProject": "Item-Trading-App"
+  "defaultProject": "Item-Trading-App",
+  "cli": {
+    "analytics": false
+  }
 }

@@ -16,6 +16,12 @@ import { ItemService } from '../../services/item.service';
 export class ItemComponent extends ListItemDirective implements OnInit, OnDestroy {
 
   @Input()
+  hasControls = true;
+
+  @Input()
+  isShort = false;
+  
+  @Input()
   item = new Item();
 
   itemUpdateSubscription: EventSubscription;
@@ -25,8 +31,7 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
   }
 
   protected override onSetItemId() {
-    console.log(this.itemId);
-    this.initSubscriptionsFactory()
+    this.initSubscriptionsFactory();
   }
 
   protected override loadData() {

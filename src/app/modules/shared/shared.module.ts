@@ -15,6 +15,11 @@ import { SmallDialogComponent } from './components/dialog/small-dialog/small-dia
 import { MediumDialogComponent } from './components/dialog/medium-dialog/medium-dialog.component';
 import { HugeDialogComponent } from './components/dialog/huge-dialog/huge-dialog.component';
 import { BaseDialogComponent } from './components/dialog/base-dialog/base-dialog.component';
+import { BackNextDialogComponent } from './components/dialogs/back-next-dialog/back-next-dialog.component';
+import { DialogNavigationStackService } from './services/dialog-navigation-stack.service';
+import { BaseNavigableDialogComponent } from './components/dialog/base-navigable-dialog/base-navigable-dialog.component';
+import { DialogNavigationService } from './services/dialog-navigation.service';
+import { PageNavigationService } from './services/page-navigation.service';
 
 
 
@@ -33,7 +38,9 @@ import { BaseDialogComponent } from './components/dialog/base-dialog/base-dialog
     SmallDialogComponent,
     MediumDialogComponent,
     HugeDialogComponent,
-    BaseDialogComponent
+    BaseDialogComponent,
+    BackNextDialogComponent,
+    BaseNavigableDialogComponent
   ],
   imports: [
     CommonModule,
@@ -51,7 +58,12 @@ import { BaseDialogComponent } from './components/dialog/base-dialog/base-dialog
     EventDialogComponent,
     SmallDialogComponent,
     MediumDialogComponent,
-    HugeDialogComponent
-  ]
+    HugeDialogComponent,
+    BackNextDialogComponent,
+    BaseNavigableDialogComponent
+  ],
+  providers: [DialogNavigationStackService, DialogNavigationService]
 })
-export class SharedModule { }
+export class SharedModule {
+  constructor(_: DialogNavigationService, __: PageNavigationService) {}
+ }

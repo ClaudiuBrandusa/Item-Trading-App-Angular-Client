@@ -1,4 +1,4 @@
-<div class="d-flex row color-black position-relative m-3 p-2 bg-white border-thin border-style-solid border-red">
+<div class="d-flex row color-black position-relative my-2 p-2 bg-white border-thin border-style-solid border-red">
     <div class="col flex-0 p-0">
         <div class="position-relative border-bold border-style-solid bg-gunmetal border-dark-red w-5rem h-5rem">
             <div class="position-absolute transform-center color-white">
@@ -13,9 +13,11 @@
         <strong>Description</strong>:
         {{ item.description }}
         <br>
+        <span *ngIf="!isShort">
         <div (click)="details()" class="d-inline-block pr-2 pb-2 color-blue no-select cursor-pointer"><strong>Details</strong></div>
+        </span>
     </div>
-    <div class="col flex-0 p-0 pl-1 text-center no-select cursor-pointer">
+    <div *ngIf="hasControls" class="col flex-0 p-0 pl-1 text-center no-select cursor-pointer">
         <div class="mb-1 p-2 bg-cadet-blue color-white" (click)="edit()">
             <strong>Edit</strong>
         </div>

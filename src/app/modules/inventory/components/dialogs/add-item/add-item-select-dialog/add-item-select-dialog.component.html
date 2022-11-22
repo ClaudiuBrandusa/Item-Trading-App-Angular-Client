@@ -1,0 +1,23 @@
+<app-event-dialog eventId={{eventId}}>
+    <app-medium-dialog class="position-fixed transform-center">
+        <app-back-next-dialog title="Select item" [noNext]="true" dialogId={{eventId}}>
+            <div class="d-flex flex-column h-min-5rem h-max-35rem">
+                <div class="d-flex flex-row flex-0 m-2">
+                    <div class="d-flex flex-grow-1 mr-1">
+                        <input [(ngModel)]="searchString" type="search" class="w-100 border rounded-pill border-normal" (keyup.enter)="search()" placeholder="Enter item name" />
+                    </div>
+                    <div class="d-flex flex-0 ml-1">
+                        <app-button (click)="search()" [rounded]="true">Search</app-button>
+                    </div>
+                </div>
+                <div class="flex-grow-1 overflow-y-auto mx-2">
+                    <div class="container">
+                        <div *ngFor="let id of foundItems; let i=index">
+                            <app-item (click)="select(id)" class="cursor-pointer no-select" [ItemId]="id" [isShort]="true" [hasControls]="false"></app-item>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </app-back-next-dialog>
+    </app-medium-dialog>
+</app-event-dialog>

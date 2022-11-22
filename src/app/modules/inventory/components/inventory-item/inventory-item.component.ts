@@ -1,9 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { InventoryItem } from 'src/app/models/response/inventory/inventory-item';
 import { EventData } from 'src/app/models/utils/event';
 import { EventSubscription } from 'src/app/models/utils/event-subscription';
 import { ListItemDirective } from 'src/app/modules/shared/directives/list/list-item/list-item.directive';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
+import { ItemError } from '../../../../models/errors/item-error';
 import { DialogEvents } from '../../../shared/enums/dialog-events.enum';
 import { InventoryDialogEvents } from '../../enums/InventoryDialogEvents';
 import { InventoryEvents } from '../../enums/InventoryEvents';
@@ -25,6 +27,8 @@ export class InventoryItemComponent extends ListItemDirective implements OnInit,
   @Input()
   item = new InventoryItem();
 
+  private getDataSubscription: Subscription;
+
   itemRefreshSubscription: EventSubscription;
   
   constructor(private service: InventoryService, private eventBus: EventBusService) {
@@ -37,6 +41,7 @@ export class InventoryItemComponent extends ListItemDirective implements OnInit,
 
   ngOnDestroy(): void {
     this.itemRefreshSubscription.clear();
+    this.getDataSubscription?.unsubscribe();
   }
 
   protected override onSetItemId() {
@@ -48,14 +53,17 @@ export class InventoryItemComponent extends ListItemDirective implements OnInit,
   }
 
   async getItem() {
-    const response = await this.service.getItem(this.itemId);
-
-    if (response.hasOwnProperty('errorCode')) {
-      if (response.errorCode === 400)
-        this.eventBus.emit(new EventData(InventoryEvents.Remove, this.itemId));
-    } else {
-      this.item = response;
-    }
+    this.getDataSubscription = (await this.service.getItem(this.itemId)).subscribe({
+      next: (response: any) => {
+        this.item.id = response.itemId;
+        this.item.name = response.itemName;
+        this.item.quantity = response.quantity;
+      },
+      error: (error: ItemError) => {
+        if (error.errorCode == 400)
+          this.eventBus.emit(new EventData(InventoryEvents.Remove, this.itemId));
+      }
+    });
   }
 
   add() {

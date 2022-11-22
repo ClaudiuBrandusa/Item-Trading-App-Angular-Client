@@ -58,6 +58,7 @@ export class AddItemSelectDialogComponent extends BaseNavigableDialogComponent {
 
   protected override onHide() {
     this.clearResults();
+    this.searchString = '';
   }
 
 }

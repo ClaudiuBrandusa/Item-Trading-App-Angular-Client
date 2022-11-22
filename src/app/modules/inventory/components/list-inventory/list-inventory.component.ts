@@ -5,6 +5,8 @@ import { EventBusService } from 'src/app/modules/shared/services/event-bus.servi
 import { InventoryEvents } from '../../enums/InventoryEvents';
 import { InventoryService } from '../../services/inventory.service';
 import { EventData } from 'src/app/models/utils/event';
+import { ItemError } from '../../../../models/errors/item-error';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-list-inventory',
@@ -16,6 +18,8 @@ export class ListInventoryComponent extends ListDirective implements OnInit, OnD
   refreshItemsListSubscription: EventSubscription;
   createItemSubscription: EventSubscription;
   removeItemSubscription: EventSubscription;
+
+  private listSubscription: Subscription;
   
   constructor(private service: InventoryService, private eventBus: EventBusService) {
     super();
@@ -32,8 +36,17 @@ export class ListInventoryComponent extends ListDirective implements OnInit, OnD
   }
 
   async listItems(searchString: string = "") {
-    const list = await this.service.list(searchString); /* list of items id */
-    this.addList(list);
+    this.listSubscription = await (await this.service.list(searchString)).subscribe({
+      next: (response: any) => {
+        const list = response.itemsId // a list of the items' id from the user's inventory
+        this.addList(list);
+      },
+      error: (error: ItemError) => {
+        console.log('Error found: ', error.message);
+      }
+    }); /* list of items id */
+    
+    
   }
 
   protected override onAddElement(itemId: string) {
@@ -67,5 +80,7 @@ export class ListInventoryComponent extends ListDirective implements OnInit, OnD
     this.refreshItemsListSubscription.clear();
     this.createItemSubscription.clear();
     this.removeItemSubscription.clear();
+
+    this.listSubscription?.unsubscribe();
   }
 }

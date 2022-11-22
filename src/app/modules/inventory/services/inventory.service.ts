@@ -10,6 +10,7 @@ import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
 import { ItemError } from '../../../models/errors/item-error';
+import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable()
 export class InventoryService extends NetworkService<InventoryEndpoints> {
@@ -25,25 +26,17 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
 
     if (!model.itemId) {
       if (!this.selectedItemId) {
-        console.log('unable to add item to inventory.');
-        return;
+        return new Observable((observer) => {
+          observer.error({ errorCode: 400,  message: 'Unable to add item to inventory.' });
+        })
       }
 
       model.itemId = this.selectedItemId;
     }
 
     await this.waitUntilIsLoaded();
-    
-    let result: any = null;
 
-    await this.http.put(this.base_path + this.endpointsModel.add, model).toPromise().then(response => {
-      if(this.gotNoError(response)) {
-        result = response as InventoryItem;
-      }
-    }).catch();
-
-    this.selectedItemId = '';
-    return result;
+    return this.http.put(this.base_path + this.endpointsModel.add, model).pipe(catchError((error) => throwError(() => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any))));
   }
 
   async dropItem(form: FormGroup) {
@@ -51,45 +44,25 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
 
     if (!model.itemId) {
       if (!this.selectedItemId) {
-        console.log('unable to drop quantity from inventory.');
-        return;
+        return new Observable((observer) => {
+          observer.error({ errorCode: 400,  message: 'unable to drop quantity from inventory.' });
+        })
       }
 
       model.itemId = this.selectedItemId;
     }
     await this.waitUntilIsLoaded();
-    
-    let result: any = null;
 
-    await this.http.post(this.base_path + this.endpointsModel.drop, model).toPromise().then(response => {
-      if(this.gotNoError(response)) {
-        result = response as InventoryItem;
-      }
-    }).catch();
-
-    return result;
+    return this.http.post(this.base_path + this.endpointsModel.drop, model).pipe(catchError((error) => throwError(() => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any))));
   }
 
   async getItem(itemId: string) {
     await this.waitUntilIsLoaded();
-
-    let result: any = null;
-
-    await this.http.get(this.base_path + this.endpointsModel.get + "?itemId=" + itemId).toPromise().then(response => {
-      if(this.gotNoError(response)) {
-        result = this.response2Item(response);
-      }
-    }).catch((error) => {
-      result = Object.assign(new ItemError(), { itemId, errorCode: error.status });
-    });
-
-    return result;
+    return this.http.get(this.base_path + this.endpointsModel.get + "?itemId=" + itemId).pipe(catchError((error) => throwError(() => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any))));
   }
 
   async list(searchString: string = "") {
     await this.waitUntilIsLoaded();
-
-    let result: any = null;
 
     const params : any = {}
 
@@ -97,13 +70,7 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
       params.searchString = searchString
     }
 
-    await this.http.get(this.base_path + this.endpointsModel.list, { params }).toPromise().then((response : any) => {
-      if(this.gotNoError(response) && response.hasOwnProperty("itemsId")) {
-        result = response.itemsId // a list of the items' id from the user's inventory
-      }
-    }).catch();
-
-    return result;
+    return this.http.get(this.base_path + this.endpointsModel.list, { params }).pipe(catchError((error) => throwError(() => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any))));
   }
 
   select(itemId: string) {
@@ -115,7 +82,7 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
   }
 
   deselect() {
-    this.selectedItemId = "";
+    this.selectedItemId = '';
   }
 
   protected async SetEndpointsModel() {
@@ -128,10 +95,6 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
     if(this.endpointsModel == null) {
       return;
     }
-  }
-
-  private gotNoError(response: any) {
-    return response != null && !response.hasOwnProperty("errors");
   }
 
   // form2model

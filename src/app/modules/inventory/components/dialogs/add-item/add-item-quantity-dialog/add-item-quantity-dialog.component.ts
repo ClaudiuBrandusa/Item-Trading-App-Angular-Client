@@ -7,6 +7,9 @@ import { InventoryService } from '../../../../services/inventory.service';
 import { BaseNavigableDialogComponent } from '../../../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
 import { EventData } from 'src/app/models/utils/event';
 import { InventoryEvents } from '../../../../enums/InventoryEvents';
+import { ItemService } from '../../../../../item/services/item.service';
+import { Subscription } from 'rxjs';
+import { ItemError } from '../../../../../../models/errors/item-error';
 
 @Component({
   selector: 'dialog-add-item-quantity',
@@ -14,7 +17,7 @@ import { InventoryEvents } from '../../../../enums/InventoryEvents';
   styleUrls: ['./add-item-quantity-dialog.component.css']
 })
 export class AddItemQuantityDialogComponent extends BaseNavigableDialogComponent {
-
+  
   model = new AddItemRequest();
   _itemName
 
@@ -23,7 +26,13 @@ export class AddItemQuantityDialogComponent extends BaseNavigableDialogComponent
     return this._itemName;
   }
 
-  constructor(private fb: FormBuilder, private service: InventoryService, protected eventBus: EventBusService) {
+  @Output()
+  errorMessage: string;
+
+  private getDataSubscription: Subscription;
+  private addItemQuantitySubscription: Subscription;
+
+  constructor(private fb: FormBuilder, private service: InventoryService, private itemService: ItemService, protected eventBus: EventBusService) {
     super(eventBus);
     this.eventId = InventoryDialogEvents.AddQuantity;
   }
@@ -32,19 +41,40 @@ export class AddItemQuantityDialogComponent extends BaseNavigableDialogComponent
     itemQuantity: new FormControl('', Validators.required)
   })
 
+  protected override onDisplay() {
+    this.loadItemName();
+  }
+
   protected override onHide() {
     this.form.reset();
+    this.errorMessage = '';
+    this.service.deselect();
+
+    this.getDataSubscription?.unsubscribe();
+    this.addItemQuantitySubscription?.unsubscribe();
   }
 
   async next() {
-    if (await this.service.addItem(this.form))
-      this.eventBus.emit(new EventData(InventoryEvents.Refresh, ''));
-    this.exitDialog();
+    this.addItemQuantitySubscription = (await this.service.addItem(this.form)).subscribe({
+      next: (_response) => {
+        this.eventBus.emit(new EventData(InventoryEvents.Refresh, ''));
+        this.exitDialog();
+      },
+      error: (error: ItemError) => {
+        if (error.errorCode == 400)
+          this.errorMessage = error.message;
+      }
+    });
   }
 
-  protected override onDisplay() {
-    this.service.getItem(this.service.getSelectedItemId()).then((item) => {
-      this._itemName = item.name
+  async loadItemName() {
+    this.getDataSubscription = (await this.itemService.getItem1(this.service.getSelectedItemId())).subscribe({
+      next: (response: any) => {
+        this._itemName = response.itemName;
+      },
+      error: (_error) => {
+        this.exitDialog();
+      }
     });
   }
 }

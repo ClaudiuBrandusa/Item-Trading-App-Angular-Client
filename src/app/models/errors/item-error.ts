@@ -1,4 +1,5 @@
 export class ItemError {
     itemId: string = "";
-    errorCode: string = "";
+    errorCode: number = 0;
+    message: string = "";
 }

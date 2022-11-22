@@ -2,11 +2,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
 import { ItemEndpoints } from 'src/app/models/configs/endpoints/item-endpoints.config';
 import { CreateItemRequest } from 'src/app/models/request/item/create-item-request.model';
 import { UpdateItemRequest } from 'src/app/models/request/item/update-item-request.model';
 import { Item } from 'src/app/models/response/item/item';
 import { EventData } from 'src/app/models/utils/event';
+import { ItemError } from '../../../models/errors/item-error';
 import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
@@ -73,6 +75,12 @@ export class ItemService extends NetworkService<ItemEndpoints> {
         this.eventBus.emit(new EventData(ItemEvents.RefreshItemsList, null));
       }
     })
+  }
+
+  async getItem1(itemId: string) {
+    await this.waitUntilIsLoaded();
+
+    return this.http.get<Item>(this.base_path + this.endpointsModel.get + "?itemId=" + itemId).pipe(catchError((error) => throwError(() => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any))));
   }
 
   async getItem(itemId: string): Promise<Item> {

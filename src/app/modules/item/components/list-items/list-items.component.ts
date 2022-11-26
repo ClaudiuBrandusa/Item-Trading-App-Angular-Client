@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { EventSubscription } from 'src/app/models/utils/event-subscription';
 import { ListDirective } from 'src/app/modules/shared/directives/list/list.directive';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
@@ -11,6 +12,8 @@ import { ItemService } from '../../services/item.service';
   styleUrls: ['./list-items.component.css']
 })
 export class ListItemsComponent extends ListDirective implements OnInit, OnDestroy {
+
+  private listItemsSubscription: Subscription;
 
   refreshItemsListSubscription: EventSubscription;
   createItemSubscription: EventSubscription;
@@ -30,15 +33,20 @@ export class ListItemsComponent extends ListDirective implements OnInit, OnDestr
   }
 
   async listItems(searchString: string = "") {
-    let list = await this.service.listItems(searchString); /* list of items id */
-    
-    if(list == null)
-      return;
-    
-    this.clear();
+    this.listItemsSubscription = (await this.service.listItems(searchString)).subscribe({
+      next: (response) => {
+        if(response == null)
+          return;
 
-    list.forEach(elementId => {
-      this.add(elementId);
+        this.clear();
+        const list = Array.from(response.itemsId) as Array<string>;
+        list.forEach(elementId => {
+          this.add(elementId);
+        });
+      },
+      error: (error) => {
+        console.log('Error found at list item: ', error);
+      }
     });
   }
 
@@ -64,6 +72,7 @@ export class ListItemsComponent extends ListDirective implements OnInit, OnDestr
   private clearSubscriptions() {
     this.refreshItemsListSubscription.clear();
     this.createItemSubscription.clear();
+    this.listItemsSubscription?.unsubscribe();
   }
 
 }

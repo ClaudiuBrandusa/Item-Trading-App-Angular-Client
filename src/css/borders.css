@@ -1,23 +1,23 @@
 /* border radius */
 
 .border-radius-rounded {
-    border-radius: 2rem !important;
+    border-radius: 1rem !important;
 }
 
 .border-radius-rounded-bottom-right {
-    border-bottom-right-radius: 2rem !important;
+    border-bottom-right-radius: 1rem !important;
 }
 
 .border-radius-rounded-top-left {
-    border-top-left-radius: 2rem !important;
+    border-top-left-radius: 1rem !important;
 }
 
 .border-radius-rounded-top-right {
-    border-top-right-radius: 2rem !important;
+    border-top-right-radius: 1rem !important;
 }
 
 .border-radius-rounded-bottom-left {
-    border-bottom-left-radius: 2rem !important;
+    border-bottom-left-radius: 1rem !important;
 }
 
 /* border width */

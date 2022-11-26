@@ -1,30 +1,30 @@
 <app-event-dialog eventId={{eventId}}>
-    <app-medium-dialog class="position-fixed transform-center">
-        <div class="color-black">
-            <div class="d-flex flex-wrap flex-column justify-content-center">
-                <div class="text-center pt-1 pb-3">    
-                    Item details
-                </div>
-                <div class="d-flex flex-column mx-auto p-0">
-                    <label class="text-center"><strong>Item image</strong>:</label>
-                    <div class="position-relative border-bold border-style-solid bg-gunmetal border-dark-red w-10rem h-10rem">
-                        <div class="position-absolute transform-center color-white">
-                            Item
-                        </div>
-                    </div>
-                </div><br>
-                <div class="d-flex flex-column mx-auto text-center">
-                    <label><strong>Item name</strong>:</label>
-                    {{itemName}}
-                </div>
-                <div class="d-flex flex-column mx-auto text-center">
-                    <label><strong>Item description</strong>:</label>
-                    {{itemDescription}}
-                </div>
-            </div>
-            <div class="d-flex justify-content-center pt-3 pb-1">
-                <app-button (click)="exit()">Ok</app-button>
-            </div>
+  <app-medium-dialog class="position-fixed transform-center">
+    <div class="color-black">
+      <div class="d-flex flex-wrap flex-column justify-content-center">
+        <div class="text-center pt-1 pb-3">    
+          Item details
         </div>
-    </app-medium-dialog>
+        <div class="d-flex flex-column mx-auto p-0">
+          <label class="text-center"><strong>Item image</strong>:</label>
+          <div class="position-relative border-bold border-style-solid bg-gunmetal border-dark-red w-10rem h-10rem">
+            <div class="position-absolute transform-center color-white">
+              Item
+            </div>
+          </div>
+        </div><br>
+        <div class="d-flex flex-column mx-auto text-center">
+          <label><strong>Item name</strong>:</label>
+          {{itemName}}
+        </div>
+        <div class="d-flex flex-column mx-auto text-center">
+          <label><strong>Item description</strong>:</label>
+          {{itemDescription}}
+        </div>
+      </div>
+      <div class="d-flex justify-content-center pt-3 pb-1">
+        <app-button (click)="exit()">Ok</app-button>
+      </div>
+    </div>
+  </app-medium-dialog>
 </app-event-dialog>

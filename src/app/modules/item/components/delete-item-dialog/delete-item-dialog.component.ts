@@ -1,19 +1,25 @@
 import { Component } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Item } from 'src/app/models/response/item/item';
 import { Interval } from 'src/app/models/utils/async-utils';
-import { BaseDialogComponent } from 'src/app/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
+import { BaseNavigableDialogComponent } from '../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
 import { ItemDialogEvents } from '../../enums/item-dialog-events';
+import { ItemEvents } from '../../enums/item-events';
 import { ItemService } from '../../services/item.service';
+import { EventData } from 'src/app/models/utils/event';
 
 @Component({
   selector: 'dialog-delete-item',
   templateUrl: './delete-item-dialog.component.html',
   styleUrls: ['./delete-item-dialog.component.css']
 })
-export class DeleteItemDialogComponent extends BaseDialogComponent {
+export class DeleteItemDialogComponent extends BaseNavigableDialogComponent {
   
   item: Item = null;
+
+  private getDataSubscription: Subscription;
+  private deleteItemSubscription: Subscription;
 
   get itemName() {
     return this.item == null ? "" : this.item.name;
@@ -25,25 +31,34 @@ export class DeleteItemDialogComponent extends BaseDialogComponent {
   }
   
   protected override async onDisplay() {
-    this.item = await this.service.getItem(this.service.getSelectedItemId());
+    this.getDataSubscription = (await this.service.getItem(this.service.getSelectedItemId())).subscribe({
+      next: (response) => {
+        this.item = response;
+      },
+      error: (error) => {
+        console.log('Error at get item found: ', error);
+      }
+    })
   } 
+
+  protected override onHide() {
+    this.service.deselect();
+    this.getDataSubscription?.unsubscribe();
+    this.deleteItemSubscription?.unsubscribe();
+  }
 
   // response functions
 
   async delete() {
     await Interval(() => this.item == null, 10, 1000);
-
-    await this.service.deleteItem(this.item.id);
-
-    this.exit();
-  }
-
-  cancel() {
-    this.exit();
-  }
-
-  private exit() {
-    this.service.deselect();
-    this.exitDialog();
+    this.deleteItemSubscription = (await this.service.deleteItem(this.item.id)).subscribe({
+      next: (_response) => {
+        this.eventBus.emit(new EventData(ItemEvents.UpdateItem+this.item.id, null));
+        this.exitDialog();
+      },
+      error: (error) => {
+        console.log('Error at delete item found: ', error);
+      }
+    });
   }
 }

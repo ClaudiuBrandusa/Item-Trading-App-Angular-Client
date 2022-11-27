@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { Item } from 'src/app/models/response/item/item';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
 import { BaseNavigableDialogComponent } from '../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
 import { ItemDialogEvents } from '../../enums/item-dialog-events';
 import { ItemService } from '../../services/item.service';
+import { EventData } from 'src/app/models/utils/event';
+import { ItemEvents } from '../../enums/item-events';
 
 @Component({
   selector: 'dialog-edit-item',
@@ -15,9 +16,6 @@ import { ItemService } from '../../services/item.service';
 export class EditItemDialogComponent extends BaseNavigableDialogComponent {
 
   item: Item = null;
-
-  private getDataSubscription: Subscription;
-  private updateItemSubscription: Subscription;
   
   constructor(private fb: FormBuilder, private service: ItemService, protected eventBus: EventBusService) 
   {
@@ -32,7 +30,7 @@ export class EditItemDialogComponent extends BaseNavigableDialogComponent {
   })
   
   protected override async onDisplay() {
-    this.getDataSubscription = (await this.service.getItem(this.service.getSelectedItemId())).subscribe({
+    (await this.service.getItem(this.service.getSelectedItemId())).subscribe({
       next: (response) => {
         this.item = response;
         this.form.controls["itemId"].setValue(this.item.id);
@@ -47,8 +45,9 @@ export class EditItemDialogComponent extends BaseNavigableDialogComponent {
   
   async submit() {
     this.form.controls["itemId"].setValue(this.item.id);
-    this.updateItemSubscription = (await this.service.updateItem(this.form)).subscribe({
+    (await this.service.updateItem(this.form)).subscribe({
       next: (_response) => {
+        this.eventBus.emit(new EventData(ItemEvents.UpdateItem+this.item.id, ''));
         this.exit();
       },
       error: (error) => {
@@ -64,8 +63,6 @@ export class EditItemDialogComponent extends BaseNavigableDialogComponent {
 
   protected override onHide() {
     this.form.reset();
-    this.getDataSubscription?.unsubscribe();
-    this.updateItemSubscription?.unsubscribe();
   }
 
 }

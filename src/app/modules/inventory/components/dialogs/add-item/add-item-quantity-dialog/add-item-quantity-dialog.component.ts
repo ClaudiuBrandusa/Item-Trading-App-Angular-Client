@@ -68,7 +68,7 @@ export class AddItemQuantityDialogComponent extends BaseNavigableDialogComponent
   }
 
   async loadItemName() {
-    this.getDataSubscription = (await this.itemService.getItem1(this.service.getSelectedItemId())).subscribe({
+    this.getDataSubscription = (await this.itemService.getItem(this.service.getSelectedItemId())).subscribe({
       next: (response: any) => {
         this._itemName = response.itemName;
       },

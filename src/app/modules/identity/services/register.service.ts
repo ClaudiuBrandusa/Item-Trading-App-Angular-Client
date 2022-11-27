@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
 import { RegisterRequest } from 'src/app/models/request/identity/registerRequest.model';
 import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
@@ -21,22 +22,15 @@ export class RegisterService extends IdentityService {
 
     await this.waitUntilIsLoaded();
     
-    this.http.post(this.register_path, model).subscribe(response => {
-      if(this.setTokens(response)) {
-        let router = this.injector.get(Router);
-        router.navigate([""]);
-      }
-    }, err => {
-      // something went wrong
-    })
+    return this.http.post(this.register_path, model).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   private form2RegisterRequest(form: FormGroup) {
     var model = new RegisterRequest();
-    model.username = form.get('username').value;
-    model.email = form.get('email').value;
-    model.password = form.get('password').value;
-    model.confirmPassword = form.get('confirm_password').value;
+    model.username = form.get('username')?.value;
+    model.email = form.get('email')?.value;
+    model.password = form.get('password')?.value;
+    model.confirmPassword = form.get('confirm_password')?.value;
     return model;
   }
 

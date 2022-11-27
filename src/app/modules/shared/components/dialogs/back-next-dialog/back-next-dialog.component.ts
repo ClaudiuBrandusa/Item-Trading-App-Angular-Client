@@ -31,6 +31,12 @@ export class BackNextDialogComponent implements OnInit {
   @Input()
   nextButtonCallback: () => void
 
+  @Input()
+  nextButtonCustomName: string = '';
+
+  @Input()
+  cancelButtonCustomName: string = '';
+
   // used in order to decide which dialog's component is
   @Input()
   dialogId: string;

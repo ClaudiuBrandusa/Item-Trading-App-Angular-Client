@@ -1,9 +1,9 @@
 <div class="back-next-dialog-container">
-    <span class="m-2"><strong>{{title}}</strong></span>
-    <br/>
-    <ng-content></ng-content>
-    <span *ngIf="isRoot(); then cancelContent else backContent"></span>
-    <ng-template #backContent><app-button class="ml-2" (click)="back()">Back</app-button></ng-template>
-    <ng-template #cancelContent><app-button class="ml-2" (click)="cancel()">Cancel</app-button></ng-template>
-    <app-button class="float-right mr-2" *ngIf="!noNext" [disabled]="form == undefined ? false : !form.valid" (click)="next()">Next</app-button>
+  <span class="m-2"><strong>{{title}}</strong></span>
+  <br/>
+  <ng-content></ng-content>
+  <span *ngIf="isRoot(); then cancelContent else backContent"></span>
+  <ng-template #backContent><app-button class="ml-2" (click)="back()">Back</app-button></ng-template>
+  <ng-template #cancelContent><app-button class="ml-2" (click)="cancel()">{{cancelButtonCustomName ? cancelButtonCustomName : 'Cancel'}}</app-button></ng-template>
+  <app-button class="float-right mr-2" *ngIf="!noNext" [disabled]="form == undefined ? false : !form.valid" (click)="next()">{{nextButtonCustomName ? nextButtonCustomName : 'Next'}}</app-button>
 </div>

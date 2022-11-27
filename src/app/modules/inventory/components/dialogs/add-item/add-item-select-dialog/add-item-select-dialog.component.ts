@@ -13,9 +13,7 @@ import { BaseNavigableDialogComponent } from '../../../../../shared/components/d
 export class AddItemSelectDialogComponent extends BaseNavigableDialogComponent {
 
   foundItems = new Array<string>();
-
   searchString = "";
-
   nextDialogId = InventoryDialogEvents.AddQuantity;
 
   constructor(protected eventBus: EventBusService, private itemService: ItemService, private inventoryService: InventoryService) { 

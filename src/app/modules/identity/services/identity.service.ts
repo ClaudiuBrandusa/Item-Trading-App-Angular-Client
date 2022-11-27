@@ -51,4 +51,11 @@ export abstract class IdentityService extends NetworkService<IdentityEndpoints> 
   private RedirectToDefaultPage() {
     this.router.navigate([""]);
   }
+  
+  updateTokens(newTokens: any) {
+    if(this.setTokens(newTokens)) {
+      let router = this.injector.get(Router);
+      router.navigate([""]);
+    }
+  }
 }

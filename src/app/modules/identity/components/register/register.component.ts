@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, AbstractControlOptions, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { AtLeastADigitValidator } from 'src/app/validators/at-least-a-digit.validator';
 import { AtLeastALowercaseValidator } from 'src/app/validators/at-least-a-lowercase.validator';
 import { AtLeastASpecialCharacterValidator } from 'src/app/validators/at-least-a-special-character.validator';
@@ -13,7 +14,9 @@ import { RegisterService } from '../../services/register.service';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
+
+  private registerSubscription: Subscription;
 
   constructor(private fb: FormBuilder, private service: RegisterService, private currentIdentityPageService: CurrentIdentityPageService) {}
 
@@ -35,8 +38,16 @@ export class RegisterComponent implements OnInit {
 
   confirmPasswordValid: AbstractControl = this.form.controls["confirm_password"];
 
-  register() {
-    this.service.register(this.form);
+  async register() {
+    this.registerSubscription = (await this.service.register(this.form)).subscribe({
+      next: (response) => {
+        this.form.reset();
+        this.service.updateTokens(response);
+      },
+      error: (error) => {
+        console.log('Error found at register: ', error);
+      }
+    });
     this.form.reset();
   }
 
@@ -47,9 +58,13 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.form.get('password').valueChanges.subscribe(() => this.confirmPasswordValid.updateValueAndValidity());
+    this.form.get('password')?.valueChanges.subscribe(() => this.confirmPasswordValid.updateValueAndValidity());
   
     this.currentIdentityPageService.setPage(1);
+  }
+
+  ngOnDestroy(): void {
+    this.registerSubscription?.unsubscribe();
   }
 }
 

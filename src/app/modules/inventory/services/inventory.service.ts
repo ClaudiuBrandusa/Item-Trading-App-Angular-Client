@@ -9,7 +9,6 @@ import { InventoryItem } from 'src/app/models/response/inventory/inventory-item'
 import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
-import { ItemError } from '../../../models/errors/item-error';
 import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable()
@@ -36,7 +35,7 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
 
     await this.waitUntilIsLoaded();
 
-    return this.http.put(this.base_path + this.endpointsModel.add, model).pipe(catchError((error) => throwError(() => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any))));
+    return this.http.put(this.base_path + this.endpointsModel.add, model).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   async dropItem(form: FormGroup) {
@@ -53,12 +52,12 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
     }
     await this.waitUntilIsLoaded();
 
-    return this.http.post(this.base_path + this.endpointsModel.drop, model).pipe(catchError((error) => throwError(() => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any))));
+    return this.http.post(this.base_path + this.endpointsModel.drop, model).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   async getItem(itemId: string) {
     await this.waitUntilIsLoaded();
-    return this.http.get(this.base_path + this.endpointsModel.get + "?itemId=" + itemId).pipe(catchError((error) => throwError(() => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any))));
+    return this.http.get(this.base_path + this.endpointsModel.get + "?itemId=" + itemId).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   async list(searchString: string = "") {
@@ -70,7 +69,7 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
       params.searchString = searchString
     }
 
-    return this.http.get(this.base_path + this.endpointsModel.list, { params }).pipe(catchError((error) => throwError(() => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any))));
+    return this.http.get(this.base_path + this.endpointsModel.list, { params }).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   select(itemId: string) {

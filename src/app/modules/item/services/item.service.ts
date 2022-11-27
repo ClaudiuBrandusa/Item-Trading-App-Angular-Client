@@ -7,7 +7,6 @@ import { ItemEndpoints } from 'src/app/models/configs/endpoints/item-endpoints.c
 import { CreateItemRequest } from 'src/app/models/request/item/create-item-request.model';
 import { UpdateItemRequest } from 'src/app/models/request/item/update-item-request.model';
 import { Item } from 'src/app/models/response/item/item';
-import { ItemError } from '../../../models/errors/item-error';
 import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
@@ -26,7 +25,7 @@ export class ItemService extends NetworkService<ItemEndpoints> {
     
     await this.waitUntilIsLoaded();
 
-    return this.http.post(this.base_path + this.endpointsModel.create, model).pipe(catchError((error) => throwError(() => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any))));
+    return this.http.post(this.base_path + this.endpointsModel.create, model).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   async updateItem(form: FormGroup) {
@@ -34,7 +33,7 @@ export class ItemService extends NetworkService<ItemEndpoints> {
 
     let model = this.form2UpdateItemRequest(form);
 
-    return this.http.patch(this.base_path + this.endpointsModel.update, model).pipe(catchError((error) => throwError(() => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any))));
+    return this.http.patch(this.base_path + this.endpointsModel.update, model).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   async deleteItem(itemId: string) {
@@ -44,13 +43,13 @@ export class ItemService extends NetworkService<ItemEndpoints> {
       itemId: itemId
     });
 
-    return this.http.delete(this.base_path + this.endpointsModel.delete, options).pipe(catchError((error) => throwError(() => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any))));
+    return this.http.delete(this.base_path + this.endpointsModel.delete, options).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   async getItem(itemId: string) {
     await this.waitUntilIsLoaded();
 
-    return this.http.get<Item>(this.base_path + this.endpointsModel.get + "?itemId=" + itemId).pipe(catchError((error) => throwError(() => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any))));
+    return this.http.get<Item>(this.base_path + this.endpointsModel.get + "?itemId=" + itemId).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   async listItems(searchString: string = "") {
@@ -62,7 +61,7 @@ export class ItemService extends NetworkService<ItemEndpoints> {
       params.searchString = searchString
     }
 
-    return this.http.get<any>(this.base_path + this.endpointsModel.list, { params }).pipe(catchError((error) => (Object.assign(new ItemError(), { itemId: error.error.itemId, errorCode: error.status, message: error.error.errors.join('\n') }) as any)));
+    return this.http.get<any>(this.base_path + this.endpointsModel.list, { params }).pipe(catchError((error) => (this.buildError(error))));
   }
 
   select(itemId: string) {

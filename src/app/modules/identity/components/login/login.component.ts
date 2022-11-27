@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControlOptions, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { AtLeastADigitValidator } from 'src/app/validators/at-least-a-digit.validator';
 import { AtLeastALowercaseValidator } from 'src/app/validators/at-least-a-lowercase.validator';
 import { AtLeastASpecialCharacterValidator } from 'src/app/validators/at-least-a-special-character.validator';
@@ -12,11 +13,18 @@ import { LoginService } from '../../services/login.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+
+  private loginSubscription: Subscription;
 
   constructor(private fb: FormBuilder, private service: LoginService, private currentIdentityPageService: CurrentIdentityPageService) {}
+  
   ngOnInit() {
     this.currentIdentityPageService.setPage(0);
+  }
+
+  ngOnDestroy() {
+    this.loginSubscription?.unsubscribe();
   }
 
   form = this.fb.group({
@@ -32,8 +40,15 @@ export class LoginComponent implements OnInit {
     ]
   } as AbstractControlOptions);
 
-  login() {
-    this.service.login(this.form);
-    this.form.reset();
+  async login() {
+    this.loginSubscription = (await this.service.login(this.form)).subscribe({
+      next: (response) => {
+        this.form.reset();
+        this.service.updateTokens(response);
+      },
+      error: (error) => {
+        console.log('Error found at login: ', error);
+      }
+    });
   }
 }

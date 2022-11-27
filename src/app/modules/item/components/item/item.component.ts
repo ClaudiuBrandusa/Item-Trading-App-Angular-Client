@@ -1,10 +1,10 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Item } from 'src/app/models/response/item/item';
 import { EventData } from 'src/app/models/utils/event';
-import { EventSubscription } from 'src/app/models/utils/event-subscription';
 import { ListItemDirective } from 'src/app/modules/shared/directives/list/list-item/list-item.directive';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
 import { DialogEvents } from '../../../shared/enums/dialog-events.enum';
+import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
 import { ItemDialogEvents } from '../../enums/item-dialog-events';
 import { ItemEvents } from '../../enums/item-events';
 import { ItemService } from '../../services/item.service';
@@ -25,14 +25,17 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
   @Input()
   item = new Item();
 
-  itemUpdateSubscription: EventSubscription;
+  private eventBusUtility: EventBusUtils;
 
   constructor(private service: ItemService, private eventBus: EventBusService) {
     super();
+    this.eventBusUtility = new EventBusUtils(eventBus);
   }
 
   protected override onSetItemId() {
-    this.initSubscriptionsFactory();
+    this.eventBusUtility.on(ItemEvents.UpdateItem+this.itemId, () => {
+      this.getItem();
+    })
   }
 
   protected override loadData() {
@@ -41,11 +44,10 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
 
   ngOnInit(): void {
     this.getItem();
-    this.itemUpdateSubscription.init();
   }
 
   ngOnDestroy(): void {
-    this.itemUpdateSubscription.clear();
+    this.eventBusUtility.clearSubscriptions();
   }
 
   async getItem() {
@@ -69,14 +71,6 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
 
   details() {
     this.select(ItemDialogEvents.DetailsItem);
-  }
-
-  // Subscriptions methods
-
-  private initSubscriptionsFactory() {
-    this.itemUpdateSubscription = new EventSubscription(this.eventBus, ItemEvents.UpdateItem+this.itemId, () => {
-      this.getItem();
-    })
   }
 
   // Utils

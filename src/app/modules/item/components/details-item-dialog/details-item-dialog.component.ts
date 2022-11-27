@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { Item } from 'src/app/models/response/item/item';
 import { BaseDialogComponent } from 'src/app/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
@@ -15,8 +14,6 @@ export class DetailsItemDialogComponent extends BaseDialogComponent {
 
   item: Item = null;
 
-  private getDataSubscription: Subscription;
-
   get itemName() {
     return this.item == null ? "" : this.item.name;
   }
@@ -31,7 +28,7 @@ export class DetailsItemDialogComponent extends BaseDialogComponent {
   }
 
   protected override async onDisplay() {
-    this.getDataSubscription = (await this.service.getItem(this.service.getSelectedItemId())).subscribe({
+    (await this.service.getItem(this.service.getSelectedItemId())).subscribe({
       next: (response) => {
         this.item = response;
       },
@@ -43,7 +40,6 @@ export class DetailsItemDialogComponent extends BaseDialogComponent {
   
   protected override onHide() {
     this.service.deselect();
-    this.getDataSubscription?.unsubscribe();
   }
 
   exit() {

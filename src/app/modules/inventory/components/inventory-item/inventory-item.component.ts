@@ -1,12 +1,11 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { InventoryItem } from 'src/app/models/response/inventory/inventory-item';
 import { EventData } from 'src/app/models/utils/event';
-import { EventSubscription } from 'src/app/models/utils/event-subscription';
 import { ListItemDirective } from 'src/app/modules/shared/directives/list/list-item/list-item.directive';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
 import { ItemError } from '../../../../models/errors/item-error';
 import { DialogEvents } from '../../../shared/enums/dialog-events.enum';
+import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
 import { InventoryDialogEvents } from '../../enums/InventoryDialogEvents';
 import { InventoryEvents } from '../../enums/InventoryEvents';
 import { InventoryService } from '../../services/inventory.service';
@@ -16,7 +15,7 @@ import { InventoryService } from '../../services/inventory.service';
   templateUrl: './inventory-item.component.html',
   styleUrls: ['./inventory-item.component.css']
 })
-export class InventoryItemComponent extends ListItemDirective implements OnInit, OnDestroy {
+export class InventoryItemComponent extends ListItemDirective implements OnDestroy {
  
   @Input()
   hasControls = true;
@@ -27,25 +26,21 @@ export class InventoryItemComponent extends ListItemDirective implements OnInit,
   @Input()
   item = new InventoryItem();
 
-  private getDataSubscription: Subscription;
-
-  itemRefreshSubscription: EventSubscription;
+  private eventBusUtility: EventBusUtils;
   
   constructor(private service: InventoryService, private eventBus: EventBusService) {
     super();
-  }
-
-  ngOnInit(): void {
-    this.itemRefreshSubscription.init();
+    this.eventBusUtility = new EventBusUtils(eventBus);
   }
 
   ngOnDestroy(): void {
-    this.itemRefreshSubscription.clear();
-    this.getDataSubscription?.unsubscribe();
+    this.eventBusUtility.clearSubscriptions();
   }
 
   protected override onSetItemId() {
-    this.initSubscriptionsFactory();
+    this.eventBusUtility.on(InventoryEvents.RefreshItem+this.itemId, () => {
+      this.getItem();
+    });
   }
 
   protected override loadData() {
@@ -53,7 +48,7 @@ export class InventoryItemComponent extends ListItemDirective implements OnInit,
   }
 
   async getItem() {
-    this.getDataSubscription = (await this.service.getItem(this.itemId)).subscribe({
+    (await this.service.getItem(this.itemId)).subscribe({
       next: (response: any) => {
         this.item.id = response.itemId;
         this.item.name = response.itemName;
@@ -78,18 +73,10 @@ export class InventoryItemComponent extends ListItemDirective implements OnInit,
     this.selectItemOption(InventoryDialogEvents.Details);
   }
 
-  // Subscriptions methods
-
-  private initSubscriptionsFactory() {
-    this.itemRefreshSubscription = new EventSubscription(this.eventBus, InventoryEvents.RefreshItem+this.itemId, () => {
-      this.getItem();
-    });
-  }
-
   // Utils
 
   private selectItemOption(eventId: string) {
     this.service.select(this.item.id);
-    this.eventBus.emit(new EventData(DialogEvents.Open, eventId));
+    this.eventBusUtility.emit(DialogEvents.Open, eventId);
   }
 }

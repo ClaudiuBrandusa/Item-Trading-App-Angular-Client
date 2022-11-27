@@ -6,7 +6,6 @@ import { InventoryEvents } from '../../../../enums/InventoryEvents';
 import { EventData } from 'src/app/models/utils/event';
 import { EventBusService } from '../../../../../shared/services/event-bus.service';
 import { InventoryService } from '../../../../services/inventory.service';
-import { Subscription } from 'rxjs';
 import { ItemError } from '../../../../../../models/errors/item-error';
 
 @Component({
@@ -26,9 +25,6 @@ export class DropItemQuantityDialogComponent extends BaseNavigableDialogComponen
   @Output()
   errorMessage: string;
 
-  private getDataSubscription: Subscription;
-  private setQuantitySubscription: Subscription;
-
   constructor(private fb: FormBuilder, private service: InventoryService, protected eventBus: EventBusService) {
     super(eventBus);
     this.eventId = InventoryDialogEvents.Drop;
@@ -46,13 +42,10 @@ export class DropItemQuantityDialogComponent extends BaseNavigableDialogComponen
     this.form.reset();
     this.errorMessage = '';
     this.service.deselect();
-
-    this.getDataSubscription?.unsubscribe();
-    this.setQuantitySubscription?.unsubscribe();
   }
 
   async next() {
-    this.setQuantitySubscription = (await this.service.dropItem(this.form)).subscribe({
+    (await this.service.dropItem(this.form)).subscribe({
       next: (_response) => {
         this.errorMessage = '';
         this.eventBus.emit(new EventData(InventoryEvents.Refresh, ''));
@@ -66,7 +59,7 @@ export class DropItemQuantityDialogComponent extends BaseNavigableDialogComponen
   }
 
   async loadItemName() {
-    this.getDataSubscription = (await this.service.getItem(this.service.getSelectedItemId())).subscribe({
+    (await this.service.getItem(this.service.getSelectedItemId())).subscribe({
       next: (response: any) => {
         this._itemName = response.itemName;
       },

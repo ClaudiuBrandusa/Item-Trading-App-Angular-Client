@@ -8,6 +8,7 @@ import { Interval} from 'src/app/models/utils/async-utils';
 import { EventData } from 'src/app/models/utils/event';
 import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
+import { EventBusUtils } from '../../shared/utils/event-bus.utility';
 import { IdentityService } from './identity.service';
 
 @Injectable({
@@ -15,8 +16,11 @@ import { IdentityService } from './identity.service';
 })
 export class RefreshTokenService extends IdentityService implements OnInit, OnDestroy {
 
+  private eventBusUtility: EventBusUtils;
+  
   constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, protected router: Router, private eventBusService: EventBusService) {
     super(http, configService, injector, eventBus, router);
+    this.eventBusUtility = new EventBusUtils(eventBus);
     this.InitOptions();
     this.initBackgroundEventBusSubscription();
   }
@@ -26,13 +30,11 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
   }
 
   ngOnDestroy(): void {
-    this.clearEventBusSubscription();
+    this.eventBusUtility.clearSubscriptions();
   }
 
   options: RefreshTokenOptions = null;
 
-  eventBusSignOutSub?: Subscription;
-  eventBusSilentRefreshSub?: Subscription;
   silentRefresh: Subscription;
 
   private refresh_path = this.base_path + "refresh";
@@ -84,11 +86,13 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
       if(result == null) {
         return; 
       }
-      result.subscribe(result => {
+      result.subscribe({
+        next: result => {
         this.setTokens(result);
-      }, err => {
+      }, 
+      error: _err => {
         this.eventBusService.emit(new EventData("logout", null));
-      });
+      }});
     }
   }
 
@@ -103,24 +107,15 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
 
   // subscriptions could be triggered even if the service is destroyed
   private initBackgroundEventBusSubscription() {
-    this.eventBusSignOutSub = this.eventBusService.on('logout', () => {
+    this.eventBusUtility.on('logout', () => {
       this.signOut();
-      this.endSilentRefresh();
     });
   }
 
   private initEventBusSubscription() {
-    this.eventBusSilentRefreshSub = this.eventBusService.on('silentRefresh', async () => {
+    this.eventBusUtility.on('silentRefresh', async () => {
       this.startSilentRefresh();
     });
-  }
-
-  private clearEventBusSubscription() {
-    if(this.eventBusSilentRefreshSub) {
-      this.eventBusSilentRefreshSub.unsubscribe();
-    }
-
-    this.endSilentRefresh();
   }
 
   private async startSilentRefresh() {
@@ -134,12 +129,6 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
     .subscribe(() => {
       this.refreshTokens()
     });
-  }
-
-  private endSilentRefresh() {
-    if(this.silentRefresh) {
-      this.silentRefresh.unsubscribe();
-    }
   }
 
   private async InitOptions() {

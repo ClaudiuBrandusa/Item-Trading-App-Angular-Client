@@ -1,8 +1,8 @@
 import { Component, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { EventData } from 'src/app/models/utils/event';
 import { DialogEvents } from '../../../enums/dialog-events.enum';
 import { EventBusService } from '../../../services/event-bus.service';
+import { EventBusUtils } from '../../../utils/event-bus.utility';
 
 @Component({
   selector: 'app-menu-button',
@@ -16,17 +16,18 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
 
   @Output()
   selected = false;
+  
+  private eventBusUtility: EventBusUtils;
 
   private locked = false;
-
-  private onSelectSubscription: Subscription;
-  private onDeselectDialogSubscription: Subscription;
   
   protected openSubscriptionId: string;
   protected exitSubscriptionId: string;
   protected openEventId: string;
 
-  constructor(protected eventBusService: EventBusService) { }
+  constructor(protected eventBusService: EventBusService) {
+    this.eventBusUtility = new EventBusUtils(eventBusService);
+  }
 
 
   ngOnInit(): void {
@@ -36,7 +37,7 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
-    this.clearEvents();
+    this.eventBusUtility.clearSubscriptions();
   }
 
   protected initEvents() {
@@ -47,18 +48,13 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
     if (!this.openEventId)
       this.openEventId = DialogEvents.Open;
 
-    this.onSelectSubscription = this.eventBusService.on(this.openSubscriptionId, (_data) => {
+    this.eventBusUtility.on(this.openSubscriptionId, (_data) => {
       this.select();
     })
 
-    this.onDeselectDialogSubscription = this.eventBusService.on(this.exitSubscriptionId, (_data) => {
+    this.eventBusUtility.on(this.exitSubscriptionId, (_data) => {
       this.deselect();
     })
-  }
-
-  protected clearEvents() {
-    this.onSelectSubscription && this.eventBusService.clearSubscription(this.onSelectSubscription);
-    this.onDeselectDialogSubscription && this.eventBusService.clearSubscription(this.onDeselectDialogSubscription);
   }
 
   @HostListener('click', ['$event'])

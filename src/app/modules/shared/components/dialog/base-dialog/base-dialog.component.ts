@@ -40,7 +40,7 @@ export class BaseDialogComponent implements OnInit, OnDestroy {
   }  
   
   ngOnDestroy() {
-    this.clearSubscriptions();
+    this.eventBusUtility.clearSubscriptions();
   }
 
   // Livecycles
@@ -60,10 +60,6 @@ export class BaseDialogComponent implements OnInit, OnDestroy {
 
   protected unsubscribe(subscriptionId: string) {
     this.eventBusUtility.unsubscribe(subscriptionId);
-  }
-
-  protected clearSubscriptions() {
-    this.eventBusUtility.clearSubscriptions();
   }
 
   protected exitDialog() {

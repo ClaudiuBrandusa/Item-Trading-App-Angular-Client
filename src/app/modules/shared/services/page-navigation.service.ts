@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { PageEvents } from '../enums/page-events.enum';
 import { EventBusService } from './event-bus.service';
-import { EventData } from 'src/app/models/utils/event';
+import { EventBusUtils } from '../utils/event-bus.utility';
 
 /**
  * This service handles the logic between the pages and the page navigation stack
@@ -12,16 +11,16 @@ import { EventData } from 'src/app/models/utils/event';
 })
 export class PageNavigationService {
 
-  onOpenPageSubscription: Subscription;
-
+  private eventBusUtility: EventBusUtils;
   private currentPageSelected: string;
 
-  constructor(private eventBus: EventBusService) {
+  constructor(eventBus: EventBusService) {
+    this.eventBusUtility = new EventBusUtils(eventBus);
     this.registerSubscriptions();
   }
 
   private registerSubscriptions() {
-    this.onOpenPageSubscription = this.eventBus.on(PageEvents.Open, (data) => {
+    this.eventBusUtility.on(PageEvents.Open, (data) => {
       // deselect the button of the previous page
       if (this.currentPageSelected === '' || this.currentPageSelected)
         this.emit(`${PageEvents.Exit}/${this.currentPageSelected}`);
@@ -33,6 +32,6 @@ export class PageNavigationService {
   }
 
   private emit(eventId: string, data: any = null) {
-    this.eventBus.emit(new EventData(eventId, data))
+    this.eventBusUtility.emit(eventId, data);
   }
 }

@@ -1,8 +1,8 @@
-import { Component, Input, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { EventData } from 'src/app/models/utils/event';
 import { DialogEvents } from '../../enums/dialog-events.enum';
 import { EventBusService } from '../../services/event-bus.service';
+import { EventBusUtils } from '../../utils/event-bus.utility';
 import { DialogComponent } from '../dialog/dialog.component';
 
 /**
@@ -14,20 +14,20 @@ import { DialogComponent } from '../dialog/dialog.component';
   styleUrls: ['./event-dialog.component.css']
 })
 
-export class EventDialogComponent extends DialogComponent implements OnDestroy {
+export class EventDialogComponent extends DialogComponent implements OnInit, OnDestroy {
 
   @Input()
   public eventId: string;
-  private initSubscription: Subscription;
-  private exitSubscription: Subscription;
-  private backSubscription: Subscription;
   public active = false;
+
+  private eventBusUtility: EventBusUtils;
 
   constructor(protected eventBus: EventBusService) {
     super();
+    this.eventBusUtility = new EventBusUtils(eventBus);
    }
 
-  override ngOnInit() {
+  ngOnInit() {
     this.init();
   }
 
@@ -36,44 +36,25 @@ export class EventDialogComponent extends DialogComponent implements OnDestroy {
   }
 
   public cancelDialog() {
-    this.eventBus.emit(new EventData(DialogEvents.Exit, null));
+    this.eventBus.emit(new EventData(DialogEvents.Exit, this.eventId));
   }
 
   private init() {
-    if(this.initSubscription == null) {
-      this.initSubscription = this.eventBus.on(`${DialogEvents.Open}/${this.eventId}`, () => {
-        this.execute();
-      })
-    }
+    this.eventBusUtility.on(`${DialogEvents.Open}/${this.eventId}`, () => {
+      this.execute();
+    });
 
-    if(this.exitSubscription == null) {
-      this.exitSubscription = this.eventBus.on(`${DialogEvents.Exit}/${this.eventId}`, () => {
-        this.exit();
-      });
-    }
+    this.eventBusUtility.on(`${DialogEvents.Exit}/${this.eventId}`, () => {
+      this.exit();
+    });
 
-    if(this.backSubscription == null) {
-      this.backSubscription = this.eventBus.on(`${DialogEvents.Back}/${this.eventId}`, () => {
-        this.exit();
-      });
-    }
+    this.eventBusUtility.on(`${DialogEvents.Back}/${this.eventId}`, () => {
+      this.exit();
+    });
   }
 
   private destroy() {
-    if(this.initSubscription) {
-      this.initSubscription.unsubscribe();
-      this.initSubscription = null;
-    }
-
-    if(this.exitSubscription) {
-      this.exitSubscription.unsubscribe();
-      this.exitSubscription = null;
-    }
-
-    if(this.backSubscription) {
-      this.backSubscription.unsubscribe();
-      this.backSubscription = null;
-    }
+    this.eventBusUtility.clearSubscriptions();
   }
 
   private execute() {

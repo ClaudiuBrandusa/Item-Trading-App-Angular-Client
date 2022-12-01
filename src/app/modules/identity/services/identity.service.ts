@@ -55,6 +55,7 @@ export abstract class IdentityService extends NetworkService<IdentityEndpoints> 
   updateTokens(newTokens: any) {
     if(this.setTokens(newTokens)) {
       let router = this.injector.get(Router);
+      this.eventBus.emit(new EventData('connected', newTokens.token));
       router.navigate([""]);
     }
   }

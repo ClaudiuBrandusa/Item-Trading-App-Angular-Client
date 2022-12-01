@@ -47,7 +47,7 @@ export class DeleteItemDialogComponent extends BaseNavigableDialogComponent {
     await Interval(() => this.item == null, 10, 1000);
     (await this.service.deleteItem(this.item.id)).subscribe({
       next: (_response) => {
-        this.eventBus.emit(new EventData(ItemEvents.UpdateItem+this.item.id, null));
+        this.eventBus.emit(new EventData(ItemEvents.DeleteItem, this.item.id));
         this.exitDialog();
       },
       error: (error) => {

@@ -50,6 +50,10 @@ export class ListItemsComponent extends ListDirective implements OnInit, OnDestr
     this.eventBusUtility.on(ItemEvents.CreateItem, (value) => {
       this.add(value);
     });
+
+    this.eventBusUtility.on(ItemEvents.DeleteItem, (value) => {
+      this.remove(value);
+    });
   }
 
 }

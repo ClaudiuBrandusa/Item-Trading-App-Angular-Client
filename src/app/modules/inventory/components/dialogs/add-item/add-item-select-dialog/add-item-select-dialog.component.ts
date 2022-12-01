@@ -30,14 +30,7 @@ export class AddItemSelectDialogComponent extends BaseNavigableDialogComponent {
       return;
     }
 
-    let result = await this.itemService.listItems(this.searchString);
-
-    if(result == null)
-      return;
-
-    result.forEach(id => {
-      this.foundItems.push(id);
-    });
+    await this.listItems();
   }
 
   select(id: string) {
@@ -57,6 +50,19 @@ export class AddItemSelectDialogComponent extends BaseNavigableDialogComponent {
   protected override onHide() {
     this.clearResults();
     this.searchString = '';
+  }
+
+  private async listItems() {
+    (await this.itemService.listItems(this.searchString)).subscribe({
+      next: (response) => {
+        response.itemsId.forEach(id => {
+          this.foundItems.push(id);
+        });
+      },
+      error: (error) => {
+        console.log('Error found at list items: ', error);
+      }
+    })
   }
 
 }

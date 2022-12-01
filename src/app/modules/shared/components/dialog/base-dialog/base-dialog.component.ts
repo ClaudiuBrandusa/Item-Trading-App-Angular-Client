@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit, Output } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { EventData } from 'src/app/models/utils/event';
-import { DialogEventsId } from '../../../enums/dialog-events-id.enum';
+import { DialogEvents } from '../../../enums/dialog-events.enum';
 import { EventBusService } from '../../../services/event-bus.service';
+import { EventBusUtils } from '../../../utils/event-bus.utility';
 
 @Component({
   selector: 'app-base-dialog',
@@ -16,42 +15,32 @@ export class BaseDialogComponent implements OnInit, OnDestroy {
 
   isActive = false;
 
-  onDisplaySubscription: Subscription;
-  onHideSubscription: Subscription;
+  private eventBusUtility: EventBusUtils;
 
-  constructor(protected eventBus: EventBusService) { }
+  constructor(protected eventBus: EventBusService) {
+    this.eventBusUtility = new EventBusUtils(eventBus);
+  }
 
   ngOnInit() {
-    if(!this.onHideSubscription) {
-      this.onHideSubscription = this.on(DialogEventsId.Exit, () => {
-        if(this.isActive) {
-          this.onHide();
-          this.isActive = false;
-        }
-      });
+    if(!!!this.eventId) {
+      return;
     }
 
-    if(!this.onDisplaySubscription) {
-      this.onDisplaySubscription = this.on(this.eventId, () => {
-        this.isActive = true;
-        this.onDisplay();
-      })
-    }
+    this.on(`${DialogEvents.Open}/${this.eventId}`, () => {
+      this.isActive = true;
+      this.onDisplay();
+    })
+  
+    this.on(`${DialogEvents.Exit}/${this.eventId}`, () => {
+      if(this.isActive) {
+        this.onHide();
+        this.isActive = false;
+      }
+    });
   }  
   
   ngOnDestroy() {
-    this.clearOnHideSubscription();
-    this.clearOnDisplaySubscription();
-  }
-
-  private clearOnDisplaySubscription() {
-    this.unsubscribe(this.onDisplaySubscription);
-    this.onDisplaySubscription = null;
-  }
-
-  private clearOnHideSubscription() {
-    this.unsubscribe(this.onHideSubscription);
-    this.onHideSubscription = null;
+    this.eventBusUtility.clearSubscriptions();
   }
 
   // Livecycles
@@ -60,25 +49,21 @@ export class BaseDialogComponent implements OnInit, OnDestroy {
   protected onHide() { }
 
   // Utils
-  protected on(eventId: string, response: (id?) => any)
+  protected on(eventId: string, response: (id?) => any, unique: Boolean = true)
   {
-    return this.eventBus.on(eventId, response);
+    return this.eventBusUtility.on(eventId, response, unique);
   }
 
   protected emit(eventId: string, value: any) {
-    this.eventBus.emit(new EventData(eventId, value));
+    this.eventBusUtility.emit(eventId, value);
   }
 
-  protected unsubscribe(subscription: Subscription) {
-    if(subscription == null)
-      return;
-
-    subscription.unsubscribe();
-    subscription = null;
+  protected unsubscribe(subscriptionId: string) {
+    this.eventBusUtility.unsubscribe(subscriptionId);
   }
 
   protected exitDialog() {
-    this.emit(DialogEventsId.Exit, null);
+    this.emit(`${DialogEvents.Exit}/${this.eventId}`, null);
   }
 
 }

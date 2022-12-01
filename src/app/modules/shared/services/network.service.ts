@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { Interval } from 'src/app/models/utils/async-utils';
+import { ItemError } from '../../../models/errors/item-error';
 import { ConfigService } from './config.service';
 import { EndpointsService } from './endpoints.service';
 import { EventBusService } from './event-bus.service';
@@ -53,4 +54,14 @@ export abstract class NetworkService<T> {
   }
 
   protected abstract LoadEndpoints()
+
+  protected buildError(error: any) {
+    return Object.assign(
+      new ItemError(),
+      {
+        itemId: error.error.itemId,
+        errorCode: error.status,
+        message: error.error.errors.join('\n')
+      }) as any
+  }
 }

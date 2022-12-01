@@ -6,6 +6,7 @@ import { IdentityService } from './identity.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { ConfigService } from '../../shared/services/config.service';
 import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
 
 @Injectable()
 export class LoginService extends IdentityService {
@@ -21,18 +22,13 @@ export class LoginService extends IdentityService {
 
     await this.waitUntilIsLoaded();
 
-    this.http.post(this.login_path, model).subscribe(response => {
-      if(this.setTokens(response)) {
-        let router = this.injector.get(Router);
-        router.navigate([""]);
-      }
-    }, err => {})
+    return this.http.post(this.login_path, model).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   private form2LoginRequest(form: FormGroup) {
     var model = new LoginRequest();
-    model.username = form.get('username').value;
-    model.password = form.get('password').value;
+    model.username = form.get('username')?.value;
+    model.password = form.get('password')?.value;
     return model;
   }
 

@@ -1,17 +1,19 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Item } from 'src/app/models/response/item/item';
-import { BaseDialogComponent } from 'src/app/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
+import { BaseNavigableDialogComponent } from '../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
 import { ItemDialogEvents } from '../../enums/item-dialog-events';
 import { ItemService } from '../../services/item.service';
+import { EventData } from 'src/app/models/utils/event';
+import { ItemEvents } from '../../enums/item-events';
 
 @Component({
   selector: 'dialog-edit-item',
   templateUrl: './edit-item-dialog.component.html',
   styleUrls: ['./edit-item-dialog.component.css']
 })
-export class EditItemDialogComponent extends BaseDialogComponent {
+export class EditItemDialogComponent extends BaseNavigableDialogComponent {
 
   item: Item = null;
   
@@ -28,21 +30,30 @@ export class EditItemDialogComponent extends BaseDialogComponent {
   })
   
   protected override async onDisplay() {
-    this.item = await this.service.getItem(this.service.getSelectedItemId());
-    this.form.controls["itemId"].setValue(this.item.id);
-    this.form.controls["itemName"].setValue(this.item.name);
-    this.form.controls["itemDescription"].setValue(this.item.description);
+    (await this.service.getItem(this.service.getSelectedItemId())).subscribe({
+      next: (response) => {
+        this.item = response;
+        this.form.controls["itemId"].setValue(this.item.id);
+        this.form.controls["itemName"].setValue(this.item.name);
+        this.form.controls["itemDescription"].setValue(this.item.description);
+      },
+      error: (error) => {
+        console.log('Error at get item found: ', error);
+      }
+    });
   } 
   
   async submit() {
     this.form.controls["itemId"].setValue(this.item.id);
-    await this.service.updateItem(this.form);
-    this.exit();
-  }
-
-  cancel(event: Event) {
-    event.preventDefault();
-    this.exit();
+    (await this.service.updateItem(this.form)).subscribe({
+      next: (_response) => {
+        this.eventBus.emit(new EventData(ItemEvents.UpdateItem+this.item.id, ''));
+        this.exit();
+      },
+      error: (error) => {
+        console.log('Error at update item found: ', error);
+      }
+    });
   }
 
   private exit() {

@@ -35,8 +35,16 @@ export class RegisterComponent implements OnInit {
 
   confirmPasswordValid: AbstractControl = this.form.controls["confirm_password"];
 
-  register() {
-    this.service.register(this.form);
+  async register() {
+    (await this.service.register(this.form)).subscribe({
+      next: (response) => {
+        this.form.reset();
+        this.service.updateTokens(response);
+      },
+      error: (error) => {
+        console.log('Error found at register: ', error);
+      }
+    });
     this.form.reset();
   }
 
@@ -47,7 +55,7 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.form.get('password').valueChanges.subscribe(() => this.confirmPasswordValid.updateValueAndValidity());
+    this.form.get('password')?.valueChanges.subscribe(() => this.confirmPasswordValid.updateValueAndValidity());
   
     this.currentIdentityPageService.setPage(1);
   }

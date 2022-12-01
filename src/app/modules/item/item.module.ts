@@ -31,7 +31,8 @@ import { ItemsComponent } from './components/items/items.component';
   ],
   exports: [
     ItemsComponent,
-    ItemRoutingModule
+    ItemRoutingModule,
+    ItemComponent
   ],
   providers: [ItemService]
 })

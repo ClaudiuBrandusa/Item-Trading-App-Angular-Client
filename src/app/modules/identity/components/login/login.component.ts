@@ -15,6 +15,7 @@ import { LoginService } from '../../services/login.service';
 export class LoginComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private service: LoginService, private currentIdentityPageService: CurrentIdentityPageService) {}
+  
   ngOnInit() {
     this.currentIdentityPageService.setPage(0);
   }
@@ -32,8 +33,15 @@ export class LoginComponent implements OnInit {
     ]
   } as AbstractControlOptions);
 
-  login() {
-    this.service.login(this.form);
-    this.form.reset();
+  async login() {
+    (await this.service.login(this.form)).subscribe({
+      next: (response) => {
+        this.form.reset();
+        this.service.updateTokens(response);
+      },
+      error: (error) => {
+        console.log('Error found at login: ', error);
+      }
+    });
   }
 }

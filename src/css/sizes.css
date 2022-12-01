@@ -4,6 +4,8 @@
 
 .h-max-inherit { max-height: inherit; }
 
+.h-min-0 { min-height: 0; }
+
 /* virtual */
 
 .w-45 { width: 45vw; }
@@ -40,6 +42,14 @@
 
 .h-8rem {
     height: 8rem;
+}
+
+.h-min-5rem {
+    min-height: 5rem;
+}
+
+.h-max-35rem {
+    max-height: 35rem;
 }
 
 /* percent */

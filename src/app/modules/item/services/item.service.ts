@@ -2,15 +2,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
 import { ItemEndpoints } from 'src/app/models/configs/endpoints/item-endpoints.config';
 import { CreateItemRequest } from 'src/app/models/request/item/create-item-request.model';
 import { UpdateItemRequest } from 'src/app/models/request/item/update-item-request.model';
 import { Item } from 'src/app/models/response/item/item';
-import { EventData } from 'src/app/models/utils/event';
 import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
-import { ItemEvents } from '../enums/item-events';
 
 @Injectable()
 export class ItemService extends NetworkService<ItemEndpoints> {
@@ -26,38 +25,15 @@ export class ItemService extends NetworkService<ItemEndpoints> {
     
     await this.waitUntilIsLoaded();
 
-    let result: any = null;
-
-    await this.http.post(this.base_path + this.endpointsModel.create, model).toPromise().then(response => {
-      result = response;
-    }).catch();
-
-    if(result == null) return false;
-
-    // if the request had failed
-    if(!result.hasOwnProperty("itemId")) return false;
-
-    this.eventBus.emit(new EventData(ItemEvents.CreateItem, result.itemId.toString()));
-
-    return true; // for now we are just returning boolean results
+    return this.http.post(this.base_path + this.endpointsModel.create, model).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   async updateItem(form: FormGroup) {
     await this.waitUntilIsLoaded();
 
     let model = this.form2UpdateItemRequest(form);
-    let result = false;
 
-    await this.http.patch(this.base_path + this.endpointsModel.update, model).toPromise().then(response => {
-      if(response != null && !response.hasOwnProperty("errors")) {
-        // then it worked
-        result = true;
-        // event name + item id will get an unique event id for each item for a better decoupling
-        this.eventBus.emit(new EventData(ItemEvents.UpdateItem+model.itemId, null));
-      }
-    });
-
-    return result;
+    return this.http.patch(this.base_path + this.endpointsModel.update, model).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   async deleteItem(itemId: string) {
@@ -67,33 +43,17 @@ export class ItemService extends NetworkService<ItemEndpoints> {
       itemId: itemId
     });
 
-    await this.http.delete(this.base_path + this.endpointsModel.delete, options).toPromise().then(response => {
-      if(response != null && !response.hasOwnProperty("errors")) {
-        // then it succeeded
-        this.eventBus.emit(new EventData(ItemEvents.RefreshItemsList, null));
-      }
-    })
+    return this.http.delete(this.base_path + this.endpointsModel.delete, options).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
-  async getItem(itemId: string): Promise<Item> {
+  async getItem(itemId: string) {
     await this.waitUntilIsLoaded();
 
-    let result: any;
-
-    await this.http.get<Item>(this.base_path + this.endpointsModel.get + "?itemId=" + itemId).toPromise().then(response => {
-      if(response != null) {
-        result = response;
-        
-      }
-    }).catch();
-  
-    return result;
+    return this.http.get<Item>(this.base_path + this.endpointsModel.get + "?itemId=" + itemId).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   async listItems(searchString: string = "") {
     await this.waitUntilIsLoaded();
-
-    let result: any;
 
     const params : any = {}
 
@@ -101,13 +61,7 @@ export class ItemService extends NetworkService<ItemEndpoints> {
       params.searchString = searchString
     }
 
-    await this.http.get<any>(this.base_path + this.endpointsModel.list, { params }).toPromise().then(response => {
-      if(response != null && response.hasOwnProperty("itemsId")) {
-        result = response.itemsId;
-      }
-    }).catch();
-
-    return result;
+    return this.http.get<any>(this.base_path + this.endpointsModel.list, { params }).pipe(catchError((error) => (this.buildError(error))));
   }
 
   select(itemId: string) {
@@ -149,8 +103,8 @@ export class ItemService extends NetworkService<ItemEndpoints> {
 
     let model = new CreateItemRequest();
 
-    model.itemName = form.get('itemName').value;
-    model.itemDescription = form.get('itemDescription').value;
+    model.itemName = form.get('itemName')?.value;
+    model.itemDescription = form.get('itemDescription')?.value;
 
     return model;
   }
@@ -160,9 +114,9 @@ export class ItemService extends NetworkService<ItemEndpoints> {
 
     let model = new UpdateItemRequest();
 
-    model.itemId = form.get("itemId").value;
-    model.itemName = form.get('itemName').value;
-    model.itemDescription = form.get('itemDescription').value;
+    model.itemId = form.get("itemId")?.value;
+    model.itemName = form.get('itemName')?.value;
+    model.itemDescription = form.get('itemDescription')?.value;
 
     return model;
   }

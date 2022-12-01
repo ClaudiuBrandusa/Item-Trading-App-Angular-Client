@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { EventSubscription } from 'src/app/models/utils/event-subscription';
 import { ListDirective } from 'src/app/modules/shared/directives/list/list.directive';
 import { EventBusService } from 'src/app/modules/shared/services/event-bus.service';
+import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
 import { ItemEvents } from '../../enums/item-events';
 import { ItemService } from '../../services/item.service';
 
@@ -12,12 +12,11 @@ import { ItemService } from '../../services/item.service';
 })
 export class ListItemsComponent extends ListDirective implements OnInit, OnDestroy {
 
-  refreshItemsListSubscription: EventSubscription;
-  createItemSubscription: EventSubscription;
+  private eventBusUtility: EventBusUtils;
 
-  constructor(private service: ItemService, private eventBus: EventBusService) {
+  constructor(private service: ItemService, eventBus: EventBusService) {
     super();
-    this.initSubscriptionsFactory();
+    this.eventBusUtility = new EventBusUtils(eventBus);
   }
 
   async ngOnInit(): Promise<void> {
@@ -26,44 +25,35 @@ export class ListItemsComponent extends ListDirective implements OnInit, OnDestr
   }
 
   ngOnDestroy(): void {
-    this.clearSubscriptions();
+    this.eventBusUtility.clearSubscriptions();
   }
 
   async listItems(searchString: string = "") {
-    let list = await this.service.listItems(searchString); /* list of items id */
-    
-    if(list == null)
-      return;
-    
-    this.clear();
-
-    list.forEach(elementId => {
-      this.add(elementId);
-    });
-  }
-
-  addItem(itemId: string) {
-    this.add(itemId);
-  }
-
-  private initSubscriptionsFactory() {
-    this.refreshItemsListSubscription = new EventSubscription(this.eventBus, ItemEvents.RefreshItemsList, (searchString) => { 
-      this.listItems(searchString);
-    });
-    
-    this.createItemSubscription = new EventSubscription(this.eventBus, ItemEvents.CreateItem, (value) => {
-      this.addItem(value);
+    (await this.service.listItems(searchString)).subscribe({
+      next: (response) => {
+        if(response == null)
+          return;
+        
+        this.addList(response.itemsId);
+      },
+      error: (error) => {
+        console.log('Error found at list item: ', error);
+      }
     });
   }
 
   private initSubscriptions() {
-    this.refreshItemsListSubscription.init();
-    this.createItemSubscription.init();
-  }
+    this.eventBusUtility.on(ItemEvents.RefreshItemsList, (searchString) => { 
+      this.listItems(searchString);
+    });
+    
+    this.eventBusUtility.on(ItemEvents.CreateItem, (value) => {
+      this.add(value);
+    });
 
-  private clearSubscriptions() {
-    this.refreshItemsListSubscription.clear();
-    this.createItemSubscription.clear();
+    this.eventBusUtility.on(ItemEvents.DeleteItem, (value) => {
+      this.remove(value);
+    });
   }
 
 }

@@ -27,29 +27,60 @@ export class DialogNavigationService {
         this.eventBus.emit(new EventData(`${DialogEvents.Exit}/${currentDialog}`, null));
       }
 
-      this.navigationStack.navigate(data);
-      this.eventBus.emit(new EventData(`${DialogEvents.Open}/${data}`, null));
+      this.navigate(data);
     });
 
+    this.eventBusUtility.on(DialogEvents.OpenAsPopup, (data) => {
+      this.navigate(data);
+    });
+
+    this.eventBusUtility.on(DialogEvents.ClosePopup, (data) => {
+      this.exit(data);
+    })
+
     this.eventBusUtility.on(DialogEvents.Back, (data) => {
-      const currentDialog = this.navigationStack.current();
-
-      if (currentDialog !== data) {
-        return;
-      }
-      
-      this.eventBus.emit(new EventData(`${DialogEvents.Exit}/${currentDialog}`, null));
-      this.navigationStack.back();
-      const previousDialog = this.navigationStack.current();
-
-      if(previousDialog)
-        this.eventBus.emit(new EventData(`${DialogEvents.Open}/${previousDialog}`, null));
+      this.handleOnBackSubscription(data);
     })
 
     this.eventBusUtility.on(DialogEvents.Exit, (data) => {
-      this.eventBus.emit(new EventData(`${DialogEvents.Exit}/${data}`, null));
-      
-      this.navigationStack.clear();
+      if(this.navigationStack.isRoot()) {
+        this.eventBus.emit(new EventData(`${DialogEvents.Exit}/${data}`, null));
+        this.navigationStack.clear();
+      }
+
+      this.handleOnBackSubscription(data);
     })
+
+    this.eventBusUtility.on(DialogEvents.ClearStack, () => {
+      let currentDialogName = this.navigationStack.back();
+      while(currentDialogName) {
+        this.eventBus.emit(new EventData(`${DialogEvents.Exit}/${currentDialogName}`, null));
+        currentDialogName = this.navigationStack.back();
+      }
+    })
+  }
+
+  private navigate(data: string) {
+    this.navigationStack.navigate(data);
+    this.eventBus.emit(new EventData(`${DialogEvents.Open}/${data}`, null));
+  }
+
+  private handleOnBackSubscription(data: any) {
+    this.exit(data);
+    const previousDialog = this.navigationStack.current();
+
+    if(previousDialog)
+      this.eventBus.emit(new EventData(`${DialogEvents.Open}/${previousDialog}`, null));
+  }
+
+  private exit(data) {
+    const currentDialog = this.navigationStack.current();
+
+    if (currentDialog !== data) {
+      return;
+    }
+
+    this.eventBus.emit(new EventData(`${DialogEvents.Exit}/${currentDialog}`, null));
+    this.navigationStack.back();
   }
 }

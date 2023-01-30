@@ -23,6 +23,10 @@ export class BaseNavigableDialogComponent extends BaseDialogComponent {
     super.exitDialog();
   }
 
+  protected exitAllDialogs() {
+    this.emit(DialogEvents.ClearStack, null);
+  }
+
   private emitNavigation(pageId: string) {
     this.emit(DialogEvents.Open, pageId);
   }

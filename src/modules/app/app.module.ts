@@ -16,6 +16,7 @@ import { UnauthGuardService } from './guards/unauth-guard.service';
 import { ItemModule } from 'src/modules/item/item.module';
 import { IndexModule } from 'src/modules/index/index.module';
 import { InventoryModule } from 'src/modules/inventory/inventory.module';
+import { TradesModule } from 'src/modules/trades/trades.module';
 import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
 
 export function tokenGetter() {
@@ -47,7 +48,8 @@ export function refreshTokenGetter() {
     }),
     ItemModule,
     IndexModule,
-    InventoryModule
+    InventoryModule,
+    TradesModule
   ],
   providers: [AuthGuardService, UnauthGuardService, ConfigService, EndpointsService,
     {

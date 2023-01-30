@@ -1,0 +1,35 @@
+<app-event-dialog eventId={{eventId}}>
+  <app-medium-dialog class="position-fixed transform-center">
+    <div class="mb-1">
+      <div *ngIf="!loading" class="d-flex flex-wrap flex-column align-items-center">
+        <div class="text-center pt-1 pb-3">    
+          Trade details
+        </div>
+        <div class="d-flex flex-column">
+          <div class="d-flex flex-row">
+            <strong>{{ isSentTrade ? 'Sent to' : 'Received from' }}</strong>:
+            {{ userId }}
+          </div>
+          <div class="d-flex flex-row">
+            <strong>{{ isSentTrade ? 'Sent date' : 'Received date' }}</strong>:
+            {{ trade.sentDate | date }}
+          </div>
+          <div class="d-flex flex-row">
+            <strong>Total price</strong>:
+            {{ totalPrice }}
+          </div>
+          <div *ngIf="trade.respondedDate" class="d-flex flex-row">
+            <strong>Responded date</strong>:
+            {{ trade.respondedDate | date }}
+          </div>
+          <div class="d-flex flex-row overflow-y-scroll max-height">
+            <app-selected-trade-items-list></app-selected-trade-items-list>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center pt-3 pb-1">
+        <app-button (click)="exit()">Ok</app-button>
+      </div>
+    </div>
+  </app-medium-dialog>
+</app-event-dialog>

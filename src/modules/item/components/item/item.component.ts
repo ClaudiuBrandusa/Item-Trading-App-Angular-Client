@@ -25,6 +25,17 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
   @Input()
   item = new Item();
 
+  @Input()
+  onItemLoadedFunction: (item: Item) => void;
+
+  @Input()
+  small = false;
+
+  @Input()
+  hideUntilLoaded = false;
+
+  loaded = true;
+
   private eventBusUtility: EventBusUtils;
 
   constructor(private service: ItemService, private eventBus: EventBusService) {
@@ -43,6 +54,7 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
+    if (this.hideUntilLoaded) this.loaded = false;
     this.getItem();
   }
 
@@ -54,9 +66,13 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
     (await this.service.getItem(this.itemId)).subscribe({
       next: (response: Item) => {
         this.item = response
+        if (this.onItemLoadedFunction) this.onItemLoadedFunction(response);
       },
       error: (error) => {
         console.log(`Error at loading item data for id ${this.itemId}: `, error)
+      },
+      complete: () => {
+        if(this.hideUntilLoaded) this.loaded = true;
       }
     })
   }

@@ -12,13 +12,15 @@ import { NavigationHeaderComponent } from './components/navigation-header/naviga
 import { CurrentIdentityPageService } from './services/current-identity-page.service';
 import { LoginService } from './services/login.service';
 import { RegisterService } from './services/register.service';
+import { FoundUserComponent } from './components/found-user/found-user.component';
 
 @NgModule({
   declarations: [
     LoginComponent,
     RegisterComponent,
     IdentityDialogComponent,
-    NavigationHeaderComponent
+    NavigationHeaderComponent,
+    FoundUserComponent
   ],
   imports: [
     CommonModule,
@@ -30,7 +32,8 @@ import { RegisterService } from './services/register.service';
   exports: [
     LoginComponent,
     RegisterComponent,
-    IdentityRoutingModule
+    IdentityRoutingModule,
+    FoundUserComponent
   ],
   providers: [CurrentIdentityPageService, LoginService, RegisterService]
 })

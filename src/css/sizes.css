@@ -17,6 +17,9 @@
 .h-v-65 { max-height: 65vh; }
 
 /* rem */
+.w-2rem { width: 2rem; }
+
+.w-3rem { width: 3rem; }
 
 .w-5rem { width: 5rem; }
 
@@ -31,6 +34,8 @@
 .w-30rem { width: 30rem; }
 
 .w-35rem { width: 35rem; }
+
+.h-2rem { height: 2rem;}
 
 .h-3rem { height: 3rem; }
 

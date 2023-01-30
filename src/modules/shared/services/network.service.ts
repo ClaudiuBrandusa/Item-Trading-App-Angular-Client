@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { ItemError } from '../models/errors/item-error';
 import { Interval } from '../utils/async-utils';
@@ -63,5 +63,14 @@ export abstract class NetworkService<T> {
         errorCode: error.status,
         message: error.error.errors.join('\n')
       }) as any
+  }
+
+  protected getOptions(content: any) {
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: content
+    }
   }
 }

@@ -11,7 +11,3 @@ export async function Interval(continueConditionRule: () => boolean, step: numbe
     total_time += step;
   }
 }
-
-export async function isString(value: any) {
-  return typeof value == "string";
-}

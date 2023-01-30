@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { CreateItemRequest } from 'src/modules/item/models/requests/create-item-request.model';
 import { UpdateItemRequest } from 'src/modules/item/models/requests/update-item-request.model';
 import { Item } from 'src/modules/item/models/responses/item';
+import { EndpointsService } from '../../app/services/endpoints.service';
 import { ItemEndpoints } from '../../shared/models/endpoints/item-endpoints.config';
-import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
 
@@ -16,45 +16,36 @@ export class ItemService extends NetworkService<ItemEndpoints> {
 
   selectedItemId = "";
 
-  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, protected router: Router) {
-    super(http, configService, injector, eventBus);
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router) {
+    super(http, endpointsService, eventBus);
+    this.endpointsModel = this.endpointsService.getItem();
   }
 
-  async createItem(form: FormGroup) {
-    let model = this.form2CreateItemRequest(form);
-    
-    await this.waitUntilIsLoaded();
+  createItem(form: FormGroup) {
+    const model = this.form2CreateItemRequest(form);
 
     return this.http.post(this.base_path + this.endpointsModel.create, model).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
-  async updateItem(form: FormGroup) {
-    await this.waitUntilIsLoaded();
-
+  updateItem(form: FormGroup) {
     let model = this.form2UpdateItemRequest(form);
 
     return this.http.patch(this.base_path + this.endpointsModel.update, model).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
-  async deleteItem(itemId: string) {
-    await this.waitUntilIsLoaded();
-    
-    const options = this.getOptions({
+  deleteItem(itemId: string) {
+    const options = this.formatContentToRequestBody({
       itemId: itemId
     });
 
     return this.http.delete(this.base_path + this.endpointsModel.delete, options).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
-  async getItem(itemId: string) {
-    await this.waitUntilIsLoaded();
-
+  getItem(itemId: string) {
     return this.http.get<Item>(this.base_path + this.endpointsModel.get + "?itemId=" + itemId).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
-  async listItems(searchString: string = "") {
-    await this.waitUntilIsLoaded();
-
+  listItems(searchString: string = "") {
     const params : any = {}
 
     if (searchString) {
@@ -74,17 +65,6 @@ export class ItemService extends NetworkService<ItemEndpoints> {
 
   deselect() {
     this.selectedItemId = "";
-  }
-
-  protected async SetEndpointsModel() {
-    this.endpointsModel = await this.endpointsService.GetItem();
-  }
-
-  protected async LoadEndpoints() {
-    await this.waitUntilIsLoaded();
-
-    if(this.endpointsModel == null)
-      return;
   }
 
   // form2model

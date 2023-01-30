@@ -27,10 +27,10 @@ export class RespondTradeDialogComponent extends BaseNavigableDialogComponent {
     this.respond(true);
   }
 
-  private async respond(status: boolean) {
+  private respond(status: boolean) {
     const currentTrade = this.service.getSelectedTrade();
     const response = status ? TradeResponse.Accept : TradeResponse.Reject;
-    (await this.service.respondToTradeOffer(currentTrade.tradeId, response)).subscribe({
+    this.service.respondToTradeOffer(currentTrade.tradeId, response).subscribe({
       next: (responseBody) => {
         const data = responseBody as RespondedTradeResponse
         this.emit(TradeEvents.Update+data.tradeOfferId, response);

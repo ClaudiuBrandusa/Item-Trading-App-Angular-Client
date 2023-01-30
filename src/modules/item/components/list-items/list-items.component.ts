@@ -19,7 +19,7 @@ export class ListItemsComponent extends ListDirective implements OnInit, OnDestr
     this.eventBusUtility = new EventBusUtils(eventBus);
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     this.initSubscriptions();
     this.listItems();
   }
@@ -28,8 +28,8 @@ export class ListItemsComponent extends ListDirective implements OnInit, OnDestr
     this.eventBusUtility.clearSubscriptions();
   }
 
-  async listItems(searchString: string = "") {
-    (await this.service.listItems(searchString)).subscribe({
+  listItems(searchString: string = "") {
+    this.service.listItems(searchString).subscribe({
       next: (response) => {
         if(response == null)
           return;

@@ -22,7 +22,6 @@ export class SelectItemsForTradeDialogComponent extends BaseNavigableDialogCompo
   searchString = "";
   itemsDictionary = new Map<string, Item>();
   tradeValid = false;
-  loading = true;
 
   constructor(protected eventBus: EventBusService, private service: TradesService, private inventoryService: InventoryService) {
     super(eventBus);
@@ -48,7 +47,7 @@ export class SelectItemsForTradeDialogComponent extends BaseNavigableDialogCompo
     this.emit(TradeItemEvents.Remove, null);
   }
 
-  async search() {
+  search() {
     // we are going to use the list method until we implement the search functionality on the API
     this.clearResults();
     
@@ -57,7 +56,7 @@ export class SelectItemsForTradeDialogComponent extends BaseNavigableDialogCompo
       return;
     }
 
-    await this.listItems();
+    this.listItems();
   }
 
   clearResults() {
@@ -65,9 +64,8 @@ export class SelectItemsForTradeDialogComponent extends BaseNavigableDialogCompo
       this.foundItemsId.pop();
   }
 
-  private async listItems() {
-    this.loading = true;
-    (await this.inventoryService.list(this.searchString)).subscribe({
+  private listItems() {
+    this.inventoryService.list(this.searchString).subscribe({
       next: (response: any) => {
         response.itemsId.forEach(id => {
           if (this.service.isTradeItemIdSelected(id)) return;
@@ -104,10 +102,10 @@ export class SelectItemsForTradeDialogComponent extends BaseNavigableDialogCompo
     this.itemsDictionary.set(item.id, item);
   }
 
-  async createTrade() {
+  createTrade() {
     if (!this.isTradeValid()) return;
 
-    (await this.service.sendTradeOffer()).subscribe({
+    this.service.sendTradeOffer().subscribe({
       next: (response) => {
         const data = response as Trade;
         this.emit(TradeEvents.Create, data.tradeId);

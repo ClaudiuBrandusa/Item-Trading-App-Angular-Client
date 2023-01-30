@@ -28,8 +28,8 @@ export class CreateItemDialogComponent extends BaseDialogComponent {
     this.form.reset();
   }
 
-  async submit() {
-    (await this.service.createItem(this.form)).subscribe({
+  submit() {
+    this.service.createItem(this.form).subscribe({
       next: (response: any) => {
         this.emit(ItemEvents.CreateItem, response.itemId.toString());
         this.exitDialog();

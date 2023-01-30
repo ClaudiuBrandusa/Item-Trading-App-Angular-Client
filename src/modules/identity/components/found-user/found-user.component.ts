@@ -21,9 +21,6 @@ export class FoundUserComponent extends ListItemDirective implements OnDestroy {
   }
 
   protected override onSetItemId() {
-    /*this.eventBusUtility.on(ItemEvents.UpdateItem+this.itemId, () => {
-      this.getItem();
-    })*/
   }
 
   protected override loadData() {
@@ -34,8 +31,8 @@ export class FoundUserComponent extends ListItemDirective implements OnDestroy {
     this.eventBusUtility.clearSubscriptions();
   }
 
-  async getUser() {
-    (await this.service.getUsername(this.itemId)).subscribe({
+  getUser() {
+    this.service.getUsername(this.itemId).subscribe({
       next: (response) => {
         const foundUser = response as FoundUserResponse;
         if (foundUser) {

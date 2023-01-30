@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, Observable, throwError } from 'rxjs';
+import { EndpointsService } from '../../app/services/endpoints.service';
 import { TradeEndpoints } from '../../shared/models/endpoints/trade-endpoints.config';
-import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
 import { TradeResponse } from '../enums/trade-response';
@@ -17,20 +17,10 @@ import { TradesSearchOptions } from '../models/trades-search-options';
 @Injectable()
 export class TradesService extends NetworkService<TradeEndpoints> {
 
-  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, protected router: Router) {
-    super(http, configService, injector, eventBus);
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router) {
+    super(http, endpointsService, eventBus);
     this.currentTrade = new CurrentTrade({ tradeItems: new Array<TradeItem>() });
-  }
-
-  protected async SetEndpointsModel() {
-    this.endpointsModel = await this.endpointsService.GetTrade();
-  }
-
-  protected async LoadEndpoints() {
-    await this.waitUntilIsLoaded();
-
-    if(this.endpointsModel == null)
-      return;
+    this.endpointsModel = this.endpointsService.getTrade();
   }
 
   private currentTrade: CurrentTrade;
@@ -70,47 +60,35 @@ export class TradesService extends NetworkService<TradeEndpoints> {
     }
   }
 
-  async getSentTrades(responded: Boolean = false) {
-    await this.waitUntilIsLoaded();
-
+  getSentTrades(responded: Boolean = false) {
     const endpoint = this.base_path + (responded ? this.endpointsModel.list_sent_responded : this.endpointsModel.list_sent);
 
     return this.http.get(endpoint).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
-  async getReceivedTrades(responded: Boolean = false) {
-    await this.waitUntilIsLoaded();
-
+  getReceivedTrades(responded: Boolean = false) {
     const endpoint = this.base_path + (responded ? this.endpointsModel.list_received_responded : this.endpointsModel.list_received);
 
     return this.http.get(endpoint).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
-  async getSentTrade(tradeId: string, responded: Boolean = false) {
-    await this.waitUntilIsLoaded();
-
+  getSentTrade(tradeId: string, responded: Boolean = false) {
     const endpoint = this.base_path + (responded ? this.endpointsModel.get_sent_responded : this.endpointsModel.get_sent) + `?tradeId=${tradeId}`;
 
     return this.http.get(endpoint).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
-  async getReceivedTrade(tradeId: string, responded: Boolean = false) {
-    await this.waitUntilIsLoaded();
-
+  getReceivedTrade(tradeId: string, responded: Boolean = false) {
     const endpoint = this.base_path + (responded ? this.endpointsModel.get_received_responded : this.endpointsModel.get_received) + `?tradeId=${tradeId}`;
 
     return this.http.get(endpoint).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
-  async sendTradeOffer() {
-    await this.waitUntilIsLoaded();
-    
+  sendTradeOffer() {
     return this.http.post(this.base_path + this.endpointsModel.offer, this.tradeOffer).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
-  async respondToTradeOffer(tradeId: string, response: TradeResponse) {
-    await this.waitUntilIsLoaded();
-
+  respondToTradeOffer(tradeId: string, response: TradeResponse) {
     let request: Observable<Object>;
     switch(response) {
       case TradeResponse.Accept: {
@@ -126,7 +104,7 @@ export class TradesService extends NetworkService<TradeEndpoints> {
         break;
       }
       case TradeResponse.Cancel: {
-        const options = this.getOptions({
+        const options = this.formatContentToRequestBody({
           tradeId
         });
 

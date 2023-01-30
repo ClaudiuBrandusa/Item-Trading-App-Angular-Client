@@ -30,12 +30,12 @@ export class TradesListComponent extends ListDirective implements OnInit, OnDest
     this.eventBusUtility.clearSubscriptions();
   }
 
-  async listTrades(searchOptions: TradesSearchOptions) {
+  listTrades(searchOptions: TradesSearchOptions) {
     this.clear();
     this.service.clearCachedTrades();
 
     if (searchOptions.selectedFilterValue === "All" || searchOptions.selectedFilterValue === "Sent") {
-      (await this.service.getSentTrades(searchOptions.showRespondedTrades)).subscribe({
+      this.service.getSentTrades(searchOptions.showRespondedTrades).subscribe({
         next: (response) => {
           this.handleTradesResponse(response, true, searchOptions.showRespondedTrades);
         },
@@ -46,7 +46,7 @@ export class TradesListComponent extends ListDirective implements OnInit, OnDest
     }
 
     if (searchOptions.selectedFilterValue === "All" || searchOptions.selectedFilterValue === "Received") {
-      (await this.service.getReceivedTrades(searchOptions.showRespondedTrades)).subscribe({
+      this.service.getReceivedTrades(searchOptions.showRespondedTrades).subscribe({
         next: (response) => {
           this.handleTradesResponse(response, false, searchOptions.showRespondedTrades);
         },

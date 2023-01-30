@@ -19,9 +19,9 @@ export class CancelTradeDialogComponent extends BaseNavigableDialogComponent {
     this.eventId = TradeDialogsEvents.Cancel;
   }
 
-  async cancelTrade() {
+  cancelTrade() {
     const trade = this.service.getSelectedTrade();
-    (await this.service.respondToTradeOffer(trade.tradeId, TradeResponse.Cancel)).subscribe({
+    this.service.respondToTradeOffer(trade.tradeId, TradeResponse.Cancel).subscribe({
       next: (response) => {
         const data = response as CanceledTradeResponse;
         this.emit(TradeEvents.Remove, data.tradeOfferId);

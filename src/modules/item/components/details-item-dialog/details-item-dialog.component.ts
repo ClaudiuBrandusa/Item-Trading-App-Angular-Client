@@ -27,8 +27,8 @@ export class DetailsItemDialogComponent extends BaseNavigableDialogComponent {
     this.eventId = ItemDialogEvents.DetailsItem;
   }
 
-  protected override async onDisplay() {
-    (await this.service.getItem(this.service.getSelectedItemId())).subscribe({
+  protected override onDisplay() {
+    this.service.getItem(this.service.getSelectedItemId()).subscribe({
       next: (response) => {
         this.item = response;
       },

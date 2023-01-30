@@ -1,15 +1,15 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { interval, Observable, Subscription } from 'rxjs';
 import { RefreshTokenOptions } from '../../shared/models/options/refresh-token-options.config';
-import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { Interval } from '../../shared/utils/async-utils';
 import { EventBusUtils } from '../../shared/utils/event-bus.utility';
-import { EventData } from '../../shared/utils/event-data';
 import { IdentityService } from './identity.service';
 import { RefreshTokenRequest } from 'src/modules/identity/models/requests/refresh-token-request.model';
+import appConfig from '../../../assets/application-config.json';
+import { EndpointsService } from '../../app/services/endpoints.service';
 
 @Injectable({
   providedIn: "root"
@@ -18,10 +18,11 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
 
   private eventBusUtility: EventBusUtils;
   
-  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, protected router: Router, private eventBusService: EventBusService) {
-    super(http, configService, injector, eventBus, router);
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router, private eventBusService: EventBusService) {
+    super(http, endpointsService, eventBus, router);
+    this.refresh_path = this.base_path + this.endpointsModel.refresh;
     this.eventBusUtility = new EventBusUtils(eventBus);
-    this.InitOptions();
+    this.options = appConfig.refreshTokenOptions;
   }
 
   ngOnInit(): void {
@@ -32,10 +33,8 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
     this.eventBusUtility.clearSubscriptions();
   }
 
-  options: RefreshTokenOptions = null;
-
+  options: RefreshTokenOptions;
   silentRefresh: Subscription;
-
   private refresh_path = this.base_path + "refresh";
 
   getToken() {
@@ -69,9 +68,6 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
   }
 
   getRefreshTokensRequest() {
-    if(!this.loaded)
-      return null; // won't happen if we are not trying to refresh the token in the first milliseconds from creating the component
-
     return this.http.post(this.refresh_path, this.getRefreshTokenRequest());
   }
 
@@ -111,36 +107,9 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
   }
 
   private async startSilentRefresh() {
-    if(this.options == null) {
-      await this.GetOptions();
-      if(this.options == null) {
-        return;
-      }
-    }
     this.silentRefresh = interval(this.options.silentRefreshIntervalInSeconds * 1000)
     .subscribe(() => {
       this.refreshTokens()
     });
-  }
-
-  private async InitOptions() {
-    this.options = await this.configService.loadOptions<RefreshTokenOptions>("refreshTokenOptions");
-  }
-
-  async GetOptions() {
-    if(this.options == null) {
-      await Interval(() => this.options == null, 50, 5000);
-    }
-
-    return this.options;
-  }
-
-  protected async LoadEndpoints() {
-    await this.waitUntilIsLoaded();
-    
-    if(this.endpointsModel == null)
-      return;
-
-    this.refresh_path = this.base_path + this.endpointsModel.refresh;
   }
 }

@@ -1,17 +1,18 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ConfigService } from '../../shared/services/config.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
 import { Router } from '@angular/router';
 import { EventData } from '../../shared/utils/event-data';
 import { IdentityEndpoints } from '../../shared/models/endpoints/identity-endpoints.config';
+import { EndpointsService } from '../../app/services/endpoints.service';
 
 @Injectable()
 export abstract class IdentityService extends NetworkService<IdentityEndpoints> {
 
-  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, protected router: Router) {
-    super(http, configService, injector, eventBus);
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router) {
+    super(http, endpointsService, eventBus);
+    this.endpointsModel = this.endpointsService.getIdentity();
    }
 
   protected setTokens(response: Object) {
@@ -34,7 +35,7 @@ export abstract class IdentityService extends NetworkService<IdentityEndpoints> 
     if(!somethingWentWrong)
       this.eventBus.emit(new EventData("silentRefresh", null));
 
-    this.RedirectToDefaultPage();
+    this.redirectToDefaultPage();
 
     return !somethingWentWrong;
   }
@@ -44,19 +45,14 @@ export abstract class IdentityService extends NetworkService<IdentityEndpoints> 
     localStorage.removeItem("refreshToken");
   }
 
-  protected async SetEndpointsModel() {
-    this.endpointsModel = await this.endpointsService.GetIdentity();
-  }
-
-  private RedirectToDefaultPage() {
+  private redirectToDefaultPage() {
     this.router.navigate([""]);
   }
   
   updateTokens(newTokens: any) {
     if(this.setTokens(newTokens)) {
-      let router = this.injector.get(Router);
       this.eventBus.emit(new EventData('connected', newTokens.token));
-      router.navigate([""]);
+      this.redirectToDefaultPage();
     }
   }
 }

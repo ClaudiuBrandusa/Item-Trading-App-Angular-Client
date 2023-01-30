@@ -44,7 +44,7 @@ export class SelectedTradeItemComponent extends ListItemDirective implements OnD
     this.getItem();
   }
 
-  async getItem() {
+  getItem() {
     const item = this.getTradeItemFunction(this.itemId);
     if (item == null) return;
     this.item = item;

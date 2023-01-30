@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ConfigService } from '../../shared/services/config.service';
-import { Interval } from '../../shared/utils/async-utils';
+import appConfig from '../../../assets/application-config.json'
 import { APIOptions } from '../../shared/models/options/api-options.config'
 import { IdentityEndpoints } from '../../shared/models/endpoints/identity-endpoints.config';
 import { ItemEndpoints } from '../../shared/models/endpoints/item-endpoints.config';
@@ -18,67 +17,39 @@ export class EndpointsService {
   tradeEndpoints: TradeEndpoints;
   walletEndpoints: WalletEndpoints;
 
-  constructor(private configService: ConfigService) {
-    this.InitEndpoints();
-   }
+  constructor() {
+    this.apiOptions = appConfig.APIOptions;
 
-  private async InitOptions() {
-    this.apiOptions = await this.configService.loadOptions<APIOptions>("APIOptions");
+    this.identityEndpoints = appConfig.Endpoints.Identity;
+    this.inventoryEndpoints = appConfig.Endpoints.Inventory;
+    this.itemEndpoints = appConfig.Endpoints.Item;
+    this.tradeEndpoints = appConfig.Endpoints.Trade;
+    this.walletEndpoints = appConfig.Endpoints.Wallet;
   }
 
-  private async InitEndpoints() {
-    this.InitOptions();
-
-    this.identityEndpoints = await this.configService.loadOptions<IdentityEndpoints>("Endpoints:Identity");
-    this.inventoryEndpoints = await this.configService.loadOptions<InventoryEndpoints>("Endpoints:Inventory");
-    this.itemEndpoints = await this.configService.loadOptions<ItemEndpoints>("Endpoints:Item");
-    this.tradeEndpoints = await this.configService.loadOptions<TradeEndpoints>("Endpoints:Trade");
-    this.walletEndpoints = await this.configService.loadOptions<WalletEndpoints>("Endpoints:Wallet");
-  }
-
-  async GetBasePath() {
-    if(this.apiOptions == null) {
-      await Interval(() => !this.apiOptions, 50, 5000);
-
-      if(this.apiOptions) {
-        return this.apiOptions.Url;
-      }
-
-      return null;
-    }
-
+  getBasePath() {
     return this.apiOptions.Url;
   }
 
   // endpoints getters
 
-  async GetIdentity() {
-    await Interval(() => this.identityEndpoints == null, 20, 2000);
-    
+  getIdentity() {
     return this.identityEndpoints;
   }
 
-  async GetInventory() {
-    await Interval(() => this.inventoryEndpoints == null, 20, 2000);
-
+  getInventory() {
     return this.inventoryEndpoints;
   }
 
-  async GetItem() {
-    await Interval(() => this.itemEndpoints == null, 20, 2000);
-
+  getItem() {
     return this.itemEndpoints;
   }
 
-  async GetTrade() {
-    await Interval(() => this.tradeEndpoints == null, 20, 2000);
-
+  getTrade() {
     return this.tradeEndpoints;
   }
 
-  async GetWallet() {
-    await Interval(() => this.walletEndpoints == null, 20, 2000);
-
+  getWallet() {
     return this.walletEndpoints;
   }
 }

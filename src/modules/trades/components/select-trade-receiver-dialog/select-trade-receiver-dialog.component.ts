@@ -31,7 +31,7 @@ export class SelectTradeReceiverDialogComponent extends BaseNavigableDialogCompo
     this.clearResults();
   }
 
-  async search() {
+  search() {
     // we are going to use the list method until we implement the search functionality on the API
     this.clearResults();
     
@@ -40,7 +40,7 @@ export class SelectTradeReceiverDialogComponent extends BaseNavigableDialogCompo
       return;
     }
 
-    await this.listItems();
+    this.listItems();
   }
 
   private clearResults() {
@@ -53,8 +53,8 @@ export class SelectTradeReceiverDialogComponent extends BaseNavigableDialogCompo
     this.searchString = '';
   }
 
-  private async listItems() {
-    (await this.userService.listUsers(this.searchString)).subscribe({
+  private listItems() {
+    this.userService.listUsers(this.searchString).subscribe({
       next: (response) => {
         const foundUsers = response as FoundUsersResponse;
         if (foundUsers) {

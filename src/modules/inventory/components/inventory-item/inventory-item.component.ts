@@ -47,8 +47,8 @@ export class InventoryItemComponent extends ListItemDirective implements OnDestr
     this.getItem();
   }
 
-  async getItem() {
-    (await this.service.getItem(this.itemId)).subscribe({
+  getItem() {
+    this.service.getItem(this.itemId).subscribe({
       next: (response) => {
         this.item = response as InventoryItem;
       },

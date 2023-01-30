@@ -33,8 +33,8 @@ export class LoginComponent implements OnInit {
     ]
   } as AbstractControlOptions);
 
-  async login() {
-    (await this.service.login(this.form)).subscribe({
+  login() {
+    this.service.login(this.form).subscribe({
       next: (response) => {
         this.form.reset();
         this.service.updateTokens(response);

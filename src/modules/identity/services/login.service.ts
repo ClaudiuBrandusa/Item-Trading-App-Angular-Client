@@ -1,26 +1,25 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { LoginRequest } from 'src/modules/identity/models/requests/loginRequest.model';
 import { IdentityService } from './identity.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
-import { ConfigService } from '../../shared/services/config.service';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
+import { EndpointsService } from '../../app/services/endpoints.service';
 
 @Injectable()
 export class LoginService extends IdentityService {
 
-  constructor(protected http: HttpClient, protected configService: ConfigService, protected injector: Injector, protected eventBus: EventBusService, protected router: Router){
-    super(http, configService, injector, eventBus, router);
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router){
+    super(http, endpointsService, eventBus, router);
+    this.login_path = this.base_path + this.endpointsModel.login;
   }
 
   private login_path = "";
 
-  async login(form: FormGroup) {
+  login(form: FormGroup) {
     let model = this.form2LoginRequest(form);
-
-    await this.waitUntilIsLoaded();
 
     return this.http.post(this.login_path, model).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
@@ -30,15 +29,5 @@ export class LoginService extends IdentityService {
     model.username = form.get('username')?.value;
     model.password = form.get('password')?.value;
     return model;
-  }
-
-  protected async LoadEndpoints() {
-    await this.waitUntilIsLoaded();
-
-    // if it's still not loaded
-    if(this.endpointsModel == null)
-      return; // then something went wrong
-
-    this.login_path = this.base_path + this.endpointsModel.login;
   }
 }

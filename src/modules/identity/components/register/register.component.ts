@@ -35,8 +35,8 @@ export class RegisterComponent implements OnInit {
 
   confirmPasswordValid: AbstractControl = this.form.controls["confirm_password"];
 
-  async register() {
-    (await this.service.register(this.form)).subscribe({
+  register() {
+    this.service.register(this.form).subscribe({
       next: (response) => {
         this.form.reset();
         this.service.updateTokens(response);

@@ -47,8 +47,8 @@ export class TradeComponent extends ListItemDirective implements OnDestroy {
     this.getTrade();
   }
 
-  async getTrade() {
-    (await this.service.getTrade(this.itemId)).subscribe({
+  getTrade() {
+    this.service.getTrade(this.itemId).subscribe({
       next: (response) => {
         this.trade = response as Trade;
         this.totalPrice = 0;

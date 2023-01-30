@@ -47,8 +47,8 @@ export class AddItemQuantityDialogComponent extends BaseNavigableDialogComponent
     this.service.deselect();
   }
 
-  async next() {
-    (await this.service.addItem(this.form)).subscribe({
+  next() {
+    this.service.addItem(this.form).subscribe({
       next: (_response) => {
         this.eventBus.emit(new EventData(InventoryEvents.Refresh, ''));
         this.exitDialog();
@@ -60,8 +60,8 @@ export class AddItemQuantityDialogComponent extends BaseNavigableDialogComponent
     });
   }
 
-  async loadItemName() {
-    (await this.itemService.getItem(this.service.getSelectedItemId())).subscribe({
+  loadItemName() {
+    this.itemService.getItem(this.service.getSelectedItemId()).subscribe({
       next: (response: any) => {
         this._itemName = response.itemName;
       },

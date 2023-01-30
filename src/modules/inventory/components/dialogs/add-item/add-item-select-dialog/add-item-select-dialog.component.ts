@@ -21,7 +21,7 @@ export class AddItemSelectDialogComponent extends BaseNavigableDialogComponent {
     this.eventId = InventoryDialogEvents.AddSelect;
   }
 
-  async search() {
+  search() {
     // we are going to use the list method until we implement the search functionality on the API
     this.clearResults();
     
@@ -30,7 +30,7 @@ export class AddItemSelectDialogComponent extends BaseNavigableDialogComponent {
       return;
     }
 
-    await this.listItems();
+    this.listItems();
   }
 
   select(id: string) {
@@ -52,8 +52,8 @@ export class AddItemSelectDialogComponent extends BaseNavigableDialogComponent {
     this.searchString = '';
   }
 
-  private async listItems() {
-    (await this.itemService.listItems(this.searchString)).subscribe({
+  private listItems() {
+    this.itemService.listItems(this.searchString).subscribe({
       next: (response) => {
         response.itemsId.forEach(id => {
           this.foundItems.push(id);

@@ -29,8 +29,8 @@ export class EditItemDialogComponent extends BaseNavigableDialogComponent {
     itemDescription: new FormControl('', null)
   })
   
-  protected override async onDisplay() {
-    (await this.service.getItem(this.service.getSelectedItemId())).subscribe({
+  protected override onDisplay() {
+    this.service.getItem(this.service.getSelectedItemId()).subscribe({
       next: (response) => {
         this.item = response;
         this.form.controls["itemId"].setValue(this.item.id);
@@ -43,9 +43,9 @@ export class EditItemDialogComponent extends BaseNavigableDialogComponent {
     });
   } 
   
-  async submit() {
+  submit() {
     this.form.controls["itemId"].setValue(this.item.id);
-    (await this.service.updateItem(this.form)).subscribe({
+    this.service.updateItem(this.form).subscribe({
       next: (_response) => {
         this.eventBus.emit(new EventData(ItemEvents.UpdateItem+this.item.id, ''));
         this.exit();

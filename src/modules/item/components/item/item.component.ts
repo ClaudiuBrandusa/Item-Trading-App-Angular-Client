@@ -62,8 +62,8 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
     this.eventBusUtility.clearSubscriptions();
   }
 
-  async getItem() {
-    (await this.service.getItem(this.itemId)).subscribe({
+  getItem() {
+    this.service.getItem(this.itemId).subscribe({
       next: (response: Item) => {
         this.item = response
         if (this.onItemLoadedFunction) this.onItemLoadedFunction(response);

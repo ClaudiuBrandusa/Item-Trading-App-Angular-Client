@@ -24,8 +24,8 @@ export class TradeDetailsDialogComponent extends BaseNavigableDialogComponent {
     this.eventId = TradeDialogsEvents.Details;
   }
 
-  protected override async onDisplay() {
-    (await this.service.getCurrentTrade()).subscribe({
+  protected override onDisplay() {
+    this.service.getCurrentTrade().subscribe({
       next: (response) => {
         this.trade = response as Trade;
         this.isSentTrade = this.service.isSentTrade(this.trade.tradeId);

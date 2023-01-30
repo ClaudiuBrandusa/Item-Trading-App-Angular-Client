@@ -21,7 +21,7 @@ export class ListInventoryComponent extends ListDirective implements OnInit, OnD
     this.eventBusUtility = new EventBusUtils(eventBus);
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     this.initSubscriptions();
     this.listItems();
   }
@@ -30,8 +30,8 @@ export class ListInventoryComponent extends ListDirective implements OnInit, OnD
     this.eventBusUtility.clearSubscriptions();
   }
 
-  async listItems(searchString: string = "") {
-    (await this.service.list(searchString)).subscribe({
+  listItems(searchString: string = "") {
+    this.service.list(searchString).subscribe({
       next: (response: any) => {
         this.addList(response.itemsId);
       },

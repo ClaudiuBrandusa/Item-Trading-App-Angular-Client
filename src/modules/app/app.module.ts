@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -10,7 +10,6 @@ import { AppComponent } from './components/app.component';
 import { IdentityModule } from 'src/modules/identity/identity.module';
 import { SharedModule } from 'src/modules/shared/shared.module';
 import { AuthGuardService } from './guards/auth-guard.service';
-import { ConfigService } from 'src/modules/shared/services/config.service';
 import { EndpointsService } from './services/endpoints.service';
 import { UnauthGuardService } from './guards/unauth-guard.service';
 import { ItemModule } from 'src/modules/item/item.module';
@@ -51,21 +50,9 @@ export function refreshTokenGetter() {
     InventoryModule,
     TradesModule
   ],
-  providers: [AuthGuardService, UnauthGuardService, ConfigService, EndpointsService,
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      deps: [ConfigService],
-      useFactory: configureServicesFactory
-    },
+  providers: [AuthGuardService, UnauthGuardService, EndpointsService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true } ],
   exports: [AppRoutingModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-
-// factory functions
-
-export function configureServicesFactory(configService: ConfigService) {
-  return () => configService.load();
-}

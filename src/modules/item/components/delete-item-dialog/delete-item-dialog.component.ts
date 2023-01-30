@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { Item } from 'src/modules/item/models/responses/item';
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
 import { BaseNavigableDialogComponent } from '../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
-import { Interval } from '../../../shared/utils/async-utils';
 import { EventData } from '../../../shared/utils/event-data';
 import { ItemDialogEvents } from '../../enums/item-dialog-events';
 import { ItemEvents } from '../../enums/item-events';
@@ -26,8 +25,8 @@ export class DeleteItemDialogComponent extends BaseNavigableDialogComponent {
     this.eventId = ItemDialogEvents.DeleteItem
   }
   
-  protected override async onDisplay() {
-    (await this.service.getItem(this.service.getSelectedItemId())).subscribe({
+  protected override onDisplay() {
+    this.service.getItem(this.service.getSelectedItemId()).subscribe({
       next: (response) => {
         this.item = response;
       },
@@ -43,9 +42,9 @@ export class DeleteItemDialogComponent extends BaseNavigableDialogComponent {
 
   // response functions
 
-  async delete() {
-    await Interval(() => this.item == null, 10, 1000);
-    (await this.service.deleteItem(this.item.id)).subscribe({
+  delete() {
+    if(this.item == null) return;
+    this.service.deleteItem(this.item.id).subscribe({
       next: (_response) => {
         this.eventBus.emit(new EventData(ItemEvents.DeleteItem, this.item.id));
         this.exitDialog();

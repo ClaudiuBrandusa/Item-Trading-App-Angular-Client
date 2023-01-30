@@ -4,7 +4,6 @@ import { InventoryService } from '../../../inventory/services/inventory.service'
 import { BaseNavigableDialogComponent } from '../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
 import { EventBusService } from '../../../shared/services/event-bus.service';
 import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
-import { TradeEvents } from '../../enums/trade-events';
 import { TradeItem } from '../../models/trade-item';
 import { TradesService } from '../../services/trades.service';
 import { InventoryItem } from '../../../inventory/models/responses/inventory-item';
@@ -81,13 +80,13 @@ export class SetTradeItemQuantityAndPriceDialogComponent extends BaseNavigableDi
     return this.itemDataLoaded && this.lockedItemAmountLoaded;
   }
 
-  private async loadData() {
+  private loadData() {
     this.loadInventoryItemData();
     this.loadLockedItemAmount();
   }
 
-  private async loadInventoryItemData() {
-    (await this.inventoryService.getItem(this.currentTradeItem.id)).subscribe({
+  private loadInventoryItemData() {
+    this.inventoryService.getItem(this.currentTradeItem.id).subscribe({
       next: (response) => {
         this.inventoryItem = response as InventoryItem;
       },
@@ -100,8 +99,8 @@ export class SetTradeItemQuantityAndPriceDialogComponent extends BaseNavigableDi
     })
   }
 
-  private async loadLockedItemAmount() {
-    (await this.inventoryService.getLockedAmount(this.currentTradeItem.id)).subscribe({
+  private loadLockedItemAmount() {
+    this.inventoryService.getLockedAmount(this.currentTradeItem.id).subscribe({
       next: (response) => {
         this.lockedItemAmount = response as LockedInventoryItemAmount;
       },

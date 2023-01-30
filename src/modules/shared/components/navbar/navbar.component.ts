@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RefreshTokenService } from 'src/modules/identity/services/refresh-token.service';
 
 @Component({
@@ -6,11 +6,11 @@ import { RefreshTokenService } from 'src/modules/identity/services/refresh-token
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
 
   constructor(public authService: RefreshTokenService) { }
 
-  ngOnInit(): void {
+  logout() {
+    this.authService.signOut();
   }
-
 }

@@ -22,7 +22,6 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
     super(http, configService, injector, eventBus, router);
     this.eventBusUtility = new EventBusUtils(eventBus);
     this.InitOptions();
-    this.initBackgroundEventBusSubscription();
   }
 
   ngOnInit(): void {
@@ -91,7 +90,7 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
         this.setTokens(result);
       }, 
       error: _err => {
-        this.eventBusService.emit(new EventData("logout", null));
+        this.signOut();
       }});
     }
   }
@@ -103,13 +102,6 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
   signOut() {
     localStorage.clear();
     this.router.navigate(['login']);
-  }
-
-  // subscriptions could be triggered even if the service is destroyed
-  private initBackgroundEventBusSubscription() {
-    this.eventBusUtility.on('logout', () => {
-      this.signOut();
-    });
   }
 
   private initEventBusSubscription() {

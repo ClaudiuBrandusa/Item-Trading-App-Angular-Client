@@ -27,3 +27,5 @@
 .overflow-y-auto { overflow-y: auto !important; }
 
 .overflow-y-scroll { overflow-y: scroll !important; }
+
+.overflow-x-hidden { overflow-x: hidden !important; }

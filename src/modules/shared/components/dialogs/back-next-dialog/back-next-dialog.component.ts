@@ -19,6 +19,9 @@ export class BackNextDialogComponent implements OnInit {
   @Input()
   noNext = false;
 
+  @Input()
+  isPopup = false;
+
   // the form used in the component
   // this input is optional 
   @Input()
@@ -35,15 +38,32 @@ export class BackNextDialogComponent implements OnInit {
   nextButtonCustomName: string = '';
 
   @Input()
+  cancelButtonCallback: () => void
+
+  @Input()
   cancelButtonCustomName: string = '';
 
   // used in order to decide which dialog's component is
   @Input()
   dialogId: string;
 
+  @Input()
+  isNextButtonDisabled?: boolean;
+
+  defaultCancelButtonName: string;
+
   constructor(private navigationStack: DialogNavigationStackService, private eventBus: EventBusService) { }
 
+  private cancelEvent: string;
+
   ngOnInit(): void {
+    this.defaultCancelButtonName = this.isRoot() ? "Cancel" : "Back";
+
+    if (this.isPopup) {
+      this.cancelEvent = DialogEvents.ClosePopup;
+    } else {
+      this.cancelEvent = this.isRoot() ? DialogEvents.Exit : DialogEvents.Back;
+    }
   }
 
   next() {
@@ -54,14 +74,15 @@ export class BackNextDialogComponent implements OnInit {
     }
   }
 
-  back() {
-    if(this.isRoot())
-      return;
-    this.emit(DialogEvents.Back, this.dialogId);
+  cancel() {
+    this.handleCustomCancelButton();
+    this.emit(this.cancelEvent, this.dialogId);
   }
 
-  cancel() {
-    this.emit(DialogEvents.Exit, this.dialogId);
+  private handleCustomCancelButton() {
+    if (this.cancelButtonCallback) {
+      this.cancelButtonCallback();
+    }
   }
 
   isRoot() {

@@ -10,21 +10,36 @@ export class SearchBarComponent implements OnInit {
   @Input()
   placeholder: string = "";
 
+  @Input()
+  filteringOptions: Array<string>;
+
   searchString: string;
+
+  hasFiltering: boolean = false;
 
   @Output()
   searchFunction = new EventEmitter<any>();
 
+  selectedFilterValue: string;
+
   constructor() { }
 
   ngOnInit(): void {
+    if (this.filteringOptions) {
+      this.hasFiltering = true;
+      this.selectedFilterValue = this.filteringOptions[0];
+    }
   }
 
   search() {
     if(this.searchString == null || this.searchString.length == 0)
       return;
-    if(this.searchFunction != null)
-      this.searchFunction.emit(this.searchString);
-  }
+    if(this.searchFunction != null) {
+      const body : any = { searchString: this.searchString };
+      if (this.selectedFilterValue)
+        body.filter = this.selectedFilterValue;
 
+      this.searchFunction.emit(body);
+    }
+  }
 }

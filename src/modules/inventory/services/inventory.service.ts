@@ -72,6 +72,12 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
     return this.http.get(this.base_path + this.endpointsModel.list, { params }).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
+  async getLockedAmount(itemId: string) {
+    await this.waitUntilIsLoaded();
+
+    return this.http.get(this.base_path + this.endpointsModel.get_locked_amount + `?itemId=${itemId}`).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
+  }
+
   select(itemId: string) {
     this.selectedItemId = itemId;
   }
@@ -124,8 +130,8 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
   response2Item(response: any) {
     let model = new InventoryItem();
 
-    model.id = response.itemId;
-    model.name = response.itemName;
+    model.itemId = response.itemId;
+    model.itemName = response.itemName;
     model.quantity = response.quantity;
 
     return model;

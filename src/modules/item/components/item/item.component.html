@@ -1,6 +1,6 @@
-<div class="d-flex row position-relative my-2 p-2 bg-white border-thin border-style-solid border-red">
+<div *ngIf="loaded" class="d-flex row position-relative my-2 p-2 bg-white border-thin border-style-solid border-red">
   <div class="col flex-0 p-0">
-    <div class="position-relative border-bold border-style-solid bg-gunmetal border-dark-red w-5rem h-5rem">
+    <div class="position-relative border-bold border-style-solid bg-gunmetal border-dark-red" [ngClass]="small ? 'w-3rem h-3rem' : 'w-5rem h-5rem'">
       <div class="position-absolute transform-center color-white">
         Item
       </div>

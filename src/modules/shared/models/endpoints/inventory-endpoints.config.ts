@@ -3,4 +3,5 @@ export class InventoryEndpoints {
     drop: string;
     get: string;
     list: string;
+    get_locked_amount: string;
 }

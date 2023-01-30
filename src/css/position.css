@@ -15,6 +15,11 @@
     top: 3.5rem;
 }
 
+.fixed-top-on-bottom-navbar-border {
+    position: fixed;
+    top: 3.3rem;
+}
+
 .z-index-10 { z-index: 10; }
 
 .z-index--10 { z-index: -10; }

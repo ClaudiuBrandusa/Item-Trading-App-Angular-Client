@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -85,15 +85,6 @@ export class ItemService extends NetworkService<ItemEndpoints> {
 
     if(this.endpointsModel == null)
       return;
-  }
-
-  private getOptions(content: any) {
-    return {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      }),
-      body: content
-    }
   }
 
   // form2model

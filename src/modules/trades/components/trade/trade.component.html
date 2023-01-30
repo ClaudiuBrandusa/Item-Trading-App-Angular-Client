@@ -1,0 +1,34 @@
+<div class="d-flex flex-row position-relative m-3 p-2 bg-white border-thin border-style-solid border-red">
+  <div class="flex-column flex-0 p-0">
+    <div class="position-relative border-bold border-style-solid bg-gunmetal border-dark-red w-5rem h-5rem">
+      <div class="position-absolute transform-center color-white">
+        Trade
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!loading" class="d-flex flex-column mx-2 flex-grow-1">
+    <div class="flex-row flex-grow-1">
+      <strong>{{ isSentTrade ? 'Sent to' : 'Received from' }}</strong>:
+      {{ userId }}
+    </div>
+    <div class="flex-row flex-grow-1">
+      <strong>Total price</strong>:
+      {{ totalPrice }}
+    </div>
+    <div (click)="details()" class="d-flex flex-column color-blue no-select cursor-pointer"><strong>Details</strong></div>
+  </div>
+  <div class="d-flex flex-row align-items-center flex-0 p-0 pl-1 text-center no-select cursor-pointer">
+    <span *ngIf="!isRespondedTrade">
+      <div *ngIf="isSentTrade" class="p-2 bg-dark-red color-white no-select cursor-pointer" (click)="cancel()">
+        <strong>Cancel</strong>
+      </div>
+      
+      <div *ngIf="!isSentTrade" class="p-2 bg-cadet-blue color-white no-select cursor-pointer" (click)="respond()">
+        <strong>Respond</strong>
+      </div>
+    </span>
+    <div *ngIf="isRespondedTrade" [class]="respondedButtonClass">
+      <strong>{{ response }}</strong>
+    </div>
+  </div>
+</div>

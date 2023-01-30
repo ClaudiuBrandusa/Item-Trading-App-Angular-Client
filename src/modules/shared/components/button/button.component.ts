@@ -1,11 +1,11 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-button',
   templateUrl: './button.component.html',
   styleUrls: ['./button.component.css']
 })
-export class ButtonComponent implements OnInit {
+export class ButtonComponent {
   private _disabled: boolean;
 
   @Input() set disabled(value: boolean) {
@@ -33,8 +33,4 @@ export class ButtonComponent implements OnInit {
   rounded = false;
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
-
 }

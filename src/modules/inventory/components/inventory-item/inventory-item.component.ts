@@ -49,10 +49,8 @@ export class InventoryItemComponent extends ListItemDirective implements OnDestr
 
   async getItem() {
     (await this.service.getItem(this.itemId)).subscribe({
-      next: (response: any) => {
-        this.item.id = response.itemId;
-        this.item.name = response.itemName;
-        this.item.quantity = response.quantity;
+      next: (response) => {
+        this.item = response as InventoryItem;
       },
       error: (error: ItemError) => {
         if (error.errorCode == 400)
@@ -76,7 +74,7 @@ export class InventoryItemComponent extends ListItemDirective implements OnDestr
   // Utils
 
   private selectItemOption(eventId: string) {
-    this.service.select(this.item.id);
+    this.service.select(this.item.itemId);
     this.eventBusUtility.emit(DialogEvents.Open, eventId);
   }
 }

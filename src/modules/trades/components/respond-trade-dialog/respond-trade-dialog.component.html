@@ -1,0 +1,21 @@
+<app-event-dialog eventId={{eventId}}>
+  <app-small-dialog class="position-fixed transform-center">
+    <app-back-next-dialog title="Respond to trade" [noNext]="true" dialogId={{eventId}}>
+      <div class="d-flex flex-column mx-auto my-2">
+        <span class="mx-2 header-font">Choose between the following two options:</span>
+      </div>
+      <div class="d-flex flex-row justify-content-center mb-3 px-4 items-flex-gap">
+        <div class="d-flex flex-column flex-grow-1 align-items-center bg-dark-red">
+          <div class="p-2 color-white no-select cursor-pointer" (click)="deny()">
+            <strong>Deny</strong>
+          </div>
+        </div>
+        <div class="d-flex flex-column flex-grow-1 align-items-center bg-cadet-blue">
+          <div class="p-2 color-white no-select cursor-pointer" (click)="accept()">
+            <strong>Accept</strong>
+          </div>
+        </div>
+      </div>
+    </app-back-next-dialog>
+  </app-small-dialog>
+</app-event-dialog>

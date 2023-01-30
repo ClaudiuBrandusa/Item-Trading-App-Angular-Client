@@ -24,11 +24,12 @@ export abstract class ListDirective {
     this.onAddElement(itemId);
   }
 
-  addList(itemsId: Array<string>) {
+  addList(itemsId: Array<string>, withoutClearing: boolean = false) {
     if(itemsId == null)
       return;
 
-    this.clear();
+    if (!withoutClearing)
+      this.clear();
 
     itemsId.forEach(async elementId => {
       this.add(elementId);

@@ -1,15 +1,15 @@
 <app-medium-dialog>
-    <app-navigation-header></app-navigation-header>
-    <form [formGroup]="formGroup" (ngSubmit)="submit">
-        <div class="d-flex flex-wrap flex-column justify-content-center border-left border-right border-normal border-dark-red">
-            <div class="p-3"></div>
-            <ng-content></ng-content>
-            <div class="p-3"></div>
-        </div>
-        <div class="d-flex justify-content-center border-top-0 border-normal border border-dark-red border-radius-rounded-bottom-left border-radius-rounded-bottom-right">
-            <app-button type="submit" [disabled]="!formGroup.valid">{{submitButtonText}}</app-button>
-            <br><br><br>
-        </div>
-    </form>
+  <app-navigation-header></app-navigation-header>
+  <form [formGroup]="formGroup" (ngSubmit)="submit">
+    <div class="d-flex flex-wrap flex-column justify-content-center border-left border-right border-normal border-dark-red">
+      <div class="p-3"></div>
+      <ng-content></ng-content>
+      <div class="p-3"></div>
+    </div>
+    <div class="d-flex justify-content-center border-top-0 border-normal border border-dark-red border-radius-rounded-bottom-left border-radius-rounded-bottom-right">
+      <app-button type="submit" [disabled]="!formGroup.valid">{{submitButtonText}}</app-button>
+      <br><br><br>
+    </div>
+  </form>
 </app-medium-dialog>
 

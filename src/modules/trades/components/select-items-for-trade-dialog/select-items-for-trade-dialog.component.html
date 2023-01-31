@@ -11,11 +11,9 @@
 					</div>
 				</div>
 				<div class="flex-grow-1 overflow-y-auto mx-2">
-					<div class="container">
-						<div *ngFor="let id of foundItemsId; let i=index">
-							<app-item [hideUntilLoaded]="true" [onItemLoadedFunction]="onItemLoaded.bind(this)" (click)="select(id)" [ItemId]="id" [isShort]="true" [hasControls]="false" [small]="true" class="cursor-pointer no-select"></app-item>
-						</div>
-					</div>
+          <div *ngFor="let id of foundItemsId; let i=index">
+            <app-item [hideUntilLoaded]="true" [onItemLoadedFunction]="onItemLoaded.bind(this)" (click)="select(id)" [ItemId]="id" [isShort]="true" [hasControls]="false" [small]="true" class="cursor-pointer no-select"></app-item>
+          </div>
 				</div>
 			</div>
 		</app-back-next-dialog>

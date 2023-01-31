@@ -11,10 +11,8 @@
             </div>
           </div>
           <div class="flex-grow-1 overflow-y-auto mx-2">
-            <div class="container">
-              <div *ngFor="let id of foundUsersId; let i=index">
-                <app-found-user (click)="select(id)" [ItemId]="id" class="cursor-pointer no-select"></app-found-user>
-              </div>
+            <div *ngFor="let id of foundUsersId; let i=index">
+              <app-found-user (click)="select(id)" [ItemId]="id" class="cursor-pointer no-select"></app-found-user>
             </div>
           </div>
         </div>

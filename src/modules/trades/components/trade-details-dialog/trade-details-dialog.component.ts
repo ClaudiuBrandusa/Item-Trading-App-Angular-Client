@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BaseNavigableDialogComponent } from '../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
+import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from '../../../shared/services/event-bus.service';
 import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
 import { Trade } from '../../models/responses/trade';
@@ -11,7 +11,7 @@ import { getTradeReceiverOrSender, getTradeTotalPrice } from '../../utils/trade-
   templateUrl: './trade-details-dialog.component.html',
   styleUrls: ['./trade-details-dialog.component.css']
 })
-export class TradeDetailsDialogComponent extends BaseNavigableDialogComponent {
+export class TradeDetailsDialogComponent extends BaseDialogComponent {
 
   trade: Trade;
   isSentTrade: boolean;

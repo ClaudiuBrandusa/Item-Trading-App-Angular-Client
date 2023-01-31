@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Item } from 'src/modules/item/models/responses/item';
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
-import { BaseNavigableDialogComponent } from '../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
+import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { ItemDialogEvents } from '../../enums/item-dialog-events';
 import { ItemService } from '../../services/item.service';
 
@@ -10,7 +10,7 @@ import { ItemService } from '../../services/item.service';
   templateUrl: './details-item-dialog.component.html',
   styleUrls: ['./details-item-dialog.component.css']
 })
-export class DetailsItemDialogComponent extends BaseNavigableDialogComponent {
+export class DetailsItemDialogComponent extends BaseDialogComponent {
 
   item: Item = null;
 

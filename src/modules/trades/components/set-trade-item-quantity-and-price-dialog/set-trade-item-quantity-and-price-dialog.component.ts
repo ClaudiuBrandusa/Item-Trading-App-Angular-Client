@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { InventoryService } from '../../../inventory/services/inventory.service';
-import { BaseNavigableDialogComponent } from '../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
+import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from '../../../shared/services/event-bus.service';
 import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
 import { TradeItem } from '../../models/trade-item';
@@ -17,7 +17,7 @@ import { TradeItemEvents } from '../../enums/trade-item-events';
   templateUrl: './set-trade-item-quantity-and-price-dialog.component.html',
   styleUrls: ['./set-trade-item-quantity-and-price-dialog.component.css']
 })
-export class SetTradeItemQuantityAndPriceDialogComponent extends BaseNavigableDialogComponent {
+export class SetTradeItemQuantityAndPriceDialogComponent extends BaseDialogComponent {
 
   currentTradeItem: TradeItem;
   inventoryItem: InventoryItem;
@@ -112,5 +112,4 @@ export class SetTradeItemQuantityAndPriceDialogComponent extends BaseNavigableDi
       }
     })
   }
-
 }

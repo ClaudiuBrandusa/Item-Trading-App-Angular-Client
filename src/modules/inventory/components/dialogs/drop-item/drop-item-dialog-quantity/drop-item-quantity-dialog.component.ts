@@ -1,6 +1,6 @@
 import { Component, Output } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { BaseNavigableDialogComponent } from '../../../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
+import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { InventoryDialogEvents } from '../../../../enums/InventoryDialogEvents';
 import { InventoryEvents } from '../../../../enums/InventoryEvents';
 import { EventBusService } from '../../../../../shared/services/event-bus.service';
@@ -13,7 +13,7 @@ import { EventData } from '../../../../../shared/utils/event-data';
   templateUrl: './drop-item-quantity-dialog.component.html',
   styleUrls: ['./drop-item-quantity-dialog.component.css']
 })
-export class DropItemQuantityDialogComponent extends BaseNavigableDialogComponent {
+export class DropItemQuantityDialogComponent extends BaseDialogComponent {
 
   _itemName
 

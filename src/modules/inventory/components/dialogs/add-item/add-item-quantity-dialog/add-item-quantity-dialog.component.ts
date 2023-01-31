@@ -4,7 +4,7 @@ import { AddItemRequest } from 'src/modules/inventory/models/requests/add-item-r
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
 import { InventoryDialogEvents } from '../../../../enums/InventoryDialogEvents';
 import { InventoryService } from '../../../../services/inventory.service';
-import { BaseNavigableDialogComponent } from '../../../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
+import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { InventoryEvents } from '../../../../enums/InventoryEvents';
 import { ItemService } from '../../../../../item/services/item.service';
 import { ItemError } from '../../../../../shared/models/errors/item-error';
@@ -15,7 +15,7 @@ import { EventData } from '../../../../../shared/utils/event-data';
   templateUrl: './add-item-quantity-dialog.component.html',
   styleUrls: ['./add-item-quantity-dialog.component.css']
 })
-export class AddItemQuantityDialogComponent extends BaseNavigableDialogComponent {
+export class AddItemQuantityDialogComponent extends BaseDialogComponent {
   
   model = new AddItemRequest();
   _itemName

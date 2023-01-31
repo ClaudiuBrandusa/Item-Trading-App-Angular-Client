@@ -17,7 +17,6 @@ import { HugeDialogComponent } from './components/dialog/huge-dialog/huge-dialog
 import { BaseDialogComponent } from './components/dialog/base-dialog/base-dialog.component';
 import { BackNextDialogComponent } from './components/dialogs/back-next-dialog/back-next-dialog.component';
 import { DialogNavigationStackService } from './services/dialog-navigation-stack.service';
-import { BaseNavigableDialogComponent } from './components/dialog/base-navigable-dialog/base-navigable-dialog.component';
 import { DialogNavigationService } from './services/dialog-navigation.service';
 import { PageNavigationService } from './services/page-navigation.service';
 
@@ -39,8 +38,7 @@ import { PageNavigationService } from './services/page-navigation.service';
     MediumDialogComponent,
     HugeDialogComponent,
     BaseDialogComponent,
-    BackNextDialogComponent,
-    BaseNavigableDialogComponent
+    BackNextDialogComponent
   ],
   imports: [
     CommonModule,
@@ -59,8 +57,7 @@ import { PageNavigationService } from './services/page-navigation.service';
     SmallDialogComponent,
     MediumDialogComponent,
     HugeDialogComponent,
-    BackNextDialogComponent,
-    BaseNavigableDialogComponent
+    BackNextDialogComponent
   ],
   providers: [DialogNavigationStackService, DialogNavigationService]
 })

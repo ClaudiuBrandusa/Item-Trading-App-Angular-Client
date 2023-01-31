@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BaseNavigableDialogComponent } from '../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
+import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from '../../../shared/services/event-bus.service';
 import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
 import { TradeResponse } from '../../enums/trade-response';
@@ -12,7 +12,7 @@ import { TradeEvents } from '../../enums/trade-events';
   templateUrl: './respond-trade-dialog.component.html',
   styleUrls: ['./respond-trade-dialog.component.css']
 })
-export class RespondTradeDialogComponent extends BaseNavigableDialogComponent {
+export class RespondTradeDialogComponent extends BaseDialogComponent {
 
   constructor(protected eventBus: EventBusService, private service: TradesService) {
     super(eventBus);

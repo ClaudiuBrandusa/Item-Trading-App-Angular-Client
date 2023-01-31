@@ -63,7 +63,18 @@ export class BaseDialogComponent implements OnInit, OnDestroy {
   }
 
   protected exitDialog() {
-    this.emit(`${DialogEvents.Exit}/${this.eventId}`, null);
+    this.emit(DialogEvents.Exit, this.eventId);
   }
 
+  protected navigate(pageId: string) {
+    this.emitNavigation(pageId);
+  }
+
+  protected exitAllDialogs() {
+    this.emit(DialogEvents.ClearStack, null);
+  }
+
+  private emitNavigation(pageId: string) {
+    this.emit(DialogEvents.Open, pageId);
+  }
 }

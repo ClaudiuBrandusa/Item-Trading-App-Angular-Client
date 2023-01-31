@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../../identity/services/user.service';
-import { BaseNavigableDialogComponent } from '../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
+import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from '../../../shared/services/event-bus.service';
 import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
 import { TradesService } from '../../services/trades.service';
@@ -11,7 +11,7 @@ import { FoundUsersResponse } from '../../models/responses/found-users.response'
   templateUrl: './select-trade-receiver-dialog.component.html',
   styleUrls: ['./select-trade-receiver-dialog.component.css']
 })
-export class SelectTradeReceiverDialogComponent extends BaseNavigableDialogComponent {
+export class SelectTradeReceiverDialogComponent extends BaseDialogComponent {
 
   foundUsersId = new Array<string>();
   searchString : string = "";

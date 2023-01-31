@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BaseNavigableDialogComponent } from '../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
+import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from '../../../shared/services/event-bus.service';
 import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
 import { TradeItem } from '../../models/trade-item';
@@ -16,7 +16,7 @@ import { TradeEvents } from '../../enums/trade-events';
   templateUrl: './select-items-for-trade-dialog.component.html',
   styleUrls: ['./select-items-for-trade-dialog.component.css']
 })
-export class SelectItemsForTradeDialogComponent extends BaseNavigableDialogComponent {
+export class SelectItemsForTradeDialogComponent extends BaseDialogComponent {
 
   foundItemsId = new Array<string>();
   searchString = "";

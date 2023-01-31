@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Item } from 'src/modules/item/models/responses/item';
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
-import { BaseNavigableDialogComponent } from '../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
+import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { ItemDialogEvents } from '../../enums/item-dialog-events';
 import { ItemService } from '../../services/item.service';
 import { ItemEvents } from '../../enums/item-events';
@@ -13,7 +13,7 @@ import { EventData } from '../../../shared/utils/event-data';
   templateUrl: './edit-item-dialog.component.html',
   styleUrls: ['./edit-item-dialog.component.css']
 })
-export class EditItemDialogComponent extends BaseNavigableDialogComponent {
+export class EditItemDialogComponent extends BaseDialogComponent {
 
   item: Item = null;
   
@@ -64,5 +64,4 @@ export class EditItemDialogComponent extends BaseNavigableDialogComponent {
   protected override onHide() {
     this.form.reset();
   }
-
 }

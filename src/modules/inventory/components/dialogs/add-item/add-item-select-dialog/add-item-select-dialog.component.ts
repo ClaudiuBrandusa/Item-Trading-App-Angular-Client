@@ -3,14 +3,14 @@ import { InventoryDialogEvents } from 'src/modules/inventory/enums/InventoryDial
 import { InventoryService } from 'src/modules/inventory/services/inventory.service';
 import { ItemService } from 'src/modules/item/services/item.service';
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
-import { BaseNavigableDialogComponent } from '../../../../../shared/components/dialog/base-navigable-dialog/base-navigable-dialog.component';
+import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 
 @Component({
   selector: 'dialog-add-item-select',
   templateUrl: './add-item-select-dialog.component.html',
   styleUrls: ['./add-item-select-dialog.component.css']
 })
-export class AddItemSelectDialogComponent extends BaseNavigableDialogComponent {
+export class AddItemSelectDialogComponent extends BaseDialogComponent {
 
   foundItems = new Array<string>();
   searchString = "";
@@ -64,5 +64,4 @@ export class AddItemSelectDialogComponent extends BaseNavigableDialogComponent {
       }
     })
   }
-
 }

@@ -35,23 +35,25 @@ export class ItemService extends NetworkService<ItemEndpoints> {
 
   deleteItem(itemId: string) {
     const options = this.formatContentToRequestBody({
-      itemId: itemId
+      itemId
     });
 
     return this.http.delete(this.base_path + this.endpointsModel.delete, options).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   getItem(itemId: string) {
-    return this.http.get<Item>(this.base_path + this.endpointsModel.get + "?itemId=" + itemId).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
+    const params = this.getQueryParamsFromObject({
+      itemId
+    });
+
+    return this.http.get<Item>(this.base_path + this.endpointsModel.get, { params }).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   listItems(searchString: string = "") {
-    const params : any = {}
-
-    if (searchString) {
-      params.searchString = searchString
-    }
-
+    const params = this.getQueryParamsFromObject({
+      searchString
+    });
+    
     return this.http.get<any>(this.base_path + this.endpointsModel.list, { params }).pipe(catchError((error) => (this.buildError(error))));
   }
 

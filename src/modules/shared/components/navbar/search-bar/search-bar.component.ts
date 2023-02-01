@@ -13,6 +13,9 @@ export class SearchBarComponent implements OnInit {
   @Input()
   filteringOptions: Array<string>;
 
+  @Input()
+  allowEmptySearch = false;
+
   searchString: string;
 
   hasFiltering: boolean = false;
@@ -32,9 +35,10 @@ export class SearchBarComponent implements OnInit {
   }
 
   search() {
-    if(this.searchString == null || this.searchString.length == 0)
-      return;
-    if(this.searchFunction != null) {
+    if (!this.allowEmptySearch)
+      if (this.searchString == null || this.searchString.length == 0)
+        return;
+    if (this.searchFunction != null) {
       const body : any = { searchString: this.searchString };
       if (this.selectedFilterValue)
         body.filter = this.selectedFilterValue;

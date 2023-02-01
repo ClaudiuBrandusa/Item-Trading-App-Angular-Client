@@ -1,5 +1,5 @@
 <div class="d-flex h-v-max flex-column align-self-stretch">
-  <app-navbar-search-bar placeholder="Enter item name" (searchFunction)="search(getEventValue($event))"></app-navbar-search-bar>
+  <app-navbar-search-bar placeholder="Enter item name" (searchFunction)="search(getEventValue($event))" [allowEmptySearch]="true"></app-navbar-search-bar>
   
   <div class="flex-grow-1 overflow-y-auto">
     <div class="container">

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ItemError } from '../models/errors/item-error';
 import { EndpointsService } from '../../app/services/endpoints.service';
@@ -38,5 +38,9 @@ export abstract class NetworkService<T> {
       }),
       body: content
     }
+  }
+
+  protected getQueryParamsFromObject(object) {
+    return new HttpParams({ fromObject: object})
   }
 }

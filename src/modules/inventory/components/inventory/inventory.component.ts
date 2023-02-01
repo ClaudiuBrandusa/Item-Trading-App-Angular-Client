@@ -12,8 +12,8 @@ export class InventoryComponent {
 
   constructor(private eventBus: EventBusService) { }
 
-  search(searchString: string) {
-    this.eventBus.emit(new EventData(InventoryEvents.Refresh, searchString));
+  search(searchBody) {
+    this.eventBus.emit(new EventData(InventoryEvents.Refresh, searchBody.searchString));
   }
 
   getEventValue(event: Event) {

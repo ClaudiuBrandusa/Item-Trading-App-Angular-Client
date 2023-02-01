@@ -54,21 +54,27 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
   }
 
   getItem(itemId: string) {
-    return this.http.get(this.base_path + this.endpointsModel.get + "?itemId=" + itemId).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
+    const params = this.getQueryParamsFromObject({
+      itemId
+    });
+
+    return this.http.get(this.base_path + this.endpointsModel.get, { params }).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   list(searchString: string = "") {
-    const params : any = {}
-
-    if (searchString) {
-      params.searchString = searchString
-    }
-
+    const params = this.getQueryParamsFromObject({
+      searchString
+    });
+    
     return this.http.get(this.base_path + this.endpointsModel.list, { params }).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   getLockedAmount(itemId: string) {
-    return this.http.get(this.base_path + this.endpointsModel.get_locked_amount + `?itemId=${itemId}`).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
+    const params = this.getQueryParamsFromObject({
+      itemId
+    });
+
+    return this.http.get(this.base_path + this.endpointsModel.get_locked_amount, { params }).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   select(itemId: string) {

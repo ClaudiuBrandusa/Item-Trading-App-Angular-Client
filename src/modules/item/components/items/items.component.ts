@@ -12,8 +12,8 @@ export class ItemsComponent {
 
   constructor(private eventBus: EventBusService) { }
 
-  search(searchString: string) {
-    this.eventBus.emit(new EventData(ItemEvents.RefreshItemsList, searchString));
+  search(searchBody) {
+    this.eventBus.emit(new EventData(ItemEvents.RefreshItemsList, searchBody.searchString));
   }
 
   getEventValue(event: Event) {

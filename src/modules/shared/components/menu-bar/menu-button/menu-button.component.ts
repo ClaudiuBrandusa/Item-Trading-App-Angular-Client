@@ -18,17 +18,16 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
   selected = false;
   
   private eventBusUtility: EventBusUtils;
-
   private locked = false;
   
   protected openSubscriptionId: string;
   protected exitSubscriptionId: string;
   protected openEventId: string;
+  protected allowDeselectOnClick: boolean = true;
 
   constructor(protected eventBusService: EventBusService) {
     this.eventBusUtility = new EventBusUtils(eventBusService);
   }
-
 
   ngOnInit(): void {
     this.initEvents();
@@ -49,7 +48,7 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
       this.openEventId = DialogEvents.Open;
 
     this.eventBusUtility.on(this.openSubscriptionId, (_data) => {
-      this.select();
+      this.select(false);
     })
 
     this.eventBusUtility.on(this.exitSubscriptionId, (_data) => {
@@ -59,16 +58,22 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
 
   @HostListener('click', ['$event'])
   async click(_e) {
-    this.announceSelection();
+    if (this.locked || (!this.allowDeselectOnClick && this.selected)) return;
     this.locked = true;
-    setTimeout(() => this.locked = false, 100);
+    if (this.selected) {
+      this.deselect();
+    } else {
+      this.select();
+    }
+    if (this.allowDeselectOnClick) setTimeout(() => this.locked = false, 100);
   }
 
-  protected async select() {
+  protected async select(announceSelection: boolean = true) {
     if(this.selected) {
       return;
     }
     
+    if (announceSelection) this.announceSelection();
     await this.onSelect();
       
     // then we mark the current button as selected
@@ -83,6 +88,7 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
     await this.onDeselect();
 
     this.selected = false;
+    this.locked = false;
   }
 
   protected announceSelection() {
@@ -90,13 +96,17 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
   }
 
   private checkIfIsSelected(): void {
-    if(this.isSelected()) {
+    if(this.shouldSelect()) {
       this.announceSelection();
     }
   }
 
-  protected isSelected() {
+  protected shouldSelect() {
     return false;
+  }
+
+  protected isLocked() {
+    return this.locked;
   }
 
   protected onSelect() {}

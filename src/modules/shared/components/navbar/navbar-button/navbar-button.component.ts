@@ -14,8 +14,13 @@ export class NavbarButtonComponent extends MenuButtonComponent {
   @Input()
   route: string = null; // the route where the button leads on click
 
+  private get currentRoute () {
+    return new URL(window.location.href).pathname.slice(1);
+  }
+
   constructor(private router: Router, protected eventBusService: EventBusService) {
     super(eventBusService);
+    this.allowDeselectOnClick = false;
   }
 
   override ngOnInit(): void {
@@ -31,15 +36,12 @@ export class NavbarButtonComponent extends MenuButtonComponent {
   }
 
   protected override async onSelect(_data: any = null) {
-    if(this.hasRoute())
+    if (this.currentRoute != this.route) {
       await this.router.navigate([this.route]);
+    }
   }
 
-  protected override isSelected(): boolean {
-    return this.router.url.slice(1) === this.route;
-  }
-
-  private hasRoute() {
-    return this.route != null;
+  protected override shouldSelect() {
+    return this.currentRoute === this.route;
   }
 }

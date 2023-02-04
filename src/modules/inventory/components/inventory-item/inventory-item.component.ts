@@ -67,10 +67,6 @@ export class InventoryItemComponent extends ListItemDirective implements OnDestr
     this.selectItemOption(InventoryDialogEvents.Drop);
   }
 
-  details() {
-    this.selectItemOption(InventoryDialogEvents.Details);
-  }
-
   // Utils
 
   private selectItemOption(eventId: string) {

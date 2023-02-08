@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { EventData } from '../../shared/utils/event-data';
 import { IdentityEndpoints } from '../../shared/models/endpoints/identity-endpoints.config';
 import { EndpointsService } from '../../app/services/endpoints.service';
+import { SignalR } from '../../shared/enums/signal-r.enum';
 
 @Injectable()
 export abstract class IdentityService extends NetworkService<IdentityEndpoints> {
@@ -51,7 +52,7 @@ export abstract class IdentityService extends NetworkService<IdentityEndpoints> 
   
   updateTokens(newTokens: any) {
     if(this.setTokens(newTokens)) {
-      this.eventBus.emit(new EventData('connected', newTokens.token));
+      this.eventBus.emit(new EventData(SignalR.Connected, newTokens.token));
       this.redirectToDefaultPage();
     }
   }

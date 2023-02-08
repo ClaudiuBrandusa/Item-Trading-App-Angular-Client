@@ -10,6 +10,7 @@ import { IdentityService } from './identity.service';
 import { RefreshTokenRequest } from 'src/modules/identity/models/requests/refresh-token-request.model';
 import appConfig from '../../../assets/application-config.json';
 import { EndpointsService } from '../../app/services/endpoints.service';
+import { SignalR } from '../../shared/enums/signal-r.enum';
 
 @Injectable({
   providedIn: "root"
@@ -96,6 +97,7 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
   }
 
   signOut() {
+    this.eventBusUtility.emit(SignalR.Disconnected, null);
     localStorage.clear();
     this.router.navigate(['login']);
   }

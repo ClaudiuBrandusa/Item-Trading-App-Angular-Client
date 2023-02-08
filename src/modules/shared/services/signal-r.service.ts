@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as signalR from "@microsoft/signalr"
+import { SignalR } from '../enums/signal-r.enum';
 import { EventBusUtils } from '../utils/event-bus.utility';
 import { EventBusService } from './event-bus.service';
 
@@ -14,7 +15,7 @@ export class SignalRService {
   
   constructor(eventBus: EventBusService) {
     this.eventBusUtility = new EventBusUtils(eventBus);
-    this.eventBusUtility.on('connected', (token) => {
+    this.eventBusUtility.on(SignalR.Connected, (token) => {
       if (!!!token) return;
       if (this.hubConnection && this.connectionStatus) return;
       this.connectionStatus = true;
@@ -22,7 +23,7 @@ export class SignalRService {
       this.addConnectListener();
     });
 
-    this.eventBusUtility.on('disconnected', () => {
+    this.eventBusUtility.on(SignalR.Disconnected, () => {
       this.connectionStatus = false;
       this.hubConnection.stop();
     });
@@ -40,7 +41,6 @@ export class SignalRService {
       
       this.hubConnection
         .start()
-        .then(() => console.log('Connection started'))
         .catch(error => console.log('Error while starting connection: ', error));
   }
 

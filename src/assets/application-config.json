@@ -1,48 +1,49 @@
 {
-    "refreshTokenOptions": {
-        "silentRefreshIntervalInSeconds": 300
+  "refreshTokenOptions": {
+    "silentRefreshIntervalInSeconds": 300
+  },
+  "APIOptions": {
+    "Url": "http://localhost:5000"
+  },
+  "Endpoints": {
+    "Identity": {
+      "login": "/identity/login",
+      "register": "/identity/register",
+      "refresh": "/identity/refresh",
+      "get_username": "/identity/get_username",
+      "list_users": "/identity/list_users"
     },
-    "APIOptions": {
-        "Url": "http://localhost:5000"
+    "Inventory": {
+      "add": "/inventory/add",
+      "drop": "/inventory/drop",
+      "get": "/inventory/get",
+      "list": "/inventory/list",
+      "get_locked_amount": "/inventory/get_locked_amount"
     },
-    "Endpoints": {
-        "Identity": {
-            "login": "/identity/login",
-            "register": "/identity/register",
-            "refresh": "/identity/refresh",
-            "get_username": "/identity/get_username",
-            "list_users": "/identity/list_users"
-        },
-        "Inventory": {
-            "add": "/inventory/add",
-            "drop": "/inventory/drop",
-            "get": "/inventory/get",
-            "list": "/inventory/list"
-        },
-        "Item": {
-            "get": "/item/get",
-            "list": "/item/list",
-            "create": "/item/create",
-            "update": "/item/update",
-            "delete": "/item/delete"
-        },
-        "Trade": {
-            "get_sent": "/trade/get_sent",
-            "get_sent_responded": "/trade/get_sent_responded",
-            "get_received": "/trade/get_received",
-            "get_received_responded": "/trade/get_received_responded",
-            "list_sent": "/trade/list_sent",
-            "list_sent_responded": "/trade/list_sent_responded",
-            "list_received": "/trade/list_received",
-            "list_received_responded": "/trade/list_received_responded",
-            "offer": "/trade/offer",
-            "accept": "/trade/accept",
-            "reject": "/trade/reject",
-            "cancel": "/trade/cancel"
-        },
-        "Wallet": {
-            "get": "/wallet/get",
-            "update": "/wallet/update"
-        }
+    "Item": {
+      "get": "/item/get",
+      "list": "/item/list",
+      "create": "/item/create",
+      "update": "/item/update",
+      "delete": "/item/delete"
+    },
+    "Trade": {
+      "get_sent": "/trade/get_sent",
+      "get_sent_responded": "/trade/get_sent_responded",
+      "get_received": "/trade/get_received",
+      "get_received_responded": "/trade/get_received_responded",
+      "list_sent": "/trade/list_sent",
+      "list_sent_responded": "/trade/list_sent_responded",
+      "list_received": "/trade/list_received",
+      "list_received_responded": "/trade/list_received_responded",
+      "offer": "/trade/offer",
+      "accept": "/trade/accept",
+      "reject": "/trade/reject",
+      "cancel": "/trade/cancel"
+    },
+    "Wallet": {
+      "get": "/wallet/get",
+      "update": "/wallet/update"
     }
+  }
 }

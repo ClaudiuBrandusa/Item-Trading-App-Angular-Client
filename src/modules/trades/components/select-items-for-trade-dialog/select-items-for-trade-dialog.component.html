@@ -1,0 +1,29 @@
+<app-event-dialog eventId={{eventId}}>
+	<app-huge-dialog class="position-fixed transform-center">
+		<app-back-next-dialog title="Select items" dialogId={{eventId}} cancelButtonCustomName="Change receiver" nextButtonCustomName="Create trade" [nextButtonCallback]="createTrade.bind(this)" [isNextButtonDisabled]="!tradeValid">
+			<div class="d-flex flex-column h-min-5rem h-max-35rem">
+				<div class="d-flex flex-row flex-0 m-2">
+					<div class="d-flex flex-grow-1 mr-1">
+						<input [(ngModel)]="searchString" type="search" class="w-100 border rounded-pill border-normal" (keyup.enter)="search()" (input)="clearResults()" placeholder="Enter item name" />
+					</div>
+					<div class="d-flex flex-0 ml-1">
+						<app-button (click)="search()" [rounded]="true">Search</app-button>
+					</div>
+				</div>
+				<div class="flex-grow-1 overflow-y-auto mx-2">
+          <div *ngFor="let id of foundItemsId; let i=index">
+            <app-item [hideUntilLoaded]="true" [onItemLoadedFunction]="onItemLoaded.bind(this)" (click)="select(id)" [ItemId]="id" [isShort]="true" [hasControls]="false" [small]="true" class="cursor-pointer no-select"></app-item>
+          </div>
+				</div>
+			</div>
+		</app-back-next-dialog>
+	</app-huge-dialog>
+	<app-dialog class="position-fixed right-side-panel-position right-side-panel-size">
+		<span class="m-2"><strong>Selected items</strong></span>
+		<div class="right-side-panel-height overflow-y-auto overflow-x-hidden mb-1 right-side-panel-size">
+			<div class="mx-1" *ngIf="isActive">
+				<app-selected-trade-items-list></app-selected-trade-items-list>
+			</div>
+		</div>
+	</app-dialog>
+</app-event-dialog>

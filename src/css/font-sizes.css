@@ -1,1 +1,13 @@
 .font-size-small { font-size: 0.7rem }
+
+.header-font {
+	font-size: 14px;
+}
+
+.field-font {
+	font-size: 11px;
+}
+
+.button-font {
+	font-size: 12px;
+}

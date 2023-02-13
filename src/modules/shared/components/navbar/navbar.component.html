@@ -1,0 +1,12 @@
+<div *ngIf="this.authService.isLoggedIn()" class="d-flex flex-row align-self-stretch bg-outer-space-crayola h-3.5rem border-normal border-bottom border-dark-red">
+  <ul class="d-flex flex-row">
+    <navbar-button route="">Index</navbar-button>
+    <navbar-button route="items">Items</navbar-button>
+    <navbar-button route="inventory">Inventory</navbar-button>
+    <navbar-button route="trades">Trades</navbar-button>
+    <navbar-button route="wallet">Wallet</navbar-button>
+  </ul>
+  <ul class="d-flex flex-row ml-auto">
+    <navbar-button (click)="logout()">Logout</navbar-button>
+  </ul>
+</div>

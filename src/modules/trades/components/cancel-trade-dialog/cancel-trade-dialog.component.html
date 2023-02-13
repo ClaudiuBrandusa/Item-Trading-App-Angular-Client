@@ -1,0 +1,9 @@
+<app-event-dialog eventId={{eventId}}>
+  <app-small-dialog class="position-fixed transform-center">
+    <app-back-next-dialog title="Cancel trade" cancelButtonCustomName="No" nextButtonCustomName="Yes" [cancelButtonCallback]="exit.bind(this)" [nextButtonCallback]="cancelTrade.bind(this)" dialogId={{eventId}}>
+      <div class="d-flex flex-column mx-auto my-2">
+        <span class="mx-2 header-font">Do you wish to cancel this trade?</span>
+      </div>
+    </app-back-next-dialog>
+  </app-small-dialog>
+</app-event-dialog>

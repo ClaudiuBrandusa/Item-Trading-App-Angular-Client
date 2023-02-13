@@ -1,0 +1,10 @@
+.control-button {
+	height: 2.5rem;
+	padding: 0 4px;
+	display: flex;
+	align-items: center;
+}
+
+.min-width {
+  min-width: 15rem;
+}

@@ -1,0 +1,3 @@
+<div *ngFor="let id of ItemsIdList; let i=index">
+	<app-selected-trade-item [getTradeItemFunction]="getTradeItem.bind(this)" [ItemId]="id" [editable]="editAllowed" class="cursor-pointer no-select"></app-selected-trade-item>
+</div>

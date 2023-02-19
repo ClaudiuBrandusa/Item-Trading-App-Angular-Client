@@ -4,15 +4,15 @@ import { FormGroup } from '@angular/forms';
 import { LoginRequest } from 'src/modules/identity/models/requests/loginRequest.model';
 import { IdentityService } from './identity.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
-import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { EndpointsService } from '../../app/services/endpoints.service';
+import { NavigationService } from '../../shared/services/navigation.service';
 
 @Injectable()
 export class LoginService extends IdentityService {
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router){
-    super(http, endpointsService, eventBus, router);
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected navigationService: NavigationService){
+    super(http, endpointsService, eventBus, navigationService);
     this.login_path = this.base_path + this.endpointsModel.login;
   }
 

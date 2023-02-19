@@ -8,12 +8,8 @@
   </div>
   
   <app-menu-bar>
-    <app-menu-button eventId="create_item_dialog">Create item</app-menu-button>
+    <app-menu-button [eventId]="createEventId">Create item</app-menu-button>
   </app-menu-bar>
 </div>
 
-<!-- Dialogs -->
-<dialog-create-item></dialog-create-item>
-<dialog-details-item></dialog-details-item>
-<dialog-edit-item></dialog-edit-item>
-<dialog-delete-item></dialog-delete-item>
+<router-outlet></router-outlet>

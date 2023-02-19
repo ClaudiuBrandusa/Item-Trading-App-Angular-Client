@@ -1,6 +1,7 @@
 import { Component, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DialogEvents } from '../../../enums/dialog-events.enum';
 import { EventBusService } from '../../../services/event-bus.service';
+import { NavigationService } from '../../../services/navigation.service';
 import { EventBusUtils } from '../../../utils/event-bus.utility';
 import { EventData } from '../../../utils/event-data';
 
@@ -23,9 +24,10 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
   protected openSubscriptionId: string;
   protected exitSubscriptionId: string;
   protected openEventId: string;
+  protected exitEventId: string;
   protected allowDeselectOnClick: boolean = true;
 
-  constructor(protected eventBusService: EventBusService) {
+  constructor(protected eventBusService: EventBusService, protected navigationService: NavigationService) {
     this.eventBusUtility = new EventBusUtils(eventBusService);
   }
 
@@ -46,11 +48,13 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
       this.exitSubscriptionId = `${DialogEvents.Exit}/${this.eventId}`;
     if (!this.openEventId)
       this.openEventId = DialogEvents.Open;
+    if (!this.exitEventId)
+      this.exitEventId = DialogEvents.Exit;
 
     this.eventBusUtility.on(this.openSubscriptionId, (_data) => {
       this.select(false);
     })
-
+    
     this.eventBusUtility.on(this.exitSubscriptionId, (_data) => {
       this.deselect();
     })
@@ -68,13 +72,14 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
     if (this.allowDeselectOnClick) setTimeout(() => this.locked = false, 100);
   }
 
-  protected async select(announceSelection: boolean = true) {
+  protected async select(announceSelection = true, withNavigation = true) {
     if(this.selected) {
       return;
     }
     
+    this.onSelect();
+    if (withNavigation && !await this.navigate()) return;
     if (announceSelection) this.announceSelection();
-    await this.onSelect();
       
     // then we mark the current button as selected
     this.selected = true;
@@ -84,8 +89,6 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
     if(!this.selected) {
       return;
     }
-    
-    await this.onDeselect();
 
     this.selected = false;
     this.locked = false;
@@ -97,19 +100,23 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
 
   private checkIfIsSelected(): void {
     if(this.shouldSelect()) {
-      this.announceSelection();
+      this.select(false, false);
     }
   }
 
   protected shouldSelect() {
-    return false;
+    return this.navigationService.currentRoute === this.eventId;
   }
 
   protected isLocked() {
     return this.locked;
   }
 
-  protected onSelect() {}
+  protected async navigate() {
+    return await this.navigationService.navigate(this.eventId, true, true)
+  }
 
-  protected onDeselect() {}
+  protected onSelect() {
+    this.eventBusUtility.emit(`${this.exitEventId}/${this.navigationService.currentRoute}`, null);
+  }
 }

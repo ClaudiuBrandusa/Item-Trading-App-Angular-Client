@@ -19,6 +19,9 @@ import { BackNextDialogComponent } from './components/dialogs/back-next-dialog/b
 import { DialogNavigationStackService } from './services/dialog-navigation-stack.service';
 import { DialogNavigationService } from './services/dialog-navigation.service';
 import { PageNavigationService } from './services/page-navigation.service';
+import { DefaultDialogComponent } from './components/default-dialog/default-dialog.component';
+import { NavigationService } from './services/navigation.service';
+import { DarkBackgroundComponent } from './components/dark-background/dark-background.component';
 
 
 
@@ -38,7 +41,9 @@ import { PageNavigationService } from './services/page-navigation.service';
     MediumDialogComponent,
     HugeDialogComponent,
     BaseDialogComponent,
-    BackNextDialogComponent
+    BackNextDialogComponent,
+    DefaultDialogComponent,
+    DarkBackgroundComponent
   ],
   imports: [
     CommonModule,
@@ -57,7 +62,9 @@ import { PageNavigationService } from './services/page-navigation.service';
     SmallDialogComponent,
     MediumDialogComponent,
     HugeDialogComponent,
-    BackNextDialogComponent
+    BackNextDialogComponent,
+    DefaultDialogComponent,
+    DarkBackgroundComponent
   ],
   providers: [DialogNavigationStackService, DialogNavigationService]
 })

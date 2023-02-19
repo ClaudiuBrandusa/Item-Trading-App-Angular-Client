@@ -1,18 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { RegisterRequest } from 'src/modules/identity/models/requests/registerRequest.model';
 import { EndpointsService } from '../../app/services/endpoints.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
+import { NavigationService } from '../../shared/services/navigation.service';
 import { IdentityService } from './identity.service';
 
 @Injectable()
 export class RegisterService extends IdentityService {
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router) {
-    super(http, endpointsService, eventBus, router);
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected navigationService: NavigationService) {
+    super(http, endpointsService, eventBus, navigationService);
     this.register_path = this.base_path + this.endpointsModel.register;
   }
 

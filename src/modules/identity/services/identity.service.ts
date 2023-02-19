@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
-import { Router } from '@angular/router';
+import { NavigationService } from '../../shared/services/navigation.service';
 import { EventData } from '../../shared/utils/event-data';
 import { IdentityEndpoints } from '../../shared/models/endpoints/identity-endpoints.config';
 import { EndpointsService } from '../../app/services/endpoints.service';
@@ -11,7 +11,7 @@ import { SignalR } from '../../shared/enums/signal-r.enum';
 @Injectable()
 export abstract class IdentityService extends NetworkService<IdentityEndpoints> {
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router) {
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected navigationService: NavigationService) {
     super(http, endpointsService, eventBus);
     this.endpointsModel = this.endpointsService.getIdentity();
    }
@@ -47,7 +47,7 @@ export abstract class IdentityService extends NetworkService<IdentityEndpoints> 
   }
 
   private redirectToDefaultPage() {
-    this.router.navigate([""]);
+    this.navigationService.navigate("");
   }
   
   updateTokens(newTokens: any) {

@@ -2,13 +2,16 @@ import { Component } from '@angular/core';
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
 import { EventData } from '../../../shared/utils/event-data';
 import { ItemEvents } from '../../enums/item-events';
+import { ItemRoutes } from '../../enums/item-routes';
 
 @Component({
   selector: 'app-items',
-  templateUrl: './items.component.html',
-  styleUrls: ['./items.component.css']
+  templateUrl: './items-page.component.html',
+  styleUrls: ['./items-page.component.css']
 })
 export class ItemsComponent {
+
+  createEventId = ItemRoutes.Create
 
   constructor(private eventBus: EventBusService) { }
 
@@ -22,5 +25,4 @@ export class ItemsComponent {
       return str;
     return (event.target as HTMLInputElement).value;
   }
-
 }

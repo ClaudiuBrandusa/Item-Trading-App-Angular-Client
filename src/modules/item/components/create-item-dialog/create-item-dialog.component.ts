@@ -1,42 +1,38 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
-import { ItemDialogEvents } from '../../enums/item-dialog-events';
 import { ItemEvents } from '../../enums/item-events';
 import { ItemService } from '../../services/item.service';
+import { NavigationService } from '../../../shared/services/navigation.service';
+import { EventData } from '../../../shared/utils/event-data';
 
 @Component({
   selector: 'dialog-create-item',
   templateUrl: './create-item-dialog.component.html',
   styleUrls: ['./create-item-dialog.component.css']
 })
-export class CreateItemDialogComponent extends BaseDialogComponent {
+export class CreateItemDialogComponent {
 
-  constructor(private fb: FormBuilder, private service: ItemService, protected eventBus: EventBusService) 
-  {
-    super(eventBus);
-    this.eventId = ItemDialogEvents.CreateItem
-  }
+  constructor(private fb: FormBuilder, private service: ItemService, protected eventBus: EventBusService, private navigationService: NavigationService) {}
 
   form = this.fb.group({
     itemName: new FormControl('', Validators.required),
     itemDescription: new FormControl('', null)
   });
 
-  protected override onHide() {
-    this.form.reset();
-  }
-
   submit() {
     this.service.createItem(this.form).subscribe({
       next: (response: any) => {
-        this.emit(ItemEvents.CreateItem, response.itemId.toString());
-        this.exitDialog();
+        this.eventBus.emit(new EventData(ItemEvents.CreateItem, response.itemId.toString()));
+        this.exit();
       },
       error: (error) => {
         console.log('Error at create item found: ', error);
       }
     });
+  }
+  
+  exit() {
+    this.navigationService.back();
   }
 }

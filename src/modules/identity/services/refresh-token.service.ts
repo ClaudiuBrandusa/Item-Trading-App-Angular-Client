@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { interval, Observable, Subscription } from 'rxjs';
 import { RefreshTokenOptions } from '../../shared/models/options/refresh-token-options.config';
 import { EventBusService } from '../../shared/services/event-bus.service';
@@ -11,6 +10,7 @@ import { RefreshTokenRequest } from 'src/modules/identity/models/requests/refres
 import appConfig from '../../../assets/application-config.json';
 import { EndpointsService } from '../../app/services/endpoints.service';
 import { SignalR } from '../../shared/enums/signal-r.enum';
+import { NavigationService } from '../../shared/services/navigation.service';
 
 @Injectable({
   providedIn: "root"
@@ -19,8 +19,8 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
 
   private eventBusUtility: EventBusUtils;
   
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router, private eventBusService: EventBusService) {
-    super(http, endpointsService, eventBus, router);
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected navigationService: NavigationService) {
+    super(http, endpointsService, eventBus, navigationService);
     this.refresh_path = this.base_path + this.endpointsModel.refresh;
     this.eventBusUtility = new EventBusUtils(eventBus);
     this.options = appConfig.refreshTokenOptions;
@@ -99,7 +99,7 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
   signOut() {
     this.eventBusUtility.emit(SignalR.Disconnected, null);
     localStorage.clear();
-    this.router.navigate(['login']);
+    this.navigationService.navigate('login');
   }
 
   private initEventBusSubscription() {

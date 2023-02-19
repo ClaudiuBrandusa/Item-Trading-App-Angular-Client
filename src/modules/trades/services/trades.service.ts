@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { catchError, Observable, throwError } from 'rxjs';
 import { EndpointsService } from '../../app/services/endpoints.service';
 import { TradeEndpoints } from '../../shared/models/endpoints/trade-endpoints.config';
@@ -17,7 +16,7 @@ import { TradesSearchOptions } from '../models/trades-search-options';
 @Injectable()
 export class TradesService extends NetworkService<TradeEndpoints> {
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router) {
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService) {
     super(http, endpointsService, eventBus);
     this.currentTrade = new CurrentTrade({ tradeItems: new Array<TradeItem>() });
     this.endpointsModel = this.endpointsService.getTrade();

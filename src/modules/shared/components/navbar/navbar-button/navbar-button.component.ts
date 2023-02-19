@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { Router } from '@angular/router';
 import { PageEvents } from '../../../enums/page-events.enum';
 import { EventBusService } from '../../../services/event-bus.service';
+import { NavigationService } from '../../../services/navigation.service';
 import { MenuButtonComponent } from '../../menu-bar/menu-button/menu-button.component';
 
 @Component({
@@ -18,8 +18,8 @@ export class NavbarButtonComponent extends MenuButtonComponent {
     return new URL(window.location.href).pathname.slice(1);
   }
 
-  constructor(private router: Router, protected eventBusService: EventBusService) {
-    super(eventBusService);
+  constructor(protected eventBusService: EventBusService, protected navigationService: NavigationService) {
+    super(eventBusService, navigationService);
     this.allowDeselectOnClick = false;
   }
 
@@ -31,14 +31,13 @@ export class NavbarButtonComponent extends MenuButtonComponent {
     this.openSubscriptionId = `${PageEvents.Open}/${this.eventId}`;
     this.exitSubscriptionId = `${PageEvents.Exit}/${this.eventId}`;
     this.openEventId = PageEvents.Open;
+    this.exitEventId = PageEvents.Exit;
 
     super.ngOnInit();
   }
-
-  protected override async onSelect(_data: any = null) {
-    if (this.currentRoute != this.route) {
-      await this.router.navigate([this.route]);
-    }
+  
+  protected async navigate() {
+    return await this.navigationService.navigate(this.route);
   }
 
   protected override shouldSelect() {

@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { CreateItemRequest } from 'src/modules/item/models/requests/create-item-request.model';
 import { UpdateItemRequest } from 'src/modules/item/models/requests/update-item-request.model';
@@ -16,7 +15,7 @@ export class ItemService extends NetworkService<ItemEndpoints> {
 
   selectedItemId = "";
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router) {
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService) {
     super(http, endpointsService, eventBus);
     this.endpointsModel = this.endpointsService.getItem();
   }

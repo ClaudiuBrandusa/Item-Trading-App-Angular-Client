@@ -2,11 +2,10 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Item } from 'src/modules/item/models/responses/item';
 import { ListItemDirective } from 'src/modules/shared/directives/list/list-item/list-item.directive';
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
-import { DialogEvents } from '../../../shared/enums/dialog-events.enum';
+import { NavigationService } from '../../../shared/services/navigation.service';
 import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
-import { EventData } from '../../../shared/utils/event-data';
-import { ItemDialogEvents } from '../../enums/item-dialog-events';
 import { ItemEvents } from '../../enums/item-events';
+import { ItemRoutes } from '../../enums/item-routes';
 import { ItemService } from '../../services/item.service';
 
 @Component({
@@ -38,7 +37,7 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
 
   private eventBusUtility: EventBusUtils;
 
-  constructor(private service: ItemService, private eventBus: EventBusService) {
+  constructor(private service: ItemService, eventBus: EventBusService, private navigationService: NavigationService) {
     super();
     this.eventBusUtility = new EventBusUtils(eventBus);
   }
@@ -78,22 +77,21 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
   }
 
   edit() {
-    this.select(ItemDialogEvents.EditItem);
+    this.select(ItemRoutes.Edit);
   }
 
   delete() {
-    this.select(ItemDialogEvents.DeleteItem);
+    this.select(ItemRoutes.Delete);
   }
 
   details() {
-    this.select(ItemDialogEvents.DetailsItem);
+    this.select(ItemRoutes.Details);
   }
 
   // Utils
 
-  private select(eventId: string) {
+  private async select(route: string) {
     this.service.select(this.item.id);
-    this.eventBus.emit(new EventData(DialogEvents.Open, eventId));
+    if (!await this.navigationService.navigate(route, true)) this.service.deselect();
   }
-
 }

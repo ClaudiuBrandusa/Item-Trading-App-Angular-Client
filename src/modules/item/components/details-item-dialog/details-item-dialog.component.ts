@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Item } from 'src/modules/item/models/responses/item';
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
-import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
-import { ItemDialogEvents } from '../../enums/item-dialog-events';
+import { NavigationService } from '../../../shared/services/navigation.service';
 import { ItemService } from '../../services/item.service';
 
 @Component({
@@ -10,7 +9,7 @@ import { ItemService } from '../../services/item.service';
   templateUrl: './details-item-dialog.component.html',
   styleUrls: ['./details-item-dialog.component.css']
 })
-export class DetailsItemDialogComponent extends BaseDialogComponent {
+export class DetailsItemDialogComponent implements OnInit {
 
   item: Item = null;
 
@@ -22,13 +21,17 @@ export class DetailsItemDialogComponent extends BaseDialogComponent {
     return this.item == null ? "" : this.item.description;
   }
 
-  constructor(protected eventBus: EventBusService, private service: ItemService) {
-    super(eventBus);
-    this.eventId = ItemDialogEvents.DetailsItem;
-  }
+  constructor(protected eventBus: EventBusService, private service: ItemService, private navigationService: NavigationService) {}
 
-  protected override onDisplay() {
-    this.service.getItem(this.service.getSelectedItemId()).subscribe({
+  ngOnInit() {
+    const itemId = this.service.getSelectedItemId();
+
+    if (!!!itemId) {
+      this.exit();
+      return;
+    }
+
+    this.service.getItem(itemId).subscribe({
       next: (response) => {
         this.item = response;
       },
@@ -37,12 +40,9 @@ export class DetailsItemDialogComponent extends BaseDialogComponent {
       }
     })
   }
-  
-  protected override onHide() {
-    this.service.deselect();
-  }
 
   exit() {
-    this.exitDialog();
+    this.service.deselect();
+    this.navigationService.back();
   }
 }

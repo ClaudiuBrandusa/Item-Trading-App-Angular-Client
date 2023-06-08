@@ -4,6 +4,7 @@ import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
 import { TradeEvents } from '../../enums/trade-events';
 import { TradesSearchOptions } from '../../models/trades-search-options';
 import { TradesService } from '../../services/trades.service';
+import { TradeRoutes } from '../../enums/trade-routes';
 
 @Component({
   selector: 'app-trades-page',
@@ -13,6 +14,8 @@ import { TradesService } from '../../services/trades.service';
 export class TradesPageComponent implements OnInit, OnDestroy {
   filteringOptions: Array<string>;
   searchOptions: TradesSearchOptions;
+  createTradeEventId = TradeRoutes.SelectReceiver;
+  createTradeEventRoute = `${TradeRoutes.Create}/${TradeRoutes.SelectReceiver}`;
   private eventBusUtility: EventBusUtils;
 
   constructor(eventBus: EventBusService, private service: TradesService) {
@@ -32,6 +35,10 @@ export class TradesPageComponent implements OnInit, OnDestroy {
   search() {
     this.service.setSearchOptions(this.searchOptions);
     this.eventBusUtility.emit(TradeEvents.RefreshList, this.searchOptions);
+  }
+
+  onCreateTradeClicked() {
+    this.service.setCreateTradeState(true);
   }
 
   // Subscriptions

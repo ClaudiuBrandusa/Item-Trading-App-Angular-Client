@@ -10,15 +10,12 @@ import { SearchBarComponent } from './components/navbar/search-bar/search-bar.co
 import { FormsModule } from '@angular/forms';
 import { MenuBarComponent } from './components/menu-bar/menu-bar.component';
 import { MenuButtonComponent } from './components/menu-bar/menu-button/menu-button.component';
-import { EventDialogComponent } from './components/event-dialog/event-dialog.component';
 import { SmallDialogComponent } from './components/dialog/small-dialog/small-dialog.component';
 import { MediumDialogComponent } from './components/dialog/medium-dialog/medium-dialog.component';
 import { HugeDialogComponent } from './components/dialog/huge-dialog/huge-dialog.component';
-import { BaseDialogComponent } from './components/dialog/base-dialog/base-dialog.component';
-import { BackNextDialogComponent } from './components/dialogs/back-next-dialog/back-next-dialog.component';
-import { DialogNavigationStackService } from './services/dialog-navigation-stack.service';
-import { DialogNavigationService } from './services/dialog-navigation.service';
 import { PageNavigationService } from './services/page-navigation.service';
+import { DefaultDialogComponent } from './components/default-dialog/default-dialog.component';
+import { DarkBackgroundComponent } from './components/dark-background/dark-background.component';
 
 
 
@@ -33,12 +30,11 @@ import { PageNavigationService } from './services/page-navigation.service';
     SearchBarComponent,
     MenuBarComponent,
     MenuButtonComponent,
-    EventDialogComponent,
     SmallDialogComponent,
     MediumDialogComponent,
     HugeDialogComponent,
-    BaseDialogComponent,
-    BackNextDialogComponent
+    DefaultDialogComponent,
+    DarkBackgroundComponent
   ],
   imports: [
     CommonModule,
@@ -53,14 +49,13 @@ import { PageNavigationService } from './services/page-navigation.service';
     SearchBarComponent,
     MenuBarComponent,
     MenuButtonComponent,
-    EventDialogComponent,
     SmallDialogComponent,
     MediumDialogComponent,
     HugeDialogComponent,
-    BackNextDialogComponent
-  ],
-  providers: [DialogNavigationStackService, DialogNavigationService]
+    DefaultDialogComponent,
+    DarkBackgroundComponent
+  ]
 })
 export class SharedModule {
-  constructor(_: DialogNavigationService, __: PageNavigationService) {}
+  constructor(_: PageNavigationService) {}
  }

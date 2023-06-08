@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AddItemRequest } from 'src/modules/inventory/models/requests/add-item-request.model';
 import { DropItemRequest } from 'src/modules/inventory/models/requests/drop-item-request.model';
 import { InventoryItem } from 'src/modules/inventory/models/responses/inventory-item';
@@ -14,9 +13,10 @@ import { EndpointsService } from '../../app/services/endpoints.service';
 @Injectable()
 export class InventoryService extends NetworkService<InventoryEndpoints> {
 
-  selectedItemId = "";
+  private selectedItemId = "";
+  selectItemState = false;
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router) {
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService) {
     super(http, endpointsService, eventBus);
     this.endpointsModel = this.endpointsService.getInventory();
   }
@@ -75,6 +75,10 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
     });
 
     return this.http.get(this.base_path + this.endpointsModel.get_locked_amount, { params }).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
+  }
+
+  hasItemSelected() {
+    return !!this.selectedItemId;
   }
 
   select(itemId: string) {

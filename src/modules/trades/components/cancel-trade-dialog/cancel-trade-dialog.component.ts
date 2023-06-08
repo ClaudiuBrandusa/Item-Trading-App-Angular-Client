@@ -1,31 +1,28 @@
 import { Component } from '@angular/core';
-import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from '../../../shared/services/event-bus.service';
-import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
 import { TradeEvents } from '../../enums/trade-events';
 import { TradeResponse } from '../../enums/trade-response';
 import { TradesService } from '../../services/trades.service';
 import { CanceledTradeResponse } from '../../models/responses/canceled-trade.response';
+import { EventData } from '../../../shared/utils/event-data';
+import { NavigationService } from '../../../shared/services/navigation.service';
 
 @Component({
   selector: 'dialog-cancel-trade',
   templateUrl: './cancel-trade-dialog.component.html',
   styleUrls: ['./cancel-trade-dialog.component.css']
 })
-export class CancelTradeDialogComponent extends BaseDialogComponent {
+export class CancelTradeDialogComponent {
 
-  constructor(protected eventBus: EventBusService, private service: TradesService) {
-    super(eventBus);
-    this.eventId = TradeDialogsEvents.Cancel;
-  }
+  constructor(private eventBus: EventBusService, private service: TradesService, private navigationService: NavigationService) {}
 
   cancelTrade() {
     const trade = this.service.getSelectedTrade();
     this.service.respondToTradeOffer(trade.tradeId, TradeResponse.Cancel).subscribe({
       next: (response) => {
         const data = response as CanceledTradeResponse;
-        this.emit(TradeEvents.Remove, data.tradeOfferId);
-        this.exitDialog();
+        this.eventBus.emit(new EventData(TradeEvents.Remove, data.tradeOfferId));
+        this.exit();
       },
       error: (error) => {
         console.log(`Error found at cancel trade: ${error}`)
@@ -36,5 +33,6 @@ export class CancelTradeDialogComponent extends BaseDialogComponent {
 
   exit() {
     this.service.deselect();
+    this.navigationService.back();
   }
 }

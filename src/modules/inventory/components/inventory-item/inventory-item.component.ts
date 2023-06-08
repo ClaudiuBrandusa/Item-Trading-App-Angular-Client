@@ -3,12 +3,12 @@ import { InventoryItem } from 'src/modules/inventory/models/responses/inventory-
 import { ListItemDirective } from 'src/modules/shared/directives/list/list-item/list-item.directive';
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
 import { ItemError } from '../../../shared/models/errors/item-error';
-import { DialogEvents } from '../../../shared/enums/dialog-events.enum';
 import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
 import { EventData } from '../../../shared/utils/event-data';
-import { InventoryDialogEvents } from '../../enums/InventoryDialogEvents';
 import { InventoryEvents } from '../../enums/InventoryEvents';
 import { InventoryService } from '../../services/inventory.service';
+import { InventoryRoutes } from '../../enums/inventory-routes';
+import { NavigationService } from '../../../shared/services/navigation.service';
 
 @Component({
   selector: 'app-inventory-item',
@@ -28,7 +28,7 @@ export class InventoryItemComponent extends ListItemDirective implements OnDestr
 
   private eventBusUtility: EventBusUtils;
   
-  constructor(private service: InventoryService, private eventBus: EventBusService) {
+  constructor(private service: InventoryService, private eventBus: EventBusService, private navigationService: NavigationService) {
     super();
     this.eventBusUtility = new EventBusUtils(eventBus);
   }
@@ -60,17 +60,17 @@ export class InventoryItemComponent extends ListItemDirective implements OnDestr
   }
 
   add() {
-    this.selectItemOption(InventoryDialogEvents.AddQuantity);
+    this.selectItemOption(InventoryRoutes.Quantity);
   }
 
   drop() {
-    this.selectItemOption(InventoryDialogEvents.Drop);
+    this.selectItemOption(InventoryRoutes.Drop);
   }
 
   // Utils
 
-  private selectItemOption(eventId: string) {
+  private async selectItemOption(route: string) {
     this.service.select(this.item.itemId);
-    this.eventBusUtility.emit(DialogEvents.Open, eventId);
+    if (!await this.navigationService.navigate(route, true)) this.service.deselect();
   }
 }

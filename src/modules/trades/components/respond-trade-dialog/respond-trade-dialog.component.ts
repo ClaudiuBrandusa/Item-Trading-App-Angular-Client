@@ -1,23 +1,20 @@
 import { Component } from '@angular/core';
-import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from '../../../shared/services/event-bus.service';
-import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
 import { TradeResponse } from '../../enums/trade-response';
 import { TradesService } from '../../services/trades.service';
 import { RespondedTradeResponse } from '../../models/responses/responded-trade.response';
 import { TradeEvents } from '../../enums/trade-events';
+import { NavigationService } from '../../../shared/services/navigation.service';
+import { EventData } from '../../../shared/utils/event-data';
 
 @Component({
   selector: 'dialog-respond-trade',
   templateUrl: './respond-trade-dialog.component.html',
   styleUrls: ['./respond-trade-dialog.component.css']
 })
-export class RespondTradeDialogComponent extends BaseDialogComponent {
+export class RespondTradeDialogComponent {
 
-  constructor(protected eventBus: EventBusService, private service: TradesService) {
-    super(eventBus);
-    this.eventId = TradeDialogsEvents.Respond;
-  }
+  constructor(private eventBus: EventBusService, private service: TradesService, private navigationService: NavigationService) {}
 
   deny() {
     this.respond(false);
@@ -33,14 +30,19 @@ export class RespondTradeDialogComponent extends BaseDialogComponent {
     this.service.respondToTradeOffer(currentTrade.tradeId, response).subscribe({
       next: (responseBody) => {
         const data = responseBody as RespondedTradeResponse
-        this.emit(TradeEvents.Update+data.tradeOfferId, response);
+        this.eventBus.emit(new EventData(TradeEvents.Update+data.tradeOfferId, response));
       },
       error: (error) => {
         console.log(`Error found on responding to trade: ${error}`);
       },
       complete: () => {
-        this.exitDialog();
+        this.exit();
       }
     });
+  }
+
+  exit() {
+    this.service.deselect();
+    this.navigationService.back();
   }
 }

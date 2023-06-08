@@ -3,8 +3,7 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor,
-  HttpErrorResponse
+  HttpInterceptor
 } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { switchMap, filter, catchError, take } from 'rxjs/operators';
@@ -26,9 +25,10 @@ export class AuthenticationInterceptor implements HttpInterceptor {
     if(token != null) {
       authReq = this.addTokenHeader(request, token);
     }
-
-    return next.handle(authReq).pipe(catchError(error => {
-      if(error instanceof HttpErrorResponse && !authReq.url.includes('auth/singin') && error.status === 401) {
+    
+    return next.handle(authReq).pipe(
+      catchError(error => {
+      if(error.status === 401) {
         return this.handle401Error(authReq, next);
       }
       return throwError(error);
@@ -44,7 +44,7 @@ export class AuthenticationInterceptor implements HttpInterceptor {
       const token = this.tokenService.getRefreshToken();
 
       if(token) {
-        return this.tokenService.getRefreshTokensRequest().pipe(
+        return this.tokenService.getRefreshTokenObservable().pipe(
           switchMap((token: any) => {
             this.isRefreshing = false;
             this.tokenService.updateToken(token.token);

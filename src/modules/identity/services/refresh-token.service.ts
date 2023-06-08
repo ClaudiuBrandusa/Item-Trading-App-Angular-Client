@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { interval, Observable, Subscription } from 'rxjs';
+import { interval, lastValueFrom, Observable, Subscription } from 'rxjs';
 import { RefreshTokenOptions } from '../../shared/models/options/refresh-token-options.config';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { Interval } from '../../shared/utils/async-utils';
@@ -11,6 +10,7 @@ import { RefreshTokenRequest } from 'src/modules/identity/models/requests/refres
 import appConfig from '../../../assets/application-config.json';
 import { EndpointsService } from '../../app/services/endpoints.service';
 import { SignalR } from '../../shared/enums/signal-r.enum';
+import { NavigationService } from '../../shared/services/navigation.service';
 
 @Injectable({
   providedIn: "root"
@@ -19,8 +19,8 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
 
   private eventBusUtility: EventBusUtils;
   
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router, private eventBusService: EventBusService) {
-    super(http, endpointsService, eventBus, router);
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected navigationService: NavigationService) {
+    super(http, endpointsService, eventBus, navigationService);
     this.refresh_path = this.base_path + this.endpointsModel.refresh;
     this.eventBusUtility = new EventBusUtils(eventBus);
     this.options = appConfig.refreshTokenOptions;
@@ -48,7 +48,7 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
     return result === null ? "" : result.toString();
   }
 
-  private getRefreshTokenRequest() {
+  private getRefreshTokenOptions() {
     var request = new RefreshTokenRequest();
     request.token = this.getToken();
     request.refreshToken = this.getRefreshToken();
@@ -68,15 +68,15 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
     return this.getToken() !== "" && this.getRefreshToken() !== "";
   }
 
-  getRefreshTokensRequest() {
-    return this.http.post(this.refresh_path, this.getRefreshTokenRequest());
+  getRefreshTokenObservable() {
+    return this.http.post(this.refresh_path, this.getRefreshTokenOptions());
   }
 
   async refreshTokens() {
     if(this.canRefreshTokens()) {
       let result: Observable<Object>;
       await Interval(() => {
-        result = this.getRefreshTokensRequest(); 
+        result = this.getRefreshTokenObservable(); 
         return result == null; // we will continue until we get a non null result
       }, 100, 4000);
       if(result == null) {
@@ -92,6 +92,39 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
     }
   }
 
+  async executeAfterRefreshToken(callback: Function) {
+    if(this.canRefreshTokens()) {
+      let result: Observable<Object>;
+      result = this.getRefreshTokenObservable();
+      if(result == null) {
+        return; 
+      }
+      result.subscribe({
+        next: result => {
+        this.setTokens(result);
+        callback(this.getToken());
+      }, 
+      error: _err => {
+        this.signOut();
+      }});
+    }
+  }
+
+  async refresh() {
+    const promise = new Promise(async (resolve, reject) => {
+      const response = await lastValueFrom(this.http.post(this.refresh_path, this.getRefreshTokenOptions()));
+
+      if (this.setTokens(response))
+      {
+        resolve(1);
+      } else {
+        reject();
+      }
+    });
+
+    return promise;
+  }
+
   isLoggedIn() {
     return this.canRefreshTokens();
   }
@@ -99,7 +132,7 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
   signOut() {
     this.eventBusUtility.emit(SignalR.Disconnected, null);
     localStorage.clear();
-    this.router.navigate(['login']);
+    this.navigationService.navigate('login');
   }
 
   private initEventBusSubscription() {

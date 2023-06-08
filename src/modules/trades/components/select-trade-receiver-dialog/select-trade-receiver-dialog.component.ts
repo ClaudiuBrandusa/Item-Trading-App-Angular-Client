@@ -1,34 +1,25 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../../identity/services/user.service';
-import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
-import { EventBusService } from '../../../shared/services/event-bus.service';
-import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
 import { TradesService } from '../../services/trades.service';
 import { FoundUsersResponse } from '../../models/responses/found-users.response'
+import { NavigationService } from '../../../shared/services/navigation.service';
+import { TradeRoutes } from '../../enums/trade-routes';
 
 @Component({
   selector: 'dialog-select-trade-receiver',
   templateUrl: './select-trade-receiver-dialog.component.html',
   styleUrls: ['./select-trade-receiver-dialog.component.css']
 })
-export class SelectTradeReceiverDialogComponent extends BaseDialogComponent {
+export class SelectTradeReceiverDialogComponent {
 
   foundUsersId = new Array<string>();
   searchString : string = "";
-  nextDialogId = TradeDialogsEvents.SelectItems;
 
-  constructor(protected eventBus: EventBusService, private service: TradesService, private userService: UserService) {
-    super(eventBus);
-    this.eventId = TradeDialogsEvents.SelectReceiver;
-  }
+  constructor(private navigationService: NavigationService, private service: TradesService, private userService: UserService) {}
 
-  select(userId: string) {
+  async select(userId: string) {
     this.service.setTradeOfferReceiver(userId);
-    this.navigate(this.nextDialogId);
-  }
-
-  cancel() {
-    this.clearResults();
+    await this.navigationService.navigate(`../${TradeRoutes.SelectItems}`, true);
   }
 
   search() {
@@ -43,14 +34,13 @@ export class SelectTradeReceiverDialogComponent extends BaseDialogComponent {
     this.listItems();
   }
 
+  exit() {
+    this.navigationService.back();
+  }
+
   private clearResults() {
     while(this.foundUsersId.length > 0)
       this.foundUsersId.pop();
-  }
-
-  protected override onHide() {
-    this.clearResults();
-    this.searchString = '';
   }
 
   private listItems() {

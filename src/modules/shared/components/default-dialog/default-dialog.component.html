@@ -1,0 +1,7 @@
+<div class="margins">
+  <span class="m-2"><strong>{{title}}</strong></span>
+  <br/>
+  <ng-content></ng-content>
+  <app-button class="ml-2" (click)="cancel()" [disabled]="isCancelButtonDisabled">{{cancelButtonName}}</app-button>
+  <app-button class="float-right mr-2" *ngIf="!hideNextButton" [disabled]="isNextButtonDisabled" (click)="next()">{{nextButtonName}}</app-button>
+</div>

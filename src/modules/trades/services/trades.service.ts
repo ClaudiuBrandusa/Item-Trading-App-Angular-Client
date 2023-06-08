@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { catchError, Observable, throwError } from 'rxjs';
 import { EndpointsService } from '../../app/services/endpoints.service';
 import { TradeEndpoints } from '../../shared/models/endpoints/trade-endpoints.config';
@@ -17,7 +16,7 @@ import { TradesSearchOptions } from '../models/trades-search-options';
 @Injectable()
 export class TradesService extends NetworkService<TradeEndpoints> {
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router) {
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService) {
     super(http, endpointsService, eventBus);
     this.currentTrade = new CurrentTrade({ tradeItems: new Array<TradeItem>() });
     this.endpointsModel = this.endpointsService.getTrade();
@@ -30,6 +29,8 @@ export class TradesService extends NetworkService<TradeEndpoints> {
   private tradeIdsMap = new Map<string, [boolean, boolean]>();
   private filteringOptions: Array<string> = new Array<string>("All", "Sent", "Received");
   private searchOptions = new TradesSearchOptions({ selectedFilterValue: this.filteringOptions[0], showRespondedTrades: false });
+
+  private createTradeState = false;
 
   getSearchOptions() {
     return JSON.parse(JSON.stringify(this.searchOptions));
@@ -215,5 +216,13 @@ export class TradesService extends NetworkService<TradeEndpoints> {
 
   getCurrentTradeItem() {
     return this.currentTradeItem;
+  }
+
+  setCreateTradeState(state: boolean) {
+    this.createTradeState = state;
+  }
+
+  getCreateTradeState() {
+    return this.createTradeState;
   }
 }

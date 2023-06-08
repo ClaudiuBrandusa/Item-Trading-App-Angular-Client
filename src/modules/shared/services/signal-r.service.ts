@@ -3,6 +3,8 @@ import * as signalR from "@microsoft/signalr"
 import { SignalR } from '../enums/signal-r.enum';
 import { EventBusUtils } from '../utils/event-bus.utility';
 import { EventBusService } from './event-bus.service';
+import { CustomHttpClient } from '../utils/custom-http-client';
+import { RefreshTokenService } from '../../identity/services/refresh-token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,7 @@ export class SignalRService {
   private eventBusUtility: EventBusUtils;
   private connectionStatus: Boolean;
   
-  constructor(eventBus: EventBusService) {
+  constructor(eventBus: EventBusService, private refreshTokenService: RefreshTokenService) {
     this.eventBusUtility = new EventBusUtils(eventBus);
     this.eventBusUtility.on(SignalR.Connected, (token) => {
       if (!!!token) return;
@@ -25,7 +27,7 @@ export class SignalRService {
 
     this.eventBusUtility.on(SignalR.Disconnected, () => {
       this.connectionStatus = false;
-      this.hubConnection.stop();
+      if (this.hubConnection) this.hubConnection.stop();
     });
   }
 
@@ -34,14 +36,15 @@ export class SignalRService {
       .withUrl('http://localhost:5000/hubs/notification', {
         transport: signalR.HttpTransportType.LongPolling,
         headers: {
-          'Authorization': `bearer ${token}`
-        }
+          'Authorization': `Bearer ${token}`
+        },
+        httpClient: new CustomHttpClient(this.refreshTokenService)
       })
       .build();
       
       this.hubConnection
         .start()
-        .catch(error => console.log('Error while starting connection: ', error));
+        .catch(_exception => null);
   }
 
   public addConnectListener = () => {

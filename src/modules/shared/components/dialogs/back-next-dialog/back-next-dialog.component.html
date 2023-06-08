@@ -1,7 +1,0 @@
-<div class="back-next-dialog-container">
-  <span class="m-2"><strong>{{title}}</strong></span>
-  <br/>
-  <ng-content></ng-content>
-  <app-button class="ml-2" (click)="cancel()">{{cancelButtonCustomName ? cancelButtonCustomName : defaultCancelButtonName}}</app-button>
-  <app-button class="float-right mr-2" *ngIf="!noNext" [disabled]="isNextButtonDisabled != null ? isNextButtonDisabled : (form == undefined ? false : !form.valid)" (click)="next()">{{nextButtonCustomName ? nextButtonCustomName : 'Next'}}</app-button>
-</div>

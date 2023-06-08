@@ -34,9 +34,11 @@ export abstract class IdentityService extends NetworkService<IdentityEndpoints> 
     }
 
     if(!somethingWentWrong)
+    {
       this.eventBus.emit(new EventData("silentRefresh", null));
-
-    this.redirectToDefaultPage();
+    } else {
+      this.redirectToDefaultPage();
+    }
 
     return !somethingWentWrong;
   }

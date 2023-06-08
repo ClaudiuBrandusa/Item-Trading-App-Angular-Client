@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -17,6 +17,9 @@ import { IndexModule } from 'src/modules/index/index.module';
 import { InventoryModule } from 'src/modules/inventory/inventory.module';
 import { TradesModule } from 'src/modules/trades/trades.module';
 import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
+import { SignalRService } from '../shared/services/signal-r.service';
+import { RefreshTokenService } from '../identity/services/refresh-token.service';
+import { ViewReferenceDirective } from './directives/view-reference.directive';
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -28,7 +31,8 @@ export function refreshTokenGetter() {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ViewReferenceDirective
   ],
   imports: [
     BrowserModule,
@@ -51,7 +55,23 @@ export function refreshTokenGetter() {
     TradesModule
   ],
   providers: [AuthGuardService, UnauthGuardService, EndpointsService,
-    { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true } ],
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthenticationInterceptor,
+      multi: true
+    },
+    SignalRService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (signalRService: SignalRService, refreshTokenService: RefreshTokenService) => () => {
+        refreshTokenService.executeAfterRefreshToken((token) => {
+          signalRService.startConnection(token);
+          signalRService.addConnectListener();
+        });
+      },
+      deps: [SignalRService, RefreshTokenService],
+      multi: true
+    } ],
   exports: [AppRoutingModule],
   bootstrap: [AppComponent]
 })

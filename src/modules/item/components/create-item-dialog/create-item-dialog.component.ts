@@ -13,7 +13,7 @@ import { EventData } from '../../../shared/utils/event-data';
 })
 export class CreateItemDialogComponent {
 
-  constructor(private fb: FormBuilder, private service: ItemService, protected eventBus: EventBusService, private navigationService: NavigationService) {}
+  constructor(private fb: FormBuilder, private service: ItemService, private eventBus: EventBusService, private navigationService: NavigationService) {}
 
   form = this.fb.group({
     itemName: new FormControl('', Validators.required),

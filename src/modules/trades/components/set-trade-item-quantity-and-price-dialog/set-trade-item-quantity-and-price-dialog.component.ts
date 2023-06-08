@@ -1,34 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { InventoryService } from '../../../inventory/services/inventory.service';
-import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
 import { EventBusService } from '../../../shared/services/event-bus.service';
-import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
+import { TradePopupsNames } from '../../enums/trade-popups-names';
 import { TradeItem } from '../../models/trade-item';
 import { TradesService } from '../../services/trades.service';
 import { InventoryItem } from '../../../inventory/models/responses/inventory-item';
 import { LockedInventoryItemAmount } from '../../../inventory/models/responses/locked-inventory-item-amount.response';
 import { ItemError } from '../../../shared/models/errors/item-error';
-import { DialogEvents } from '../../../shared/enums/dialog-events.enum';
 import { TradeItemEvents } from '../../enums/trade-item-events';
+import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
+import { NavigationEvents } from '../../../shared/enums/navigation-events.enum';
 
 @Component({
   selector: 'dialog-set-trade-item-quantity-and-price',
   templateUrl: './set-trade-item-quantity-and-price-dialog.component.html',
   styleUrls: ['./set-trade-item-quantity-and-price-dialog.component.css']
 })
-export class SetTradeItemQuantityAndPriceDialogComponent extends BaseDialogComponent {
-
+export class SetTradeItemQuantityAndPriceDialogComponent implements OnInit, OnDestroy {
   currentTradeItem: TradeItem;
   inventoryItem: InventoryItem;
   lockedItemAmount: LockedInventoryItemAmount;
   errorMessage = "";
   itemDataLoaded = false;
   lockedItemAmountLoaded = false;
+  eventId = TradePopupsNames.SetItemQuantityAndPrice;
+  private eventBusUtility: EventBusUtils;
 
-  constructor(private fb: FormBuilder, protected eventBus: EventBusService, private service: TradesService, private inventoryService: InventoryService) {
-    super(eventBus);
-    this.eventId = TradeDialogsEvents.SetItemQuantityAndPrice;
+  constructor(private fb: FormBuilder, eventBus: EventBusService, private service: TradesService, private inventoryService: InventoryService) {
+    this.eventBusUtility = new EventBusUtils(eventBus);
   }
 
   form = this.fb.group({
@@ -36,7 +36,7 @@ export class SetTradeItemQuantityAndPriceDialogComponent extends BaseDialogCompo
     price: new FormControl('', [Validators.required, Validators.min(0)])
   })
 
-  protected override onDisplay() {
+  ngOnInit() {
     this.currentTradeItem = this.service.getCurrentTradeItem();
     const quantity = this.currentTradeItem.quantity;
     if (quantity > 0)
@@ -46,9 +46,8 @@ export class SetTradeItemQuantityAndPriceDialogComponent extends BaseDialogCompo
     this.loadData();
   }
 
-  protected override onHide() {
-    this.form.reset();
-    this.errorMessage = "";
+  ngOnDestroy() {
+    this.eventBusUtility.clearSubscriptions();
   }
 
   confirm() {
@@ -66,14 +65,13 @@ export class SetTradeItemQuantityAndPriceDialogComponent extends BaseDialogCompo
     this.currentTradeItem.quantity = quantity;
     this.currentTradeItem.price = Number(this.form.get('price')?.value ?? 0);
     this.service.setCurrentTradeItem(this.currentTradeItem);
-    this.emit(TradeItemEvents.ConfirmQuantityAndPriceChange, null);
-    this.emit(DialogEvents.ClosePopup, this.eventId);
-    this.exitDialog();
+    this.eventBusUtility.emit(TradeItemEvents.ConfirmQuantityAndPriceChange, null);
+    this.exit();
   }
 
   cancel() {
-    this.emit(TradeItemEvents.DenyQuantityAndPriceChange, this.currentTradeItem.id);
-    this.emit(DialogEvents.ClosePopup, this.eventId);
+    this.eventBusUtility.emit(TradeItemEvents.DenyQuantityAndPriceChange, this.currentTradeItem.id);
+    this.exit();
   }
 
   private isDataLoaded() {
@@ -83,6 +81,10 @@ export class SetTradeItemQuantityAndPriceDialogComponent extends BaseDialogCompo
   private loadData() {
     this.loadInventoryItemData();
     this.loadLockedItemAmount();
+  }
+
+  private exit() {
+    this.eventBusUtility.emit(NavigationEvents.ClosePopup, this.eventId);
   }
 
   private loadInventoryItemData() {

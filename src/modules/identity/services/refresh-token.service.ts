@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { interval, Observable, Subscription } from 'rxjs';
+import { interval, lastValueFrom, Observable, Subscription } from 'rxjs';
 import { RefreshTokenOptions } from '../../shared/models/options/refresh-token-options.config';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { Interval } from '../../shared/utils/async-utils';
@@ -48,7 +48,7 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
     return result === null ? "" : result.toString();
   }
 
-  private getRefreshTokenRequest() {
+  private getRefreshTokenOptions() {
     var request = new RefreshTokenRequest();
     request.token = this.getToken();
     request.refreshToken = this.getRefreshToken();
@@ -68,15 +68,15 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
     return this.getToken() !== "" && this.getRefreshToken() !== "";
   }
 
-  getRefreshTokensRequest() {
-    return this.http.post(this.refresh_path, this.getRefreshTokenRequest());
+  getRefreshTokenObservable() {
+    return this.http.post(this.refresh_path, this.getRefreshTokenOptions());
   }
 
   async refreshTokens() {
     if(this.canRefreshTokens()) {
       let result: Observable<Object>;
       await Interval(() => {
-        result = this.getRefreshTokensRequest(); 
+        result = this.getRefreshTokenObservable(); 
         return result == null; // we will continue until we get a non null result
       }, 100, 4000);
       if(result == null) {
@@ -90,6 +90,39 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
         this.signOut();
       }});
     }
+  }
+
+  async executeAfterRefreshToken(callback: Function) {
+    if(this.canRefreshTokens()) {
+      let result: Observable<Object>;
+      result = this.getRefreshTokenObservable();
+      if(result == null) {
+        return; 
+      }
+      result.subscribe({
+        next: result => {
+        this.setTokens(result);
+        callback(this.getToken());
+      }, 
+      error: _err => {
+        this.signOut();
+      }});
+    }
+  }
+
+  async refresh() {
+    const promise = new Promise(async (resolve, reject) => {
+      const response = await lastValueFrom(this.http.post(this.refresh_path, this.getRefreshTokenOptions()));
+
+      if (this.setTokens(response))
+      {
+        resolve(1);
+      } else {
+        reject();
+      }
+    });
+
+    return promise;
   }
 
   isLoggedIn() {

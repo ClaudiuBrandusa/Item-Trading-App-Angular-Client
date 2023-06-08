@@ -1,17 +1,16 @@
-import { Component } from '@angular/core';
-import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
+import { Component, OnInit } from '@angular/core';
 import { EventBusService } from '../../../shared/services/event-bus.service';
-import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
 import { Trade } from '../../models/responses/trade';
 import { TradesService } from '../../services/trades.service';
 import { getTradeReceiverOrSender, getTradeTotalPrice } from '../../utils/trade-utils';
+import { NavigationService } from '../../../shared/services/navigation.service';
 
 @Component({
   selector: 'dialog-trade-details',
   templateUrl: './trade-details-dialog.component.html',
   styleUrls: ['./trade-details-dialog.component.css']
 })
-export class TradeDetailsDialogComponent extends BaseDialogComponent {
+export class TradeDetailsDialogComponent implements OnInit {
 
   trade: Trade;
   isSentTrade: boolean;
@@ -19,12 +18,9 @@ export class TradeDetailsDialogComponent extends BaseDialogComponent {
   totalPrice: number;
   loading = true;
 
-  constructor(protected eventBus: EventBusService, private service: TradesService) {
-    super(eventBus);
-    this.eventId = TradeDialogsEvents.Details;
-  }
-
-  protected override onDisplay() {
+  constructor(protected eventBus: EventBusService, private service: TradesService, private navigationService: NavigationService) {}
+  
+  ngOnInit() {
     this.service.getCurrentTrade().subscribe({
       next: (response) => {
         this.trade = response as Trade;
@@ -41,13 +37,9 @@ export class TradeDetailsDialogComponent extends BaseDialogComponent {
       }
     })
   }
-  
-  protected override onHide() {
-    this.service.deselect();
-    this.loading = true;
-  }
 
   exit() {
-    this.exitDialog();
+    this.service.deselect();
+    this.navigationService.back();
   }
 }

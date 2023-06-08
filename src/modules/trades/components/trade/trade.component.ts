@@ -1,14 +1,14 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ListItemDirective } from 'src/modules/shared/directives/list/list-item/list-item.directive';
-import { DialogEvents } from '../../../shared/enums/dialog-events.enum';
 import { EventBusService } from '../../../shared/services/event-bus.service';
 import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
-import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
 import { TradeEvents } from '../../enums/trade-events';
 import { TradeResponse } from '../../enums/trade-response';
 import { Trade } from '../../models/responses/trade';
 import { TradesService } from '../../services/trades.service';
 import { getTradeReceiverOrSender } from '../../utils/trade-utils';
+import { NavigationService } from '../../../shared/services/navigation.service';
+import { TradeRoutes } from '../../enums/trade-routes';
 
 @Component({
   selector: 'app-trade',
@@ -28,7 +28,7 @@ export class TradeComponent extends ListItemDirective implements OnDestroy {
   private baseRespondedButtonClass = "p-2 color-white no-select cursor-pointer";
   private eventBusUtility: EventBusUtils;
 
-  constructor(eventBus: EventBusService, private service: TradesService) {
+  constructor(eventBus: EventBusService, private service: TradesService, private navigationService: NavigationService) {
     super();
     this.eventBusUtility = new EventBusUtils(eventBus);
   }
@@ -67,17 +67,17 @@ export class TradeComponent extends ListItemDirective implements OnDestroy {
 
   respond() {
     this.select();
-    this.openDialog(TradeDialogsEvents.Respond);
+    this.openDialog(TradeRoutes.Respond);
   }
 
   cancel() {
     this.select();
-    this.openDialog(TradeDialogsEvents.Cancel);
+    this.openDialog(TradeRoutes.Cancel);
   }
 
   details() {
     this.select();
-    this.openDialog(TradeDialogsEvents.Details);
+    this.openDialog(TradeRoutes.Details);
   }
 
   private select() {
@@ -85,7 +85,7 @@ export class TradeComponent extends ListItemDirective implements OnDestroy {
   }
 
   private openDialog(dialog: string) {
-    this.eventBusUtility.emit(DialogEvents.Open, dialog);
+    this.navigationService.navigate(dialog, true);
   }
 
   private handleTradeResponse() {

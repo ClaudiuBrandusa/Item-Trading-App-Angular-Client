@@ -13,7 +13,8 @@ import { EndpointsService } from '../../app/services/endpoints.service';
 @Injectable()
 export class InventoryService extends NetworkService<InventoryEndpoints> {
 
-  selectedItemId = "";
+  private selectedItemId = "";
+  selectItemState = false;
 
   constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService) {
     super(http, endpointsService, eventBus);
@@ -74,6 +75,10 @@ export class InventoryService extends NetworkService<InventoryEndpoints> {
     });
 
     return this.http.get(this.base_path + this.endpointsModel.get_locked_amount, { params }).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
+  }
+
+  hasItemSelected() {
+    return !!this.selectedItemId;
   }
 
   select(itemId: string) {

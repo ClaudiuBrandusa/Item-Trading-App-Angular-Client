@@ -1,4 +1,3 @@
-
 <div class="d-flex h-v-max flex-column align-self-stretch">
   <div class="d-flex bg-outer-space-crayola border-style-solid border-thin border-red border-bottom p-2">
     <div class="d-flex ml-auto p-0 flex-0 pr-2">
@@ -24,14 +23,13 @@
   </div>
 
   <app-menu-bar>
-    <app-menu-button eventId="select_trade_receiver_dialog">Create trade</app-menu-button>
+    <app-menu-button
+      [eventId]="createTradeEventId"
+      [route]="createTradeEventRoute"
+      (onClick)="onCreateTradeClicked()">
+        Create trade
+    </app-menu-button>
   </app-menu-bar>
 </div>
 
-<dialog-trade-details></dialog-trade-details>
-<dialog-select-trade-receiver></dialog-select-trade-receiver>
-<dialog-select-items-for-trade></dialog-select-items-for-trade>
-<dialog-set-trade-item-quantity-and-price></dialog-set-trade-item-quantity-and-price>
-<dialog-remove-trade-item></dialog-remove-trade-item>
-<dialog-respond-trade></dialog-respond-trade>
-<dialog-cancel-trade></dialog-cancel-trade>
+<router-outlet></router-outlet>

@@ -1,50 +1,50 @@
-import { Component } from '@angular/core';
-import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
+import { Component, OnDestroy } from '@angular/core';
 import { EventBusService } from '../../../shared/services/event-bus.service';
-import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
 import { TradeItem } from '../../models/trade-item';
 import { TradesService } from '../../services/trades.service';
 import { Item } from 'src/modules/item/models/responses/item';
-import { DialogEvents } from '../../../shared/enums/dialog-events.enum';
 import { InventoryService } from '../../../inventory/services/inventory.service';
 import { TradeItemEvents } from '../../enums/trade-item-events';
 import { Trade } from '../../models/responses/trade';
 import { TradeEvents } from '../../enums/trade-events';
+import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
+import { NavigationService } from '../../../shared/services/navigation.service';
+import { TradePopupsNames } from '../../enums/trade-popups-names';
+import { TradeRoutes } from '../../enums/trade-routes';
 
 @Component({
   selector: 'dialog-select-items-for-trade',
   templateUrl: './select-items-for-trade-dialog.component.html',
   styleUrls: ['./select-items-for-trade-dialog.component.css']
 })
-export class SelectItemsForTradeDialogComponent extends BaseDialogComponent {
+export class SelectItemsForTradeDialogComponent implements OnDestroy {
 
   foundItemsId = new Array<string>();
   searchString = "";
   itemsDictionary = new Map<string, Item>();
   tradeValid = false;
+  private eventBusUtility: EventBusUtils;
 
-  constructor(protected eventBus: EventBusService, private service: TradesService, private inventoryService: InventoryService) {
-    super(eventBus);
-    this.eventId = TradeDialogsEvents.SelectItems;
+  constructor(eventBus: EventBusService, private service: TradesService, private inventoryService: InventoryService, private navigationService: NavigationService) {
+    this.eventBusUtility = new EventBusUtils(eventBus);
 
-    this.on(TradeItemEvents.ConfirmQuantityAndPriceChange, () => {
+    this.eventBusUtility.on(TradeItemEvents.ConfirmQuantityAndPriceChange, () => {
       this.onConfirmQuantityAndPriceChange();
     })
 
-    this.on(TradeItemEvents.DenyQuantityAndPriceChange, (itemId: string) => {
+    this.eventBusUtility.on(TradeItemEvents.DenyQuantityAndPriceChange, (itemId: string) => {
       this.onDenyQuantityAndPriceChange(itemId);
     })
 
-    this.on(TradeItemEvents.ListChanged, () => {
+    this.eventBusUtility.on(TradeItemEvents.ListChanged, () => {
       this.tradeValid = this.isTradeValid();
     })
   }
 
-  protected override onHide() {
-    this.clearResults();
-    this.searchString = '';
+  ngOnDestroy() {
+    this.eventBusUtility.clearSubscriptions();
     this.service.clearCurrentTradeOffer();
-    this.emit(TradeItemEvents.Remove, null);
+    this.eventBusUtility.emit(TradeItemEvents.Remove, null);
   }
 
   search() {
@@ -62,6 +62,10 @@ export class SelectItemsForTradeDialogComponent extends BaseDialogComponent {
   clearResults() {
     while(this.foundItemsId.length > 0)
       this.foundItemsId.pop();
+  }
+
+  exit() {
+    this.navigationService.back();
   }
 
   private listItems() {
@@ -84,13 +88,13 @@ export class SelectItemsForTradeDialogComponent extends BaseDialogComponent {
     const item = this.itemsDictionary.get(id);
     const tradeItem = new TradeItem({ id: id, name: item.name })
     this.service.setCurrentTradeItem(tradeItem);
-    this.emit(DialogEvents.OpenAsPopup, TradeDialogsEvents.SetItemQuantityAndPrice);
+    this.navigationService.openPopup(TradePopupsNames.SetItemQuantityAndPrice);
   }
 
   onConfirmQuantityAndPriceChange() {
     const tradeItem = this.service.getCurrentTradeItem();
     this.removeItemIdFromFoundItems(tradeItem.id);
-    this.emit(TradeItemEvents.Add, tradeItem);
+    this.eventBusUtility.emit(TradeItemEvents.Add, tradeItem);
   }
 
   onDenyQuantityAndPriceChange(itemId: string) {
@@ -108,8 +112,8 @@ export class SelectItemsForTradeDialogComponent extends BaseDialogComponent {
     this.service.sendTradeOffer().subscribe({
       next: (response) => {
         const data = response as Trade;
-        this.emit(TradeEvents.Create, data.tradeId);
-        this.exitAllDialogs();
+        this.eventBusUtility.emit(TradeEvents.Create, data.tradeId);
+        this.navigationService.backToRoute(TradeRoutes.Base);
       },
       error: (error) => {
         console.log(`Error found at sending the trade offer: ${error}`)

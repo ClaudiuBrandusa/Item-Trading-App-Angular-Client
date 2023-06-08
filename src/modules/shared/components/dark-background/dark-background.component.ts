@@ -15,5 +15,4 @@ export class DarkBackgroundComponent {
   exit() {
     this.onBackgroundClicked.emit();
   }
-
 }

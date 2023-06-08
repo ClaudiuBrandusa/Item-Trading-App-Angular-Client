@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-default-dialog',
   templateUrl: './default-dialog.component.html',
   styleUrls: ['./default-dialog.component.css']
 })
-export class DefaultDialogComponent implements OnInit {
+export class DefaultDialogComponent {
 
   @Input()
   title: string;
@@ -32,9 +32,6 @@ export class DefaultDialogComponent implements OnInit {
   onExit = new EventEmitter();
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
   next() {
     this.onContinue.emit();

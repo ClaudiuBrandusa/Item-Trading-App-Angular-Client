@@ -9,18 +9,15 @@ import { DeleteItemDialogComponent } from './components/delete-item-dialog/delet
 import { ItemRoutes } from './enums/item-routes';
 
 const routes: Routes = [{
-  path: 'items',
+  path: ItemRoutes.Base,
   component: ItemsComponent,
   canActivate: [AuthGuardService],
-  children: [{
-    path: '',
-    children: [
-      { path: ItemRoutes.Create, component: CreateItemDialogComponent },
-      { path: ItemRoutes.Details, component: DetailsItemDialogComponent },
-      { path: ItemRoutes.Edit, component: EditItemDialogComponent },
-      { path: ItemRoutes.Delete, component: DeleteItemDialogComponent }
-    ] 
-  }]
+  children: [
+    { path: ItemRoutes.Create, component: CreateItemDialogComponent },
+    { path: ItemRoutes.Details, component: DetailsItemDialogComponent },
+    { path: ItemRoutes.Edit, component: EditItemDialogComponent },
+    { path: ItemRoutes.Delete, component: DeleteItemDialogComponent }
+  ]
 }];
 
 @NgModule({

@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DialogEvents } from '../../../enums/dialog-events.enum';
 import { EventBusService } from '../../../services/event-bus.service';
 import { NavigationService } from '../../../services/navigation.service';
@@ -15,8 +15,14 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
   @Input()
   eventId: string;
 
+  @Input()
+  route: string = "";
+
   @Output()
   selected = false;
+
+  @Output()
+  onClick = new EventEmitter<boolean>(); // boolean value represents the state of the button selection
   
   private eventBusUtility: EventBusUtils;
   private locked = false;
@@ -33,7 +39,7 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initEvents();
-    
+
     this.checkIfIsSelected();
   }
   
@@ -42,6 +48,8 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
   }
 
   protected initEvents() {
+    if (this.route === "")
+      this.route = this.eventId;
     if (!this.openSubscriptionId)
       this.openSubscriptionId = `${DialogEvents.Open}/${this.eventId}`;
     if (!this.exitSubscriptionId)
@@ -53,11 +61,11 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
 
     this.eventBusUtility.on(this.openSubscriptionId, (_data) => {
       this.select(false);
-    })
+    });
     
     this.eventBusUtility.on(this.exitSubscriptionId, (_data) => {
       this.deselect();
-    })
+    });
   }
 
   @HostListener('click', ['$event'])
@@ -78,11 +86,12 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
     }
     
     this.onSelect();
+    this.onClick.emit(true);
     if (withNavigation && !await this.navigate()) return;
-    if (announceSelection) this.announceSelection();
-      
-    // then we mark the current button as selected
+    
     this.selected = true;
+    
+    if (announceSelection) this.eventBusService.emit(new EventData(this.openEventId, this.eventId));
   }
 
   protected async deselect() {
@@ -90,12 +99,9 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.onClick.emit(false);
     this.selected = false;
     this.locked = false;
-  }
-
-  protected announceSelection() {
-    this.eventBusService.emit(new EventData(this.openEventId, this.eventId));
   }
 
   private checkIfIsSelected(): void {
@@ -113,7 +119,7 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
   }
 
   protected async navigate() {
-    return await this.navigationService.navigate(this.eventId, true, true)
+    return await this.navigationService.navigate(this.route, true);
   }
 
   protected onSelect() {

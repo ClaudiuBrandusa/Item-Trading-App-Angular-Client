@@ -30,6 +30,8 @@ export class TradesService extends NetworkService<TradeEndpoints> {
   private filteringOptions: Array<string> = new Array<string>("All", "Sent", "Received");
   private searchOptions = new TradesSearchOptions({ selectedFilterValue: this.filteringOptions[0], showRespondedTrades: false });
 
+  private createTradeState = false;
+
   getSearchOptions() {
     return JSON.parse(JSON.stringify(this.searchOptions));
   }
@@ -214,5 +216,13 @@ export class TradesService extends NetworkService<TradeEndpoints> {
 
   getCurrentTradeItem() {
     return this.currentTradeItem;
+  }
+
+  setCreateTradeState(state: boolean) {
+    this.createTradeState = state;
+  }
+
+  getCreateTradeState() {
+    return this.createTradeState;
   }
 }

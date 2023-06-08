@@ -41,6 +41,6 @@ export class NavbarButtonComponent extends MenuButtonComponent {
   }
 
   protected override shouldSelect() {
-    return this.currentRoute === this.route;
+    return this.currentRoute.split('/').includes(this.route);
   }
 }

@@ -15,7 +15,7 @@ import { ItemModule } from '../item/item.module';
 import { SelectedTradeItemComponent } from './components/selected-trade-item/selected-trade-item.component';
 import { SelectedTradeItemsListComponent } from './components/selected-trade-items-list/selected-trade-items-list.component';
 import { SetTradeItemQuantityAndPriceDialogComponent } from './components/set-trade-item-quantity-and-price-dialog/set-trade-item-quantity-and-price-dialog.component';
-import { RemoveTradeItemDialogComponent } from './components/remove-trade-item-dialog/remove-trade-item-dialog.component';
+import { RemoveTradeItemPopupComponent } from './components/remove-trade-item-popup/remove-trade-item-popup.component';
 import { RespondTradeDialogComponent } from './components/respond-trade-dialog/respond-trade-dialog.component';
 import { CancelTradeDialogComponent } from './components/cancel-trade-dialog/cancel-trade-dialog.component';
 
@@ -32,7 +32,7 @@ import { CancelTradeDialogComponent } from './components/cancel-trade-dialog/can
     SelectedTradeItemComponent,
     SelectedTradeItemsListComponent,
     SetTradeItemQuantityAndPriceDialogComponent,
-    RemoveTradeItemDialogComponent,
+    RemoveTradeItemPopupComponent,
     RespondTradeDialogComponent,
     CancelTradeDialogComponent
   ],

@@ -1,12 +1,12 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { ListItemDirective } from 'src/modules/shared/directives/list/list-item/list-item.directive';
-import { DialogEvents } from '../../../shared/enums/dialog-events.enum';
 import { EventBusService } from '../../../shared/services/event-bus.service';
 import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
-import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
+import { TradePopupsNames } from '../../enums/trade-popups-names';
 import { TradeItemEvents } from '../../enums/trade-item-events';
 import { TradeItem } from '../../models/trade-item';
 import { TradesService } from '../../services/trades.service';
+import { NavigationService } from '../../../shared/services/navigation.service';
 
 @Component({
   selector: 'app-selected-trade-item',
@@ -25,7 +25,7 @@ export class SelectedTradeItemComponent extends ListItemDirective implements OnD
 
   private eventBusUtility: EventBusUtils;
   
-  constructor(eventBus: EventBusService, private service: TradesService) {
+  constructor(eventBus: EventBusService, private service: TradesService, private navigationService: NavigationService) {
     super();
     this.eventBusUtility = new EventBusUtils(eventBus);
   }
@@ -53,14 +53,14 @@ export class SelectedTradeItemComponent extends ListItemDirective implements OnD
   edit() {
     if (this.editable) {
       this.service.setCurrentTradeItem(this.item);
-      this.eventBusUtility.emit(DialogEvents.OpenAsPopup, TradeDialogsEvents.SetItemQuantityAndPrice);
+      this.navigationService.openPopup(TradePopupsNames.SetItemQuantityAndPrice);
     }
   }
 
   remove() {
     if (this.editable) {
       this.service.setCurrentTradeItem(this.item);
-      this.eventBusUtility.emit(DialogEvents.OpenAsPopup, TradeDialogsEvents.RemoveItem);
+      this.navigationService.openPopup(TradePopupsNames.RemoveItem);
     }
   }
 }

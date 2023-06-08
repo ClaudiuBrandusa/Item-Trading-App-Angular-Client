@@ -92,6 +92,6 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
 
   private async select(route: string) {
     this.service.select(this.item.id);
-    if (!await this.navigationService.navigate(route, true, true)) this.service.deselect();
+    if (!await this.navigationService.navigate(route, true)) this.service.deselect();
   }
 }

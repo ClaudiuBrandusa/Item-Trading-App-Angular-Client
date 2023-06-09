@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { AddItemRequest } from 'src/modules/inventory/models/requests/add-item-request.model';
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
 import { InventoryService } from '../../services/inventory.service';
-import { InventoryEvents } from '../../enums/InventoryEvents';
+import { InventoryEvents } from '../../enums/inventory-events';
 import { ItemService } from '../../../item/services/item.service';
 import { ItemError } from '../../../shared/models/errors/item-error';
 import { EventData } from '../../../shared/utils/event-data';

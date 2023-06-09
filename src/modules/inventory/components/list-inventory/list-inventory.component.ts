@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ListDirective } from 'src/modules/shared/directives/list/list.directive';
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
-import { InventoryEvents } from '../../enums/InventoryEvents';
+import { InventoryEvents } from '../../enums/inventory-events';
 import { InventoryService } from '../../services/inventory.service';
 import { ItemError } from '../../../shared/models/errors/item-error';
 import { EventBusUtils } from '../../../shared/utils/event-bus.utility';

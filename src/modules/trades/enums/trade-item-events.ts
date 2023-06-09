@@ -1,5 +1,4 @@
 export enum TradeItemEvents {
-  RefreshList = "refresh_trade_items_list",
   Add = "add_trade_item",
   Update = "update_trade_item",
   Remove = "remove_trade_item",

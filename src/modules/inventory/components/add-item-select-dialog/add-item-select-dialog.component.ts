@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { InventoryDialogEvents } from 'src/modules/inventory/enums/InventoryDialogEvents';
 import { InventoryService } from 'src/modules/inventory/services/inventory.service';
 import { ItemService } from 'src/modules/item/services/item.service';
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
@@ -15,7 +14,6 @@ export class AddItemSelectDialogComponent {
 
   foundItems = new Array<string>();
   searchString = "";
-  nextDialogId = InventoryDialogEvents.AddQuantity;
 
   constructor(protected eventBus: EventBusService, private itemService: ItemService, private inventoryService: InventoryService, private navigationService: NavigationService) {}
 

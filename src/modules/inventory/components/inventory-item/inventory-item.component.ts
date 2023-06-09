@@ -5,7 +5,7 @@ import { EventBusService } from 'src/modules/shared/services/event-bus.service';
 import { ItemError } from '../../../shared/models/errors/item-error';
 import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
 import { EventData } from '../../../shared/utils/event-data';
-import { InventoryEvents } from '../../enums/InventoryEvents';
+import { InventoryEvents } from '../../enums/inventory-events';
 import { InventoryService } from '../../services/inventory.service';
 import { InventoryRoutes } from '../../enums/inventory-routes';
 import { NavigationService } from '../../../shared/services/navigation.service';

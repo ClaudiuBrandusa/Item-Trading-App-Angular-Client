@@ -1,6 +1,6 @@
 import { Component, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { InventoryEvents } from '../../enums/InventoryEvents';
+import { InventoryEvents } from '../../enums/inventory-events';
 import { EventBusService } from '../../../shared/services/event-bus.service';
 import { InventoryService } from '../../services/inventory.service';
 import { ItemError } from '../../../shared/models/errors/item-error';

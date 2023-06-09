@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { EventBusService } from 'src/modules/shared/services/event-bus.service';
 import { EventData } from '../../../shared/utils/event-data';
 import { InventoryRoutes } from '../../enums/inventory-routes';
-import { InventoryEvents } from '../../enums/InventoryEvents';
+import { InventoryEvents } from '../../enums/inventory-events';
 import { InventoryService } from '../../services/inventory.service';
 
 @Component({

@@ -51,10 +51,6 @@ export class SelectedTradeItemsListComponent extends ListDirective implements On
   // Subscriptions
 
   private initSubscriptions() {
-    this.eventBusUtility.on(TradeItemEvents.RefreshList, () => {
-      this.listItems();
-    });
-    
     if (this.editAllowed) {
       this.eventBusUtility.on(TradeItemEvents.Add, (tradeItem: TradeItem) => {
         if (this.contains(tradeItem.id)) {

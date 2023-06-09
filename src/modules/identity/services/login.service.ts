@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { LoginRequest } from 'src/modules/identity/models/requests/loginRequest.model';
+import { LoginRequest } from 'src/modules/identity/models/requests/login-request.model';
 import { IdentityService } from './identity.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { catchError, throwError } from 'rxjs';

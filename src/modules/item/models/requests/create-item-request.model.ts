@@ -1,4 +1,4 @@
 export class CreateItemRequest {
-    itemName: string = "";
-    itemDescription: string = "";
+  itemName: string = "";
+  itemDescription: string = "";
 }

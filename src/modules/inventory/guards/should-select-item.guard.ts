@@ -20,5 +20,4 @@ export class ShouldSelectItemGuard implements CanActivate {
     
       return true;
   }
-  
 }

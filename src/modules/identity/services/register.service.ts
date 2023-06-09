@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { catchError, throwError } from 'rxjs';
-import { RegisterRequest } from 'src/modules/identity/models/requests/registerRequest.model';
+import { RegisterRequest } from 'src/modules/identity/models/requests/register-request.model';
 import { EndpointsService } from '../../app/services/endpoints.service';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { NavigationService } from '../../shared/services/navigation.service';

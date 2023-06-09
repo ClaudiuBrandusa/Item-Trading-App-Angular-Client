@@ -1,4 +1,4 @@
 export class RefreshTokenRequest {
-    token: string = '';
-    refreshToken: string = '';
+  token: string = '';
+  refreshToken: string = '';
 }

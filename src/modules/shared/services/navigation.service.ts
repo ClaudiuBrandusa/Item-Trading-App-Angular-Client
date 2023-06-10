@@ -39,7 +39,7 @@ export class NavigationService {
       else {
         await this.router.navigate([pageName]);
       }
-    } catch {
+    } catch(_exception) {
       return false;
     } 
 

@@ -13,7 +13,8 @@
   
   <app-menu-bar>
     <app-menu-button
-      [eventId]="createEventId">
+      [eventId]="createEventId"
+      (onClick)="onSelectItemClicked($event)">
         Create item
     </app-menu-button>
   </app-menu-bar>

@@ -1,7 +1,4 @@
 {
-  "refreshTokenOptions": {
-    "silentRefreshIntervalInSeconds": 300
-  },
   "APIOptions": {
     "Url": "http://localhost:5000"
   },

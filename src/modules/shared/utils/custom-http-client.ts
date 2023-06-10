@@ -2,6 +2,8 @@ import { DefaultHttpClient, HttpError, HttpRequest, HttpResponse } from "@micros
 import { RefreshTokenService } from "../../identity/services/refresh-token.service";
 
 export class CustomHttpClient extends DefaultHttpClient {
+  private currentToken: string = "";
+
   constructor(private refreshTokenService: RefreshTokenService) {
     super(console);
   }
@@ -9,7 +11,7 @@ export class CustomHttpClient extends DefaultHttpClient {
   public async send(
     request: HttpRequest
   ): Promise<HttpResponse> {
-    const authHeaders = this.getAuthHeaders();
+    const authHeaders = this.getAuthHeaders(this.currentToken);
     request.headers = { ...request.headers, ...authHeaders };
 
     try {
@@ -29,6 +31,10 @@ export class CustomHttpClient extends DefaultHttpClient {
     }
     //re try the request
     return super.send(request);
+  }
+
+  setToken(newToken: string) {
+    this.currentToken = newToken;
   }
 
   private getAuthHeaders(token: string = "") {

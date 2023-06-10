@@ -16,7 +16,7 @@ export abstract class IdentityService extends NetworkService<IdentityEndpoints> 
     this.endpointsModel = this.endpointsService.getIdentity();
    }
 
-  protected setTokens(response: Object) {
+  setTokens(response: Object) {
     this.clearTokens();
     
     var somethingWentWrong = false;
@@ -33,9 +33,15 @@ export abstract class IdentityService extends NetworkService<IdentityEndpoints> 
       somethingWentWrong = true;
     }
 
+    if(response.hasOwnProperty("expirationDateTime")) {
+      localStorage.setItem("expirationDateTime", (<any>response).expirationDateTime);
+    } else {
+      somethingWentWrong = true;
+    }
+
     if(!somethingWentWrong)
     {
-      this.eventBus.emit(new EventData("silentRefresh", null));
+      this.onTokenSet(response);
     } else {
       this.redirectToDefaultPage();
     }
@@ -46,16 +52,16 @@ export abstract class IdentityService extends NetworkService<IdentityEndpoints> 
   protected clearTokens() {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("expirationDateTime");
   }
 
-  private redirectToDefaultPage() {
-    this.navigationService.navigate("");
+  protected redirectToDefaultPage() {
+    this.navigationService.redirect("");
   }
   
-  updateTokens(newTokens: any) {
-    if(this.setTokens(newTokens)) {
-      this.eventBus.emit(new EventData(SignalR.Connected, newTokens.token));
-      this.redirectToDefaultPage();
-    }
+  /** Gets called when the token is set */
+  protected onTokenSet(tokenResponseObject: Object) {
+    this.eventBus.emit(new EventData(SignalR.Connected, (<any>tokenResponseObject).token));
+    this.redirectToDefaultPage();
   }
 }

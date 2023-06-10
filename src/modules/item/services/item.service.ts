@@ -14,6 +14,7 @@ import { NetworkService } from '../../shared/services/network.service';
 export class ItemService extends NetworkService<ItemEndpoints> {
 
   selectedItemId = "";
+  _isCreatingItem = false;
 
   constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService) {
     super(http, endpointsService, eventBus);
@@ -66,6 +67,14 @@ export class ItemService extends NetworkService<ItemEndpoints> {
 
   deselect() {
     this.selectedItemId = "";
+  }
+
+  get isCreatingNewItem() {
+    return this._isCreatingItem;
+  }
+
+  set isCreatingNewItem(state: boolean) {
+    this._isCreatingItem = state;
   }
 
   // form2model

@@ -3,6 +3,7 @@ import { EventBusService } from 'src/modules/shared/services/event-bus.service';
 import { EventData } from '../../../shared/utils/event-data';
 import { ItemEvents } from '../../enums/item-events';
 import { ItemRoutes } from '../../enums/item-routes';
+import { ItemService } from '../../services/item.service';
 
 @Component({
   selector: 'app-items',
@@ -13,7 +14,7 @@ export class ItemsComponent {
 
   createEventId = ItemRoutes.Create
 
-  constructor(private eventBus: EventBusService) { }
+  constructor(private eventBus: EventBusService, private service: ItemService) { }
 
   search(searchBody) {
     this.eventBus.emit(new EventData(ItemEvents.RefreshItemsList, searchBody.searchString));
@@ -24,5 +25,9 @@ export class ItemsComponent {
     if(str != null)
       return str;
     return (event.target as HTMLInputElement).value;
+  }
+
+  onSelectItemClicked(event) {
+    this.service.isCreatingNewItem = true;
   }
 }

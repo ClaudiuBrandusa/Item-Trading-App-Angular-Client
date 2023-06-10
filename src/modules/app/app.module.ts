@@ -20,6 +20,9 @@ import { AuthenticationInterceptor } from './interceptors/authentication.interce
 import { SignalRService } from '../shared/services/signal-r.service';
 import { RefreshTokenService } from '../identity/services/refresh-token.service';
 import { ViewReferenceDirective } from './directives/view-reference.directive';
+import { EventBusService } from '../shared/services/event-bus.service';
+import { EventData } from '../shared/utils/event-data';
+import { SignalR } from '../shared/enums/signal-r.enum';
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -64,10 +67,7 @@ export function refreshTokenGetter() {
     {
       provide: APP_INITIALIZER,
       useFactory: (signalRService: SignalRService, refreshTokenService: RefreshTokenService) => () => {
-        refreshTokenService.executeAfterRefreshToken((token) => {
-          signalRService.startConnection(token);
-          signalRService.addConnectListener();
-        });
+        signalRService.connect(refreshTokenService.getToken());
       },
       deps: [SignalRService, RefreshTokenService],
       multi: true

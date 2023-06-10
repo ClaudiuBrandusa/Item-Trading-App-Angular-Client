@@ -14,31 +14,38 @@ export class SignalRService {
   private hubConnection: signalR.HubConnection;
   private eventBusUtility: EventBusUtils;
   private connectionStatus: Boolean;
+  private httpClient: CustomHttpClient;
   
   constructor(eventBus: EventBusService, private refreshTokenService: RefreshTokenService) {
+    this.httpClient = new CustomHttpClient(refreshTokenService);
     this.eventBusUtility = new EventBusUtils(eventBus);
     this.eventBusUtility.on(SignalR.Connected, (token) => {
-      if (!!!token) return;
-      if (this.hubConnection && this.connectionStatus) return;
-      this.connectionStatus = true;
-      this.startConnection(token);
-      this.addConnectListener();
+      this.connect(token);
     });
 
-    this.eventBusUtility.on(SignalR.Disconnected, () => {
+    this.eventBusUtility.on(SignalR.Disconnected, (token) => {
       this.connectionStatus = false;
+      this.httpClient.setToken(token);
       if (this.hubConnection) this.hubConnection.stop();
     });
   }
 
-  public startConnection = (token: string) => {
+  public connect(token: string) {
+    if (!!!token) return;
+    if (this.hubConnection && this.connectionStatus) return;
+    this.connectionStatus = true;
+    this.startConnection(token);
+    this.addConnectListener();
+  }
+
+  startConnection = (token: string) => {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl('http://localhost:5000/hubs/notification', {
         transport: signalR.HttpTransportType.LongPolling,
         headers: {
           'Authorization': `Bearer ${token}`
         },
-        httpClient: new CustomHttpClient(this.refreshTokenService)
+        httpClient: this.httpClient
       })
       .build();
       
@@ -47,7 +54,7 @@ export class SignalRService {
         .catch(_exception => null);
   }
 
-  public addConnectListener = () => {
+  addConnectListener = () => {
     this.hubConnection.on('connect', (data) => {
       console.log('connect ', data);
     })

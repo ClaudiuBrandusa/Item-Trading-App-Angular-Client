@@ -33,6 +33,7 @@ export class CreateItemDialogComponent {
   }
   
   exit() {
+    this.service.isCreatingNewItem = false;
     this.navigationService.back();
   }
 }

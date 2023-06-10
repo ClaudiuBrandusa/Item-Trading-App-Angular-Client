@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
     this.service.login(this.form).subscribe({
       next: (response) => {
         this.form.reset();
-        this.service.updateTokens(response);
+        this.service.setTokens(response);
       },
       error: (error) => {
         console.log('Error found at login: ', error);

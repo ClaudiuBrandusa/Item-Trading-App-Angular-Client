@@ -1,41 +1,32 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { interval, lastValueFrom, Observable, Subscription } from 'rxjs';
-import { RefreshTokenOptions } from '../../shared/models/options/refresh-token-options.config';
+import { Injectable } from '@angular/core';
+import { lastValueFrom } from 'rxjs';
 import { EventBusService } from '../../shared/services/event-bus.service';
-import { Interval } from '../../shared/utils/async-utils';
 import { EventBusUtils } from '../../shared/utils/event-bus.utility';
 import { IdentityService } from './identity.service';
 import { RefreshTokenRequest } from 'src/modules/identity/models/requests/refresh-token-request.model';
-import appConfig from '../../../assets/application-config.json';
 import { EndpointsService } from '../../app/services/endpoints.service';
 import { SignalR } from '../../shared/enums/signal-r.enum';
 import { NavigationService } from '../../shared/services/navigation.service';
+import { TimeSpan } from '../../shared/utils/time-span';
+
+const REFRESH_TOKEN_MILLISECONDS_BEFORE_EXPIRATION = 1500;
+const DEFAULT_REFRESH_TOKEN_MILLISECONDS = 5000;
 
 @Injectable({
   providedIn: "root"
 })
-export class RefreshTokenService extends IdentityService implements OnInit, OnDestroy {
+export class RefreshTokenService extends IdentityService {
 
   private eventBusUtility: EventBusUtils;
+  private timeout: NodeJS.Timeout | undefined;
   
   constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected navigationService: NavigationService) {
     super(http, endpointsService, eventBus, navigationService);
     this.refresh_path = this.base_path + this.endpointsModel.refresh;
     this.eventBusUtility = new EventBusUtils(eventBus);
-    this.options = appConfig.refreshTokenOptions;
   }
 
-  ngOnInit(): void {
-    this.initEventBusSubscription();
-  }
-
-  ngOnDestroy(): void {
-    this.eventBusUtility.clearSubscriptions();
-  }
-
-  options: RefreshTokenOptions;
-  silentRefresh: Subscription;
   private refresh_path = this.base_path + "refresh";
 
   getToken() {
@@ -55,14 +46,6 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
     return request;
   }
 
-  updateToken(token: string) {
-    localStorage.setItem("token", token);
-  }
-
-  updateRefreshToken(refreshToken: string) {
-    localStorage.setItem("refreshToken", refreshToken);
-  }
-
   canRefreshTokens() {
     // if we have token and refresh token then it means that we have the necessarily data for token refresh
     return this.getToken() !== "" && this.getRefreshToken() !== "";
@@ -72,47 +55,11 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
     return this.http.post(this.refresh_path, this.getRefreshTokenOptions());
   }
 
-  async refreshTokens() {
-    if(this.canRefreshTokens()) {
-      let result: Observable<Object>;
-      await Interval(() => {
-        result = this.getRefreshTokenObservable(); 
-        return result == null; // we will continue until we get a non null result
-      }, 100, 4000);
-      if(result == null) {
-        return; 
-      }
-      result.subscribe({
-        next: result => {
-        this.setTokens(result);
-      }, 
-      error: _err => {
-        this.signOut();
-      }});
-    }
-  }
-
-  async executeAfterRefreshToken(callback: Function) {
-    if(this.canRefreshTokens()) {
-      let result: Observable<Object>;
-      result = this.getRefreshTokenObservable();
-      if(result == null) {
-        return; 
-      }
-      result.subscribe({
-        next: result => {
-        this.setTokens(result);
-        callback(this.getToken());
-      }, 
-      error: _err => {
-        this.signOut();
-      }});
-    }
-  }
-
   async refresh() {
+    if (!this.canRefreshTokens()) return;
+
     const promise = new Promise(async (resolve, reject) => {
-      const response = await lastValueFrom(this.http.post(this.refresh_path, this.getRefreshTokenOptions()));
+      const response = await lastValueFrom(this.getRefreshTokenObservable());
 
       if (this.setTokens(response))
       {
@@ -130,21 +77,26 @@ export class RefreshTokenService extends IdentityService implements OnInit, OnDe
   }
 
   signOut() {
-    this.eventBusUtility.emit(SignalR.Disconnected, null);
-    localStorage.clear();
-    this.navigationService.navigate('login');
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.timeout = undefined;
+    }
+    this.eventBusUtility.emit(SignalR.Disconnected, this.getToken());
+    this.clearTokens();
+    this.navigationService.redirect("login");
   }
 
-  private initEventBusSubscription() {
-    this.eventBusUtility.on('silentRefresh', async () => {
-      this.startSilentRefresh();
-    });
+  protected override onTokenSet(tokenResponseObject: Object) {
+    this.scheduleNextSilentRefresh(new Date((<any>tokenResponseObject).expirationDateTime));
   }
 
-  private async startSilentRefresh() {
-    this.silentRefresh = interval(this.options.silentRefreshIntervalInSeconds * 1000)
-    .subscribe(() => {
-      this.refreshTokens()
-    });
+  private scheduleNextSilentRefresh(date: Date) {
+    const currentDate = new Date();
+
+    const duration = new TimeSpan(date.valueOf() - currentDate.valueOf());
+    
+    this.timeout = setTimeout(() => {
+      this.refresh();
+    }, duration.milliseconds > REFRESH_TOKEN_MILLISECONDS_BEFORE_EXPIRATION ? duration.milliseconds - REFRESH_TOKEN_MILLISECONDS_BEFORE_EXPIRATION : DEFAULT_REFRESH_TOKEN_MILLISECONDS);
   }
 }

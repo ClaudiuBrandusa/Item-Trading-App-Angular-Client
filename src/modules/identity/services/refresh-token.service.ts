@@ -59,12 +59,19 @@ export class RefreshTokenService extends IdentityService {
     if (!this.canRefreshTokens()) return;
 
     const promise = new Promise(async (resolve, reject) => {
-      const response = await lastValueFrom(this.getRefreshTokenObservable());
-
-      if (this.setTokens(response))
-      {
-        resolve(1);
-      } else {
+      try {
+        const response = await lastValueFrom(this.getRefreshTokenObservable());
+        
+        if (this.setTokens(response))
+        {
+          resolve(1);
+        } else {
+          reject();
+        }
+      } catch (exception) {
+        if (exception.status === 400) {
+          this.signOut();
+        }
         reject();
       }
     });
@@ -81,7 +88,8 @@ export class RefreshTokenService extends IdentityService {
       clearTimeout(this.timeout);
       this.timeout = undefined;
     }
-    this.eventBusUtility.emit(SignalR.Disconnected, this.getToken());
+    const token = this.getToken();
+    if (token) this.eventBusUtility.emit(SignalR.Disconnected, token);
     this.clearTokens();
     this.navigationService.redirect("login");
   }

@@ -56,7 +56,7 @@ export class RefreshTokenService extends IdentityService {
   }
 
   async refresh() {
-    if (!this.canRefreshTokens()) return;
+    if (!this.canRefreshTokens()) return Promise.reject();
 
     const promise = new Promise(async (resolve, reject) => {
       try {

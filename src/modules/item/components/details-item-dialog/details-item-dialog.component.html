@@ -15,11 +15,11 @@
         </div><br>
         <div class="d-flex flex-column mx-auto text-center">
           <label><strong>Item name</strong>:</label>
-          {{itemName}}
+          {{ ( item$ | async ).name }}
         </div>
         <div class="d-flex flex-column mx-auto text-center">
           <label><strong>Item description</strong>:</label>
-          {{itemDescription}}
+          {{ ( item$ | async ).description }}
         </div>
       </div>
       <div class="d-flex justify-content-center pt-3 pb-1">

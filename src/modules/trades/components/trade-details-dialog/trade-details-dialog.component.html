@@ -1,26 +1,26 @@
 <app-dark-background (onBackgroundClicked)="exit()">
   <app-medium-dialog class="position-fixed transform-center">
     <div class="mb-1">
-      <div *ngIf="!loading" class="d-flex flex-wrap flex-column align-items-center">
+      <div class="d-flex flex-wrap flex-column align-items-center">
         <div class="text-center pt-1 pb-3">    
           Trade details
         </div>
-        <div class="d-flex flex-column">
+        <div *ngIf="userName !== undefined" class="d-flex flex-column">
           <div class="d-flex flex-row">
             <strong>{{ isSentTrade ? 'Sent to' : 'Received from' }}</strong>:
-            {{ userId }}
+            {{ userName }}
           </div>
           <div class="d-flex flex-row">
             <strong>{{ isSentTrade ? 'Sent date' : 'Received date' }}</strong>:
-            {{ trade.sentDate | date }}
+            {{ (trade$ | async)?.sentDate | date }}
           </div>
           <div class="d-flex flex-row">
             <strong>Total price</strong>:
             {{ totalPrice }}
           </div>
-          <div *ngIf="trade.respondedDate" class="d-flex flex-row">
+          <div *ngIf="(trade$ | async)?.respondedDate" class="d-flex flex-row">
             <strong>Responded date</strong>:
-            {{ trade.respondedDate | date }}
+            {{ (trade$ | async)?.respondedDate | date }}
           </div>
           <div class="d-flex flex-row overflow-y-scroll max-height">
             <app-selected-trade-items-list></app-selected-trade-items-list>

@@ -20,9 +20,8 @@ import { AuthenticationInterceptor } from './interceptors/authentication.interce
 import { SignalRService } from '../shared/services/signal-r.service';
 import { RefreshTokenService } from '../identity/services/refresh-token.service';
 import { ViewReferenceDirective } from './directives/view-reference.directive';
-import { EventBusService } from '../shared/services/event-bus.service';
-import { EventData } from '../shared/utils/event-data';
-import { SignalR } from '../shared/enums/signal-r.enum';
+import { provideEffects } from '@ngrx/effects';
+import * as itemEffects from '../item/store/item.effects';
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -71,7 +70,8 @@ export function refreshTokenGetter() {
       },
       deps: [SignalRService, RefreshTokenService],
       multi: true
-    } ],
+    },
+    provideEffects(itemEffects) ],
   exports: [AppRoutingModule],
   bootstrap: [AppComponent]
 })

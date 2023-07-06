@@ -8,7 +8,8 @@ import { SelectItemsForTradeDialogComponent } from './components/select-items-fo
 import { TradeDetailsDialogComponent } from './components/trade-details-dialog/trade-details-dialog.component';
 import { CancelTradeDialogComponent } from './components/cancel-trade-dialog/cancel-trade-dialog.component';
 import { RespondTradeDialogComponent } from './components/respond-trade-dialog/respond-trade-dialog.component';
-import { CreateTradeGuard } from './guards/create-trade.guard';
+import { createTradeGuard } from './guards/create-trade.guard';
+import { selectedTradeGuard } from './guards/selected-trade.guard';
 
 const routes: Routes = [{
   path: TradeRoutes.Base,
@@ -17,7 +18,7 @@ const routes: Routes = [{
   children: [
   {
     path: TradeRoutes.Create,
-    canActivate: [CreateTradeGuard],
+    canActivate: [createTradeGuard],
     children: [
       { path: TradeRoutes.SelectReceiver, component: SelectTradeReceiverDialogComponent },
       {
@@ -28,6 +29,7 @@ const routes: Routes = [{
   },
   {
     path: TradeRoutes.Details,
+    canActivate: [selectedTradeGuard],
     component: TradeDetailsDialogComponent
   },
   {

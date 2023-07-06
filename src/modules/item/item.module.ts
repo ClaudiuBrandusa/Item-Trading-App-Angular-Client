@@ -12,6 +12,8 @@ import { EditItemDialogComponent } from './components/edit-item-dialog/edit-item
 import { DetailsItemDialogComponent } from './components/details-item-dialog/details-item-dialog.component';
 import { ItemsComponent } from './components/items-page/items-page.component';
 import { RouterModule } from '@angular/router';
+import { ItemReducer } from './store/item.reducer';
+import { StoreModule } from '@ngrx/store';
 
 
 
@@ -29,13 +31,16 @@ import { RouterModule } from '@angular/router';
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    StoreModule.forFeature("item", ItemReducer)
   ],
   exports: [
     ItemsComponent,
     ItemRoutingModule,
     ItemComponent
   ],
-  providers: [ItemService]
+  providers: [
+    ItemService
+  ]
 })
 export class ItemModule { }

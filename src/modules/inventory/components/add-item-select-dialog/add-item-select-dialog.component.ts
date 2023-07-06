@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
-import { InventoryService } from 'src/modules/inventory/services/inventory.service';
-import { ItemService } from 'src/modules/item/services/item.service';
-import { EventBusService } from 'src/modules/shared/services/event-bus.service';
 import { NavigationService } from '../../../shared/services/navigation.service';
 import { InventoryRoutes } from '../../enums/inventory-routes';
+import { Store } from '@ngrx/store';
+import { Item } from '../../../item/models/responses/item';
+import { InventoryItem } from '../../models/responses/inventory-item';
+import { selectItem } from '../../store/inventory/inventory.actions';
+import { clearSearchedItems, loadItemsInitiated } from '../../../item/store/item.actions';
+import { selectItemIds } from '../../../item/store/item.selector';
 
 @Component({
   selector: 'dialog-add-item-select',
@@ -12,10 +15,10 @@ import { InventoryRoutes } from '../../enums/inventory-routes';
 })
 export class AddItemSelectDialogComponent {
 
-  foundItems = new Array<string>();
+  public foundItemIds$ = this.itemStore.select(selectItemIds);
   searchString = "";
 
-  constructor(protected eventBus: EventBusService, private itemService: ItemService, private inventoryService: InventoryService, private navigationService: NavigationService) {}
+  constructor(private navigationService: NavigationService, private store: Store<InventoryItem>, private itemStore: Store<Item>) {}
 
   search() {
     // we are going to use the list method until we implement the search functionality on the API
@@ -30,31 +33,25 @@ export class AddItemSelectDialogComponent {
   }
 
   async select(id: string) {
-    this.inventoryService.select(id);
-    this.inventoryService.selectItemState = false;
+    this.store.dispatch(selectItem(id));
     await this.navigationService.navigate(`../${InventoryRoutes.Quantity}`, true);
   }
 
   cancel() {
-    this.inventoryService.selectItemState = false;
     this.navigationService.back();
   }
 
   private clearResults() {
-    while(this.foundItems.length > 0)
-      this.foundItems.pop();
+    this.itemStore.dispatch(clearSearchedItems());
   }
 
   private listItems() {
-    this.itemService.listItems(this.searchString).subscribe({
-      next: (response) => {
-        response.itemsId.forEach(id => {
-          this.foundItems.push(id);
-        });
-      },
-      error: (error) => {
-        console.log('Error found at list items: ', error);
-      }
-    })
+    this.itemStore.dispatch(loadItemsInitiated(this.searchString));
+  }
+
+  onSearchStringChange() {
+    if (this.searchString === "") {
+      this.clearResults();
+    }
   }
 }

@@ -1,51 +1,35 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { EventBusService } from '../../../shared/services/event-bus.service';
-import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
-import { TradeEvents } from '../../enums/trade-events';
+import { Component, OnInit } from '@angular/core';
 import { TradesSearchOptions } from '../../models/trades-search-options';
 import { TradesService } from '../../services/trades.service';
 import { TradeRoutes } from '../../enums/trade-routes';
+import { Store } from '@ngrx/store';
+import { TradeState } from '../../store/trade/trade.state';
+import { createTradeInitiated, listTradesInit } from '../../store/trade/trade.actions';
 
 @Component({
   selector: 'app-trades-page',
   templateUrl: './trades-page.component.html',
   styleUrls: ['./trades-page.component.css']
 })
-export class TradesPageComponent implements OnInit, OnDestroy {
+export class TradesPageComponent implements OnInit {
   filteringOptions: Array<string>;
-  searchOptions: TradesSearchOptions;
+  searchOptions = new TradesSearchOptions();
   createTradeEventId = TradeRoutes.SelectReceiver;
   createTradeEventRoute = `${TradeRoutes.Create}/${TradeRoutes.SelectReceiver}`;
-  private eventBusUtility: EventBusUtils;
 
-  constructor(eventBus: EventBusService, private service: TradesService) {
-    this.eventBusUtility = new EventBusUtils(eventBus);
+  constructor(private service: TradesService, private store: Store<TradeState>) {
     this.filteringOptions = this.service.getFilteringOptions();
   }
 
   ngOnInit() {
-    this.searchOptions = this.service.getSearchOptions();
-    this.initSubscriptions();
-  }
-
-  ngOnDestroy() {
-    this.eventBusUtility.clearSubscriptions();
+    this.search();
   }
 
   search() {
-    this.service.setSearchOptions(this.searchOptions);
-    this.eventBusUtility.emit(TradeEvents.RefreshList, this.searchOptions);
+    this.store.dispatch(listTradesInit({ ...this.searchOptions }));
   }
 
   onCreateTradeClicked() {
-    this.service.setCreateTradeState(true);
-  }
-
-  // Subscriptions
-
-  private initSubscriptions() {
-    this.eventBusUtility.on(TradeEvents.Search, () => {
-      this.search();
-    });
+    this.store.dispatch(createTradeInitiated());
   }
 }

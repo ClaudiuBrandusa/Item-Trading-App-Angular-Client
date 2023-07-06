@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { EventBusService } from '../../../shared/services/event-bus.service';
-import { TradeItemEvents } from '../../enums/trade-item-events';
-import { TradesService } from '../../services/trades.service';
 import { NavigationService } from '../../../shared/services/navigation.service';
-import { EventData } from '../../../shared/utils/event-data';
+import { TradeItem } from '../../models/trade-item';
+import { Store } from '@ngrx/store';
+import { selectCurrentTradeItem } from '../../store/trade-item/trade-item.selector';
+import { deselectTradeItem, removeTradeItem } from '../../store/trade-item/trade-item.actions';
 
 @Component({
   selector: 'popup-remove-trade-item',
@@ -12,14 +12,18 @@ import { EventData } from '../../../shared/utils/event-data';
 })
 export class RemoveTradeItemPopupComponent {
 
-  constructor(protected eventBus: EventBusService, private service: TradesService, private navigationService: NavigationService) {}
+  private currentTradeItem: TradeItem;
+
+  constructor(private navigationService: NavigationService, private store: Store<TradeItem>) {
+    store.select(selectCurrentTradeItem).subscribe(currentTradeItem => {
+      this.currentTradeItem = currentTradeItem;
+    });
+  }
 
   confirm() {
-    const currentTradeItemId = this.service.getCurrentTradeItem().id;
+    if (!this.currentTradeItem) return;
+    this.store.dispatch(removeTradeItem({ ...this.currentTradeItem }));
     this.deselect();
-    this.service.setCurrentTradeItem(null);
-    this.service.removeItemByIdFromTradeOffer(currentTradeItemId);
-    this.eventBus.emit(new EventData(TradeItemEvents.Remove, currentTradeItemId));
     this.closePopup();
   }
 
@@ -29,7 +33,7 @@ export class RemoveTradeItemPopupComponent {
   }
 
   private deselect() {
-    this.service.setCurrentTradeItem(null);
+    this.store.dispatch(deselectTradeItem());
   }
 
   private closePopup() {

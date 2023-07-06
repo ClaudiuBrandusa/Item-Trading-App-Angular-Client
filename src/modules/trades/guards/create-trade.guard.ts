@@ -1,24 +1,23 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from "@angular/router";
-import { Observable } from "rxjs";
-import { TradesService } from "../services/trades.service";
+import { inject } from "@angular/core";
+import { map, take } from "rxjs";
 import { TradeRoutes } from "../enums/trade-routes";
 import { NavigationService } from "../../shared/services/navigation.service";
+import { Store } from "@ngrx/store";
+import { TradeState } from "../store/trade/trade.state";
+import { selectTradeCreationStatus } from "../store/trade/trade.selector";
 
-@Injectable({
-  providedIn: 'root'
-})
-export class CreateTradeGuard implements CanActivate {
-  constructor(private tradesService: TradesService, private navigationService: NavigationService) {}
+export const createTradeGuard = () => {
+  const navigationService = inject(NavigationService);
+  const store = inject(Store<TradeState>);
 
-  canActivate(
-    _route: ActivatedRouteSnapshot,
-    _state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if (!this.tradesService.getCreateTradeState()) {
-      return this.navigationService.redirect(TradeRoutes.Base);
-    }
-
-    return true;
-  }
-
+  return store.select(selectTradeCreationStatus).pipe(
+    take(1),
+    map(lastValue => {
+      if (!lastValue) {
+        navigationService.redirect(TradeRoutes.Base);
+        return false;
+      }
+      return true;
+    })
+  );
 }

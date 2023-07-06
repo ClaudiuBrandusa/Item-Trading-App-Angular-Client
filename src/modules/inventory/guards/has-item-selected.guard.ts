@@ -1,23 +1,23 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
+import { inject } from '@angular/core';
+import { map, take } from 'rxjs';
 import { NavigationService } from '../../shared/services/navigation.service';
 import { InventoryRoutes } from '../enums/inventory-routes';
-import { InventoryService } from '../services/inventory.service';
+import { Store } from '@ngrx/store';
+import { InventoryItem } from '../models/responses/inventory-item';
+import { selectCurrentInventoryItemId } from '../store/inventory/inventory.selector';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class HasItemSelectedGuard implements CanActivate {
-  constructor(private inventoryService: InventoryService, private navigationService: NavigationService) {}
+export const hasItemSelectedGuard = () => {
+  const navigationService = inject(NavigationService);
+  const store = inject(Store<InventoryItem>);
 
-  canActivate(
-    _route: ActivatedRouteSnapshot,
-    _state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if (!this.inventoryService.hasItemSelected()) {
-      return this.navigationService.redirect(InventoryRoutes.Base);
-    }
-
-    return true;
-  }
+  return store.select(selectCurrentInventoryItemId).pipe(
+    take(1),
+    map(lastValue => {
+      if (!lastValue) {
+        navigationService.redirect(InventoryRoutes.Base);
+        return false;
+      }
+      return true;
+    })
+  );
 }

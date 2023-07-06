@@ -1,4 +1,4 @@
-<div *ngIf="loaded" class="d-flex flex-row position-relative my-2 p-2 bg-white border-thin border-style-solid border-red flex-gap">
+<div class="d-flex flex-row position-relative my-2 p-2 bg-white border-thin border-style-solid border-red flex-gap">
   <div class="d-flex flex-column flex-0 p-0">
     <div class="position-relative border-bold border-style-solid bg-gunmetal border-dark-red" [ngClass]="small ? 'w-3rem h-3rem' : 'w-5rem h-5rem'">
       <div class="position-absolute transform-center color-white">
@@ -9,11 +9,11 @@
   <div class="d-flex flex-column flex-gap mr-2 flex-grow-1">
     <span class="d-flex flex-row">
       <strong>Name</strong>:
-      {{ item.name }}
+      {{ (item$ | async )?.name }}
     </span>
     <span class="d-flex flex-row">
       <strong>Description</strong>:
-      {{ item.description }}
+      {{ (item$ | async )?.description }}
     </span>
     <span class="d-flex flex-row" *ngIf="!isShort">
       <div (click)="details()" class="d-inline-block color-blue no-select cursor-pointer"><strong>Details</strong></div>

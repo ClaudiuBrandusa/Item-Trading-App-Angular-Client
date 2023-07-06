@@ -18,6 +18,20 @@ import { SetTradeItemQuantityAndPriceDialogComponent } from './components/set-tr
 import { RemoveTradeItemPopupComponent } from './components/remove-trade-item-popup/remove-trade-item-popup.component';
 import { RespondTradeDialogComponent } from './components/respond-trade-dialog/respond-trade-dialog.component';
 import { CancelTradeDialogComponent } from './components/cancel-trade-dialog/cancel-trade-dialog.component';
+import { TradeReducer } from './store/trade/trade.reducer';
+import { StoreModule } from '@ngrx/store';
+import * as tradeEffects from './store/trade/trade.effects';
+import * as inventoryEffects from '../inventory/store/inventory/inventory.effects'
+import * as lockedAmountEffects from '../inventory/store/locked-amount/locked-amount.effects';
+import * as itemEffects from '../item/store/item.effects';
+import * as userEffects from '../identity/store/user.effects';
+import { provideEffects } from '@ngrx/effects';
+import { InventoryItemReducer } from '../inventory/store/inventory/inventory.reducer';
+import { ItemReducer } from '../item/store/item.reducer';
+import { UserReducer } from '../identity/store/user.reducer';
+import { TradeItemReducer } from './store/trade-item/trade-item.reducer';
+import { InventoryModule } from '../inventory/inventory.module';
+import { LockedInventoryItemAmountReducer } from '../inventory/store/locked-amount/locked-amount.reducer';
 
 
 
@@ -41,12 +55,26 @@ import { CancelTradeDialogComponent } from './components/cancel-trade-dialog/can
     SharedModule,
     IdentityModule,
     ItemModule,
+    InventoryModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StoreModule.forFeature("inventory", InventoryItemReducer),
+    StoreModule.forFeature("item", ItemReducer),
+    StoreModule.forFeature("trade", TradeReducer),
+    StoreModule.forFeature("user", UserReducer),
+    StoreModule.forFeature("trade-item", TradeItemReducer),
+    StoreModule.forFeature("locked-amount", LockedInventoryItemAmountReducer)
   ],
   exports: [
     TradesRoutingModule
   ],
-  providers: [TradesService]
+  providers: [
+    TradesService,
+    provideEffects(tradeEffects),
+    provideEffects(inventoryEffects),
+    provideEffects(itemEffects),
+    provideEffects(userEffects),
+    provideEffects(lockedAmountEffects)
+  ]
 })
 export class TradesModule { }

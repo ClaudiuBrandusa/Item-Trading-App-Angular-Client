@@ -1,19 +1,23 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { EventBusService } from 'src/modules/shared/services/event-bus.service';
-import { ItemEvents } from '../../enums/item-events';
-import { ItemService } from '../../services/item.service';
+import { Component, OnDestroy } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavigationService } from '../../../shared/services/navigation.service';
-import { EventData } from '../../../shared/utils/event-data';
+import { Store } from '@ngrx/store';
+import { CreateItemRequest } from '../../models/requests/create-item-request.model';
+import { createItemRequestSent, createItemTerminated } from '../../store/item.actions';
+import { Item } from '../../models/responses/item';
 
 @Component({
   selector: 'dialog-create-item',
   templateUrl: './create-item-dialog.component.html',
   styleUrls: ['./create-item-dialog.component.css']
 })
-export class CreateItemDialogComponent {
+export class CreateItemDialogComponent implements OnDestroy {
 
-  constructor(private fb: FormBuilder, private service: ItemService, private eventBus: EventBusService, private navigationService: NavigationService) {}
+  constructor(private fb: FormBuilder, private navigationService: NavigationService, private store: Store<Item>) {}
+  
+  ngOnDestroy(): void {
+    this.store.dispatch(createItemTerminated());
+  }
 
   form = this.fb.group({
     itemName: new FormControl('', Validators.required),
@@ -21,19 +25,21 @@ export class CreateItemDialogComponent {
   });
 
   submit() {
-    this.service.createItem(this.form).subscribe({
-      next: (response: any) => {
-        this.eventBus.emit(new EventData(ItemEvents.CreateItem, response.itemId.toString()));
-        this.exit();
-      },
-      error: (error) => {
-        console.log('Error at create item found: ', error);
-      }
-    });
+    this.store.dispatch(createItemRequestSent(this.convertFormToRequest(this.form)));
   }
   
   exit() {
-    this.service.isCreatingNewItem = false;
     this.navigationService.back();
+  }
+  
+  convertFormToRequest(form: FormGroup) {
+    if(form == null) return null;
+
+    let model = new CreateItemRequest();
+
+    model.itemName = form.value['itemName'];
+    model.itemDescription = form.value['itemDescription'];
+
+    return model;
   }
 }

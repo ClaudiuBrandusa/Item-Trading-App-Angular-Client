@@ -1,20 +1,33 @@
-import { Component } from '@angular/core';
-import { EventBusService } from '../../../shared/services/event-bus.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TradeResponse } from '../../enums/trade-response';
-import { TradesService } from '../../services/trades.service';
-import { RespondedTradeResponse } from '../../models/responses/responded-trade.response';
-import { TradeEvents } from '../../enums/trade-events';
 import { NavigationService } from '../../../shared/services/navigation.service';
-import { EventData } from '../../../shared/utils/event-data';
+import { Store } from '@ngrx/store';
+import { TradeState } from '../../store/trade/trade.state';
+import { selectCurrentTradeStatus } from '../../store/trade/trade.selector';
+import { CurrentTrade } from '../../models/current-trade';
+import { currentTradeSelectionTerminated, respondTradeInit } from '../../store/trade/trade.actions';
 
 @Component({
   selector: 'dialog-respond-trade',
   templateUrl: './respond-trade-dialog.component.html',
   styleUrls: ['./respond-trade-dialog.component.css']
 })
-export class RespondTradeDialogComponent {
+export class RespondTradeDialogComponent implements OnInit, OnDestroy {
 
-  constructor(private eventBus: EventBusService, private service: TradesService, private navigationService: NavigationService) {}
+  private currentTrade: CurrentTrade;
+
+  constructor(private navigationService: NavigationService, private store: Store<TradeState>) {}
+  
+  ngOnInit() {
+    this.store.select(selectCurrentTradeStatus).subscribe(currentTrade => {
+      if (!currentTrade) return;
+      this.currentTrade = currentTrade;
+    });
+  }
+
+  ngOnDestroy() {
+    this.store.dispatch(currentTradeSelectionTerminated());
+  }
 
   deny() {
     this.respond(false);
@@ -25,24 +38,12 @@ export class RespondTradeDialogComponent {
   }
 
   private respond(status: boolean) {
-    const currentTrade = this.service.getSelectedTrade();
-    const response = status ? TradeResponse.Accept : TradeResponse.Reject;
-    this.service.respondToTradeOffer(currentTrade.tradeId, response).subscribe({
-      next: (responseBody) => {
-        const data = responseBody as RespondedTradeResponse
-        this.eventBus.emit(new EventData(TradeEvents.Update+data.tradeOfferId, response));
-      },
-      error: (error) => {
-        console.log(`Error found on responding to trade: ${error}`);
-      },
-      complete: () => {
-        this.exit();
-      }
-    });
+    if (!this.currentTrade) return;
+    this.store.dispatch(respondTradeInit(this.currentTrade.tradeId, status ? TradeResponse.Accept : TradeResponse.Reject));
+    this.exit();
   }
 
   exit() {
-    this.service.deselect();
     this.navigationService.back();
   }
 }

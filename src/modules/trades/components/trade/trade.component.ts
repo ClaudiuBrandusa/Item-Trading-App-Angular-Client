@@ -1,68 +1,63 @@
-import { Component, OnDestroy } from '@angular/core';
-import { ListItemDirective } from 'src/modules/shared/directives/list/list-item/list-item.directive';
-import { EventBusService } from '../../../shared/services/event-bus.service';
-import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
-import { TradeEvents } from '../../enums/trade-events';
-import { TradeResponse } from '../../enums/trade-response';
+import { Component, Input, OnInit } from '@angular/core';
 import { Trade } from '../../models/responses/trade';
-import { TradesService } from '../../services/trades.service';
 import { getTradeReceiverOrSender } from '../../utils/trade-utils';
 import { NavigationService } from '../../../shared/services/navigation.service';
 import { TradeRoutes } from '../../enums/trade-routes';
+import { Store } from '@ngrx/store';
+import { currentTradeSelectionInitiated, loadTradeInit } from '../../store/trade/trade.actions';
+import { selectTradeById } from '../../store/trade/trade.selector';
+import { Observable, map } from 'rxjs';
+import { TradeItem } from '../../models/trade-item';
+import { addTradeItems } from '../../store/trade-item/trade-item.actions';
 
 @Component({
   selector: 'app-trade',
   templateUrl: './trade.component.html',
   styleUrls: ['./trade.component.css']
 })
-export class TradeComponent extends ListItemDirective implements OnDestroy {
+export class TradeComponent implements OnInit {
 
   totalPrice: number = 0;
   trade: Trade;
+  trade$: Observable<Trade>;
+
+  @Input()
+  tradeId: string;
+
+  @Input()
   isSentTrade: boolean;
+  
+  @Input()
   isRespondedTrade: boolean;
+
   response: string;
   userId: string;
-  loading = true;
   respondedButtonClass: string;
   private baseRespondedButtonClass = "p-2 color-white no-select cursor-pointer";
-  private eventBusUtility: EventBusUtils;
 
-  constructor(eventBus: EventBusService, private service: TradesService, private navigationService: NavigationService) {
-    super();
-    this.eventBusUtility = new EventBusUtils(eventBus);
-  }
+  constructor(private navigationService: NavigationService, private store: Store<Trade>, private tradeItemStore: Store<TradeItem>) {}
+  
+  ngOnInit() {
+    this.trade$ = this.store.select(selectTradeById(this.tradeId)).pipe(map(trade => {
+      if (!trade) return new Trade();
+      this.trade = trade;
+      this.userId = getTradeReceiverOrSender(trade);
+      this.totalPrice = 0;
+      trade.items.forEach(item => this.totalPrice += item.price);
+      if (trade.response != null) {
+        this.isRespondedTrade = true;
+        this.handleTradeResponse();
+      }
+      return trade;
+    }));
 
-  ngOnDestroy(): void {
-    this.eventBusUtility.clearSubscriptions();
-  }
+    this.trade$.subscribe();
 
-  protected override onSetItemId() {
-    this.isSentTrade = this.service.isSentTrade(this.itemId);
-    this.isRespondedTrade = this.service.isRespondedTrade(this.itemId);
-    this.initSubscriptions();
-  }
-
-  protected override loadData() {
     this.getTrade();
   }
 
   getTrade() {
-    this.service.getTrade(this.itemId).subscribe({
-      next: (response) => {
-        this.trade = response as Trade;
-        this.totalPrice = 0;
-        this.trade.items.forEach(item => this.totalPrice += item.price);
-        this.userId = getTradeReceiverOrSender(this.trade);
-        this.handleTradeResponse();
-      },
-      error: (error) => {
-        console.log(`Error found on get trade with id: ${this.itemId}. ${error}`);
-      },
-      complete: () => {
-        this.loading = false;
-      }
-    })
+    this.store.dispatch(loadTradeInit(this.tradeId, this.isSentTrade, this.isRespondedTrade));
   }
 
   respond() {
@@ -81,7 +76,8 @@ export class TradeComponent extends ListItemDirective implements OnDestroy {
   }
 
   private select() {
-    this.service.select(this.trade.tradeId, this.trade.items);
+    this.store.dispatch(currentTradeSelectionInitiated(this.trade.tradeId, this.trade.items, this.isSentTrade, this.isRespondedTrade));
+    this.tradeItemStore.dispatch(addTradeItems(this.trade.items));
   }
 
   private openDialog(dialog: string) {
@@ -96,16 +92,5 @@ export class TradeComponent extends ListItemDirective implements OnDestroy {
       this.response = "Rejected";
       this.respondedButtonClass = this.baseRespondedButtonClass + " bg-dark-red";
     }
-  }
-
-  // Subscriptions
-
-  private initSubscriptions() {
-    this.eventBusUtility.on(TradeEvents.Update+this.itemId, (response: TradeResponse) => {
-      this.trade.response = response == TradeResponse.Accept ? true : false;
-      this.service.cacheTrade(this.itemId, false, true);
-      this.handleTradeResponse();
-      this.eventBusUtility.emit(TradeEvents.Update, this.itemId);
-    })
   }
 }

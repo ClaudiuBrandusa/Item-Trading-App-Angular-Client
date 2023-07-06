@@ -1,66 +1,69 @@
-import { Component, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { InventoryEvents } from '../../enums/inventory-events';
-import { EventBusService } from '../../../shared/services/event-bus.service';
-import { InventoryService } from '../../services/inventory.service';
-import { ItemError } from '../../../shared/models/errors/item-error';
-import { EventData } from '../../../shared/utils/event-data';
+import { Component, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavigationService } from '../../../shared/services/navigation.service';
+import { Store } from '@ngrx/store';
+import { Item } from '../../../item/models/responses/item';
+import { Observable, map } from 'rxjs';
+import { selectCurrentItemData } from '../../store/inventory/inventory.selector';
+import { InventoryItem } from '../../models/responses/inventory-item';
+import { deselectItem, dropItem } from '../../store/inventory/inventory.actions';
+import { DropItemRequest } from '../../models/requests/drop-item-request.model';
 
 @Component({
   selector: 'dialog-drop-item-quantity',
   templateUrl: './drop-item-quantity-dialog.component.html',
   styleUrls: ['./drop-item-quantity-dialog.component.css']
 })
-export class DropItemQuantityDialogComponent implements OnInit {
-
-  _itemName
+export class DropItemQuantityDialogComponent implements OnInit, OnDestroy {
 
   @Output()
-  get itemName() {
-    return this._itemName;
-  }
+  itemName: string;
 
   @Output()
   errorMessage: string;
 
-  constructor(private fb: FormBuilder, private service: InventoryService, private eventBus: EventBusService, private navigationService: NavigationService) {}
+  public item$: Observable<Item>;
+
+  private itemId: string;
+
+  constructor(private fb: FormBuilder, private navigationService: NavigationService, private store: Store<InventoryItem>) {}
 
   form = this.fb.group({
     itemQuantity: new FormControl('', Validators.required)
   })
 
   ngOnInit() {
-    this.loadItemName();
+    this.item$ = this.store.select(selectCurrentItemData).pipe(map((item) => {
+      if (item === undefined) {
+        this.exit();
+        return new Item();
+      }
+      this.itemId = item.id;
+      return item
+    }));
+  }
+
+  ngOnDestroy() {
+    this.store.dispatch(deselectItem());
   }
 
   next() {
-    this.service.dropItem(this.form).subscribe({
-      next: (_response) => {
-        this.errorMessage = '';
-        this.eventBus.emit(new EventData(InventoryEvents.Refresh, ''));
-        this.exit();
-      },
-      error: (error: ItemError) => {
-        if (error.errorCode == 400)
-          this.errorMessage = error.message;
-      }
-    });
-  }
-
-  loadItemName() {
-    this.service.getItem(this.service.getSelectedItemId()).subscribe({
-      next: (response: any) => {
-        this._itemName = response.itemName;
-      },
-      error: (_error) => {
-        this.exit();
-      }
-    });
+    this.store.dispatch(dropItem(this.convertFormToRequest(this.form)));
+    this.exit();
   }
 
   exit() {
-    this.service.deselect();
     this.navigationService.back();
+  }
+
+  private convertFormToRequest(form: FormGroup) {
+    if(form == null) return null;
+
+    let model = new DropItemRequest();
+
+    model.itemId = this.itemId;
+    model.itemQuantity = form.get('itemQuantity')?.value;
+
+    return model;
   }
 }

@@ -1,16 +1,20 @@
 import { Component, OnDestroy } from '@angular/core';
-import { EventBusService } from '../../../shared/services/event-bus.service';
 import { TradeItem } from '../../models/trade-item';
-import { TradesService } from '../../services/trades.service';
-import { Item } from 'src/modules/item/models/responses/item';
-import { InventoryService } from '../../../inventory/services/inventory.service';
-import { TradeItemEvents } from '../../enums/trade-item-events';
 import { Trade } from '../../models/responses/trade';
-import { TradeEvents } from '../../enums/trade-events';
-import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
 import { NavigationService } from '../../../shared/services/navigation.service';
 import { TradePopupsNames } from '../../enums/trade-popups-names';
 import { TradeRoutes } from '../../enums/trade-routes';
+import { Store } from '@ngrx/store';
+import { removeTradeReceiver, sendTradeOfferInit } from '../../store/trade/trade.actions';
+import { Observable } from 'rxjs';
+import { InventoryItem } from '../../../inventory/models/responses/inventory-item';
+import { selectInventoryItemIdsThatAreNotSelectedAsTradeItems, selectInventoryItemsData } from '../../../inventory/store/inventory/inventory.selector';
+import { clearSearchedItems, loadItemsInit } from '../../../inventory/store/inventory/inventory.actions';
+import { discardTradeItems, selectTradeItem } from '../../store/trade-item/trade-item.actions';
+import { selectTradeItems } from '../../store/trade-item/trade-item.selector';
+import { selectTradeOfferReceiverId } from '../../store/trade/trade.selector';
+import { TradeOfferRequest } from '../../models/requests/trade-offer.request';
+import { clearArray } from '../../../shared/utils/array-utils';
 
 @Component({
   selector: 'dialog-select-items-for-trade',
@@ -19,32 +23,33 @@ import { TradeRoutes } from '../../enums/trade-routes';
 })
 export class SelectItemsForTradeDialogComponent implements OnDestroy {
 
-  foundItemsId = new Array<string>();
+  foundItems = new Array<InventoryItem>();
+  foundItemIds$: Observable<string[]>;
+  selectedTradeItems = new Array<TradeItem>();
+  private tradeOfferReceiverId: string;
   searchString = "";
-  itemsDictionary = new Map<string, Item>();
   tradeValid = false;
-  private eventBusUtility: EventBusUtils;
+  
+  constructor(private navigationService: NavigationService, private inventoryStore: Store<InventoryItem>, private store: Store<Trade>, private tradeItemStore: Store<TradeItem>) {
+    this.foundItemIds$ = this.inventoryStore.select(selectInventoryItemIdsThatAreNotSelectedAsTradeItems);
+    this.inventoryStore.select(selectInventoryItemsData).subscribe(inventoryItems => {
+      if (!inventoryItems) return;
+      this.foundItems = inventoryItems;
+    });
 
-  constructor(eventBus: EventBusService, private service: TradesService, private inventoryService: InventoryService, private navigationService: NavigationService) {
-    this.eventBusUtility = new EventBusUtils(eventBus);
+    store.select(selectTradeOfferReceiverId).subscribe(receiverId => {
+      if (!receiverId) return;
+      this.tradeOfferReceiverId = receiverId;
+    });
 
-    this.eventBusUtility.on(TradeItemEvents.ConfirmQuantityAndPriceChange, () => {
-      this.onConfirmQuantityAndPriceChange();
-    })
-
-    this.eventBusUtility.on(TradeItemEvents.DenyQuantityAndPriceChange, (itemId: string) => {
-      this.onDenyQuantityAndPriceChange(itemId);
-    })
-
-    this.eventBusUtility.on(TradeItemEvents.ListChanged, () => {
-      this.tradeValid = this.isTradeValid();
-    })
+    tradeItemStore.select(selectTradeItems).subscribe(tradeItems => {
+      clearArray(this.selectedTradeItems);
+      tradeItems.forEach(tradeItem => tradeItem && this.selectedTradeItems.push(tradeItem));
+    });
   }
 
   ngOnDestroy() {
-    this.eventBusUtility.clearSubscriptions();
-    this.service.clearCurrentTradeOffer();
-    this.eventBusUtility.emit(TradeItemEvents.Remove, null);
+    this.tradeItemStore.dispatch(discardTradeItems());
   }
 
   search() {
@@ -60,83 +65,38 @@ export class SelectItemsForTradeDialogComponent implements OnDestroy {
   }
 
   clearResults() {
-    while(this.foundItemsId.length > 0)
-      this.foundItemsId.pop();
+    this.inventoryStore.dispatch(clearSearchedItems());
   }
 
   exit() {
+    this.clearResults();
+    this.store.dispatch(removeTradeReceiver());
     this.navigationService.back();
   }
 
   private listItems() {
-    this.inventoryService.list(this.searchString).subscribe({
-      next: (response: any) => {
-        response.itemsId.forEach(id => {
-          if (this.service.isTradeItemIdSelected(id)) return;
-          this.foundItemsId.push(id);
-        });
-      },
-      error: (error) => {
-        console.log('Error found at list items: ', error);
-      }
-    })
+    this.inventoryStore.dispatch(loadItemsInit(this.searchString));
   }
 
   select(id: string) {
     // select item id
-    if (!this.itemsDictionary.has(id) || this.service.isTradeItemIdSelected(id)) return;
-    const item = this.itemsDictionary.get(id);
-    const tradeItem = new TradeItem({ id: id, name: item.name })
-    this.service.setCurrentTradeItem(tradeItem);
+    const item = this.foundItems.find(item => item.itemId === id);
+    if (!item) return;
+    const tradeItem = new TradeItem({ id: id, name: item.itemName });
+    this.tradeItemStore.dispatch(selectTradeItem(tradeItem));
     this.navigationService.openPopup(TradePopupsNames.SetItemQuantityAndPrice);
-  }
-
-  onConfirmQuantityAndPriceChange() {
-    const tradeItem = this.service.getCurrentTradeItem();
-    this.removeItemIdFromFoundItems(tradeItem.id);
-    this.eventBusUtility.emit(TradeItemEvents.Add, tradeItem);
-  }
-
-  onDenyQuantityAndPriceChange(itemId: string) {
-    this.removeSelectedItemId(itemId);
-    this.service.setCurrentTradeItem(null);
-  }
-
-  onItemLoaded(item: Item) {
-    this.itemsDictionary.set(item.id, item);
   }
 
   createTrade() {
     if (!this.isTradeValid()) return;
 
-    this.service.sendTradeOffer().subscribe({
-      next: (response) => {
-        const data = response as Trade;
-        this.eventBusUtility.emit(TradeEvents.Create, data.tradeId);
-        this.navigationService.backToRoute(TradeRoutes.Base);
-      },
-      error: (error) => {
-        console.log(`Error found at sending the trade offer: ${error}`)
-      }
-    })
+    this.store.dispatch(sendTradeOfferInit(new TradeOfferRequest({ targetUserId: this.tradeOfferReceiverId, items: [ ...this.selectedTradeItems ]})));
+    this.store.dispatch(removeTradeReceiver());
+    
+    this.navigationService.backToRoute(TradeRoutes.Base);
   }
 
   isTradeValid() {
-    return this.service.isTradeOfferValid();
-  }
-
-  private removeSelectedItemId(itemId: string) {
-    this.service.removeItemByIdFromTradeOffer(itemId);
-  }
-
-  private removeItemIdFromFoundItems(itemId: string) {
-    this.removeElementFromArray(this.foundItemsId, itemId);
-  }
-
-  private removeElementFromArray(array: Array<string>, value: string) {
-    const index = array.indexOf(value, 0);
-    if (index > -1) {
-      array.splice(index, 1);
-    }
+    return this.tradeOfferReceiverId && this.selectedTradeItems.length > 0;
   }
 }

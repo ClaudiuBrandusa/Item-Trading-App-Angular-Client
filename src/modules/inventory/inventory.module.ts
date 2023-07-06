@@ -11,6 +11,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddItemSelectDialogComponent } from './components/add-item-select-dialog/add-item-select-dialog.component';
 import { ItemModule } from '../item/item.module';
 import { DropItemQuantityDialogComponent } from './components/drop-item-dialog-quantity/drop-item-quantity-dialog.component';
+import { StoreModule } from '@ngrx/store';
+import { InventoryItemReducer } from './store/inventory/inventory.reducer';
+import { ItemReducer } from '../item/store/item.reducer';
+import * as inventoryEffects from './store/inventory/inventory.effects'
+import * as itemEffects from '../item/store/item.effects';
+import { provideEffects } from '@ngrx/effects';
+import { InventoryItem } from './models/responses/inventory-item';
 
 
 
@@ -28,14 +35,19 @@ import { DropItemQuantityDialogComponent } from './components/drop-item-dialog-q
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
-    ItemModule
+    ItemModule,
+    StoreModule.forFeature("inventory", InventoryItemReducer),
+    StoreModule.forFeature("item", ItemReducer)
   ],
   exports: [
     InventoryPageComponent,
-    InventoryRoutingModule
+    InventoryRoutingModule,
+    InventoryItemComponent
   ],
   providers: [
-    InventoryService
+    InventoryService,
+    provideEffects(inventoryEffects),
+    provideEffects(itemEffects)
   ]
 })
 export class InventoryModule { }

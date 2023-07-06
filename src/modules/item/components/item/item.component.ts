@@ -1,28 +1,27 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Item } from 'src/modules/item/models/responses/item';
-import { ListItemDirective } from 'src/modules/shared/directives/list/list-item/list-item.directive';
-import { EventBusService } from 'src/modules/shared/services/event-bus.service';
 import { NavigationService } from '../../../shared/services/navigation.service';
-import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
-import { ItemEvents } from '../../enums/item-events';
 import { ItemRoutes } from '../../enums/item-routes';
-import { ItemService } from '../../services/item.service';
+import { Store } from '@ngrx/store';
+import { deselectItem, loadItemInitiated, selectItem } from '../../store/item.actions';
+import { selectItemById } from '../../store/item.selector';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-item',
   templateUrl: './item.component.html',
   styleUrls: ['./item.component.css']
 })
-export class ItemComponent extends ListItemDirective implements OnInit, OnDestroy {
+export class ItemComponent implements OnInit {
+
+  @Input()
+  itemId: string;
 
   @Input()
   hasControls = true;
 
   @Input()
   isShort = false;
-  
-  @Input()
-  item = new Item();
 
   @Input()
   onItemLoadedFunction: (item: Item) => void;
@@ -30,50 +29,13 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
   @Input()
   small = false;
 
-  @Input()
-  hideUntilLoaded = false;
+  public item$ = new Observable<Item>();
 
-  loaded = true;
-
-  private eventBusUtility: EventBusUtils;
-
-  constructor(private service: ItemService, eventBus: EventBusService, private navigationService: NavigationService) {
-    super();
-    this.eventBusUtility = new EventBusUtils(eventBus);
-  }
-
-  protected override onSetItemId() {
-    this.eventBusUtility.on(ItemEvents.UpdateItem+this.itemId, () => {
-      this.getItem();
-    })
-  }
-
-  protected override loadData() {
-    this.getItem();
-  }
-
+  constructor(private navigationService: NavigationService, private store: Store) {}
+  
   ngOnInit(): void {
-    if (this.hideUntilLoaded) this.loaded = false;
-    this.getItem();
-  }
-
-  ngOnDestroy(): void {
-    this.eventBusUtility.clearSubscriptions();
-  }
-
-  getItem() {
-    this.service.getItem(this.itemId).subscribe({
-      next: (response: Item) => {
-        this.item = response
-        if (this.onItemLoadedFunction) this.onItemLoadedFunction(response);
-      },
-      error: (error) => {
-        console.log(`Error at loading item data for id ${this.itemId}: `, error)
-      },
-      complete: () => {
-        if(this.hideUntilLoaded) this.loaded = true;
-      }
-    })
+    this.item$ = this.store.select(selectItemById(this.itemId));
+    this.store.dispatch(loadItemInitiated(this.itemId));
   }
 
   edit() {
@@ -91,7 +53,7 @@ export class ItemComponent extends ListItemDirective implements OnInit, OnDestro
   // Utils
 
   private async select(route: string) {
-    this.service.select(this.item.id);
-    if (!await this.navigationService.navigate(route, true)) this.service.deselect();
+    this.store.dispatch(selectItem(this.itemId));
+    if (!await this.navigationService.navigate(route, true)) this.store.dispatch(deselectItem());
   }
 }

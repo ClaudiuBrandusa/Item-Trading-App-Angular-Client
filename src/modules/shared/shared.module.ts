@@ -16,6 +16,7 @@ import { HugeDialogComponent } from './components/dialog/huge-dialog/huge-dialog
 import { PageNavigationService } from './services/page-navigation.service';
 import { DefaultDialogComponent } from './components/default-dialog/default-dialog.component';
 import { DarkBackgroundComponent } from './components/dark-background/dark-background.component';
+import { StoreModule, provideStore } from '@ngrx/store';
 
 
 
@@ -38,7 +39,8 @@ import { DarkBackgroundComponent } from './components/dark-background/dark-backg
   ],
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    StoreModule.forRoot({})
   ],
   exports: [
     ErrorComponent,
@@ -54,6 +56,9 @@ import { DarkBackgroundComponent } from './components/dark-background/dark-backg
     HugeDialogComponent,
     DefaultDialogComponent,
     DarkBackgroundComponent
+  ],
+  providers: [
+    provideStore()
   ]
 })
 export class SharedModule {

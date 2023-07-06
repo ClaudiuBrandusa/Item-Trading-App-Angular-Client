@@ -1,23 +1,23 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from "@angular/router";
-import { ItemService } from "../services/item.service";
+import { inject } from "@angular/core";
 import { ItemRoutes } from "../enums/item-routes";
 import { NavigationService } from "../../shared/services/navigation.service";
-import { Observable } from "rxjs";
+import { map, take } from "rxjs";
+import { Store } from "@ngrx/store";
+import { selectCurrentItemStatus } from "../store/item.selector";
+import { Item } from "../models/responses/item";
 
-@Injectable({
-  providedIn: 'root'
-})
-export class HasItemSelectedGuard implements CanActivate {
-  constructor(private itemService: ItemService, private navigationService: NavigationService) {}
+export const hasItemSelectedGuard = () => {
+  const navigationService = inject(NavigationService);
+  const store = inject(Store<Item>);
 
-  canActivate(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-    if (!this.itemService.getSelectedItemId()) {
-      this.navigationService.redirect(ItemRoutes.Base);
-      return false; 
-    }
-
-    return true;
-  }
-
+  return store.select(selectCurrentItemStatus).pipe(
+    take(1),
+    map(lastValue => {
+      if (!lastValue) {
+        navigationService.redirect(ItemRoutes.Base);
+        return false;
+      }
+      return true;
+    })
+  );
 }

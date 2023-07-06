@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { EventBusService } from 'src/modules/shared/services/event-bus.service';
-import { EventData } from '../../../shared/utils/event-data';
-import { ItemEvents } from '../../enums/item-events';
 import { ItemRoutes } from '../../enums/item-routes';
-import { ItemService } from '../../services/item.service';
+import { Store } from '@ngrx/store';
+import { createItemInitiated, loadItemsInitiated } from '../../store/item.actions';
+import { Item } from '../../models/responses/item';
 
 @Component({
   selector: 'app-items',
@@ -14,10 +13,10 @@ export class ItemsComponent {
 
   createEventId = ItemRoutes.Create
 
-  constructor(private eventBus: EventBusService, private service: ItemService) { }
+  constructor(private store: Store<Item>) {}
 
   search(searchBody) {
-    this.eventBus.emit(new EventData(ItemEvents.RefreshItemsList, searchBody.searchString));
+    this.store.dispatch(loadItemsInitiated(searchBody.searchString));
   }
 
   getEventValue(event: Event) {
@@ -27,7 +26,7 @@ export class ItemsComponent {
     return (event.target as HTMLInputElement).value;
   }
 
-  onSelectItemClicked(event) {
-    this.service.isCreatingNewItem = true;
+  onSelectItemClicked(_event) {
+    this.store.dispatch(createItemInitiated());
   }
 }

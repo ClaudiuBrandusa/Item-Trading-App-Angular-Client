@@ -1,3 +1,7 @@
-<div *ngFor="let id of ItemsIdList; let i=index">
-  <app-trade [ItemId]="id"></app-trade>
+<div *ngFor="let data of tradesData$ | async; let i=index">
+  <app-trade
+    [tradeId]="data.tradeId"
+    [isSentTrade]="data.isSentTrade"
+    [isRespondedTrade]="data.isRespondedTrade">
+  </app-trade>
 </div>

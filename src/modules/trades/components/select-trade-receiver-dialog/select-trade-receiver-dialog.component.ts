@@ -1,9 +1,13 @@
 import { Component } from '@angular/core';
-import { UserService } from '../../../identity/services/user.service';
-import { TradesService } from '../../services/trades.service';
-import { FoundUsersResponse } from '../../models/responses/found-users.response'
 import { NavigationService } from '../../../shared/services/navigation.service';
 import { TradeRoutes } from '../../enums/trade-routes';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { selectUsers } from '../../../identity/store/user.selector';
+import { FoundUserResponse } from '../../../identity/models/responses/found-user.response';
+import { listUsersInit, clearUsersList } from '../../../identity/store/user.actions';
+import { Trade } from '../../models/responses/trade';
+import { setTradeReceiver } from '../../store/trade/trade.actions';
 
 @Component({
   selector: 'dialog-select-trade-receiver',
@@ -11,14 +15,16 @@ import { TradeRoutes } from '../../enums/trade-routes';
   styleUrls: ['./select-trade-receiver-dialog.component.css']
 })
 export class SelectTradeReceiverDialogComponent {
-
   foundUsersId = new Array<string>();
   searchString : string = "";
+  foundUsers$: Observable<FoundUserResponse[]>;
 
-  constructor(private navigationService: NavigationService, private service: TradesService, private userService: UserService) {}
+  constructor(private navigationService: NavigationService, private userStore: Store<FoundUserResponse>, private store: Store<Trade>) {
+    this.foundUsers$ = userStore.select(selectUsers);
+  }
 
   async select(userId: string) {
-    this.service.setTradeOfferReceiver(userId);
+    this.store.dispatch(setTradeReceiver(userId));
     await this.navigationService.navigate(`../${TradeRoutes.SelectItems}`, true);
   }
 
@@ -35,25 +41,15 @@ export class SelectTradeReceiverDialogComponent {
   }
 
   exit() {
+    this.clearResults();
     this.navigationService.back();
   }
 
   private clearResults() {
-    while(this.foundUsersId.length > 0)
-      this.foundUsersId.pop();
+    this.userStore.dispatch(clearUsersList());
   }
 
   private listItems() {
-    this.userService.listUsers(this.searchString).subscribe({
-      next: (response) => {
-        const foundUsers = response as FoundUsersResponse;
-        if (foundUsers) {
-          foundUsers.usersId.forEach(foundUserId => this.foundUsersId.push(foundUserId));
-        }
-      },
-      error: (error) => {
-        console.log('Error found at list users: ', error);
-      }
-    })
+    this.userStore.dispatch(listUsersInit(this.searchString));
   }
 }

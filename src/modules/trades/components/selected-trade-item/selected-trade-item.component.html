@@ -9,13 +9,13 @@
     </div>
     <div class="flex-column flex-grow-1">
       <strong class="header-font">Item name</strong>:
-      <span class="field-font">{{ item.name }}</span>
+      <span class="field-font">{{ ( item$ | async )?.name }}</span>
       <br>
       <strong class="header-font">Quantity</strong>:
-      <span class="field-font">{{ item.quantity }}</span>
+      <span class="field-font">{{ ( item$ | async )?.quantity }}</span>
       <br>
       <strong class="header-font">Price</strong>:
-      <span class="field-font">{{ item.price }}</span>
+      <span class="field-font">{{ ( item$ | async )?.price }}</span>
       <br>
     </div>
     <div *ngIf="editable" class="d-flex flex-column flex-0">

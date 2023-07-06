@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { EventBusService } from 'src/modules/shared/services/event-bus.service';
-import { EventData } from '../../../shared/utils/event-data';
 import { InventoryRoutes } from '../../enums/inventory-routes';
-import { InventoryEvents } from '../../enums/inventory-events';
-import { InventoryService } from '../../services/inventory.service';
+import { InventoryItem } from '../../models/responses/inventory-item';
+import { Store } from '@ngrx/store';
+import { loadItemsInitiated } from '../../../item/store/item.actions';
 
 @Component({
   selector: 'app-inventory',
@@ -14,10 +13,10 @@ export class InventoryPageComponent {
 
   addItemEventId = InventoryRoutes.Select;
 
-  constructor(private eventBus: EventBusService, private service: InventoryService) {}
+  constructor(private store: Store<InventoryItem>) {}
 
   search(searchBody) {
-    this.eventBus.emit(new EventData(InventoryEvents.Refresh, searchBody.searchString));
+    this.store.dispatch(loadItemsInitiated(searchBody.searchString));
   }
 
   getEventValue(event: Event) {
@@ -25,9 +24,5 @@ export class InventoryPageComponent {
     if(str != null)
       return str;
     return (event.target as HTMLInputElement).value;
-  }
-
-  onSelectItemClicked(state: boolean) {
-    this.service.selectItemState = true;
   }
 }

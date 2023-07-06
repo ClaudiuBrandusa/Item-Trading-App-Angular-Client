@@ -1,38 +1,39 @@
-import { Component } from '@angular/core';
-import { EventBusService } from '../../../shared/services/event-bus.service';
-import { TradeEvents } from '../../enums/trade-events';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TradeResponse } from '../../enums/trade-response';
-import { TradesService } from '../../services/trades.service';
-import { CanceledTradeResponse } from '../../models/responses/canceled-trade.response';
-import { EventData } from '../../../shared/utils/event-data';
 import { NavigationService } from '../../../shared/services/navigation.service';
+import { Store } from '@ngrx/store';
+import { TradeState } from '../../store/trade/trade.state';
+import { selectCurrentTradeStatus } from '../../store/trade/trade.selector';
+import { currentTradeSelectionTerminated, respondTradeInit } from '../../store/trade/trade.actions';
 
 @Component({
   selector: 'dialog-cancel-trade',
   templateUrl: './cancel-trade-dialog.component.html',
   styleUrls: ['./cancel-trade-dialog.component.css']
 })
-export class CancelTradeDialogComponent {
+export class CancelTradeDialogComponent implements OnInit, OnDestroy {
 
-  constructor(private eventBus: EventBusService, private service: TradesService, private navigationService: NavigationService) {}
+  private tradeId: string;
+
+  constructor(private navigationService: NavigationService, private store: Store<TradeState>) {}
+  
+  ngOnInit() {
+    this.store.select(selectCurrentTradeStatus).subscribe(currentTrade => {
+      if (!currentTrade) return;
+      this.tradeId = currentTrade.tradeId;
+    });
+  }
+  
+  ngOnDestroy() {
+    this.store.dispatch(currentTradeSelectionTerminated());
+  }
 
   cancelTrade() {
-    const trade = this.service.getSelectedTrade();
-    this.service.respondToTradeOffer(trade.tradeId, TradeResponse.Cancel).subscribe({
-      next: (response) => {
-        const data = response as CanceledTradeResponse;
-        this.eventBus.emit(new EventData(TradeEvents.Remove, data.tradeOfferId));
-        this.exit();
-      },
-      error: (error) => {
-        console.log(`Error found at cancel trade: ${error}`)
-      }
-    });
-    this.service.deselect();
+    this.store.dispatch(respondTradeInit(this.tradeId, TradeResponse.Cancel));
+    this.exit();
   }
 
   exit() {
-    this.service.deselect();
     this.navigationService.back();
   }
 }

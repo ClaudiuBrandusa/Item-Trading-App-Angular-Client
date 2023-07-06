@@ -81,18 +81,45 @@ export class NavigationService {
   }
 
   back() {
-    if (this.history.length < 2) return;
+    if (this.history.length < 2) {
+      const routerConfigs = this.getRouterConfigsFromPath(this.router.url);
+      if (!routerConfigs || routerConfigs.length < 2) return;
+      this.emitExitEventForDialog(routerConfigs[routerConfigs.length - 1].path);
+      if (this.history.length === 1) this.history.splice(this.history.length - 1, 1);
+      this.redirect(routerConfigs[routerConfigs.length - 2].path);
+      return;
+    }
 
-    this.backToRoute(this.history[this.history.length - 2].route);
+    const oldRoute = this.history[this.history.length - 1].route;
+    this.history.splice(this.history.length - 1, 1);
+    const oldRouteAsArray = oldRoute.split('/').filter(x => x);
+    this.emitExitEventForDialog(oldRouteAsArray[oldRouteAsArray.length - 1]);
+    this.backToRoute(this.history[this.history.length - 1].route);
   }
 
   closePopup() {
     this.closeLastModalOpened();
   }
 
+  private getRouterConfigsFromPath(path: string) {
+    const currentRouteSplitAsArray = path.split('/').filter(x => x);
+    let currentConfigArray = this.router.config;
+    const routeConfigList = [];
+    currentRouteSplitAsArray.forEach(route => {
+        if (currentConfigArray.length === 0) return;
+        const tmp = currentConfigArray.find(config => config.path === route);
+        if (!tmp) return;
+        routeConfigList.push(tmp) 
+        if (!tmp.children) return;
+        currentConfigArray = tmp.children;
+    });
+    return routeConfigList 
+  }
+
   private closeLastModalOpened() {
     const modal = this.modalStack.pop();
     if (!modal || !this.activeModals.includes(modal)) return;
+    this.activeModals.splice(this.activeModals.indexOf(modal), 1);
     this.eventBus.emit(new EventData(NavigationEvents.ClosePopup, modal));
   }
 

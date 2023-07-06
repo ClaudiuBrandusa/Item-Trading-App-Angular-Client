@@ -1,5 +1,8 @@
 export class RespondedTradeResponse {
-  tradeOfferId: string;
+  id: string;
   senderId: string;
   senderName: string;
+  receivedDate: Date;
+  responseDate: Date;
+  response: boolean | undefined;
 }

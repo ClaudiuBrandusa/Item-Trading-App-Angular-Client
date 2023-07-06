@@ -1,6 +1,6 @@
 <div class="d-flex flex-row position-relative m-3 p-2 bg-white border-thin border-style-solid border-red flex-gap">
   <div class="d-flex flex-column flex-0 p-0">
-    <div class="position-relative border-bold border-style-solid bg-gunmetal border-dark-red w-5rem h-5rem">
+    <div class="position-relative border-bold border-style-solid bg-gunmetal border-dark-red" [ngClass]="small ? 'w-3rem h-3rem' : 'w-5rem h-5rem'">
       <div class="position-absolute transform-center color-white">
         Item
       </div>
@@ -9,11 +9,11 @@
   <div class="d-flex flex-column flex-grow-1 flex-gap">
     <span class="d-flex flex-row">
       <strong>Name</strong>:
-      {{ item.itemName }}
+      {{ ( item$ | async )?.itemName }}
     </span>
     <span class="d-flex flex-row">
       <strong>Quantity</strong>:
-      {{ item.quantity }}
+      {{ ( item$ | async )?.quantity }}
     </span>
   </div>
   <div *ngIf="hasControls" class="d-flex flex-column flex-0 p-0 pl-1 text-center no-select cursor-pointer">

@@ -12,11 +12,19 @@ export class NavigationHeaderComponent implements OnInit {
   public disabledAnchorClasses = "disabled color-black";
   public enabledAnchorClasses = "color-white";
   private enabledDivClasses = "border-normal border-dark-red border-style-solid border-bottom-0 ";
-  public enabledLeftDivClasses = this.enabledDivClasses + " border-right-0 border-radius-rounded-top-left";
-  public enabledRightDivClasses = this.enabledDivClasses + " border-left-0 border-radius-rounded-top-right";
-  private disabledDivClasses = "bg-red border border-top-0 border-normal border-dark-red";
-  public disabledLeftDivClasses = this.disabledDivClasses + " border-left-0 border-radius-rounded-top-left";
-  public disabledRightDivClasses = this.disabledDivClasses + " border-right-0 border-radius-rounded-top-right";
+  public enabledLeftDivClasses = this.enabledDivClasses + "border-end-0 border-radius-rounded-top-left";
+  public enabledRightDivClasses = this.enabledDivClasses + "border-start-0 border-radius-rounded-top-right";
+  private disabledDivClasses = "bg-red border border-top-0 border-normal border-dark-red ";
+  public disabledLeftDivClasses = this.disabledDivClasses + "border-start-0 border-radius-rounded-bottom-right border-radius-rounded-top-left";
+  public disabledRightDivClasses = this.disabledDivClasses + "border-end-0 border-radius-rounded-bottom-left border-radius-rounded-top-right";
+
+  public get loginButtonClasses() {
+    return "d-flex flex-column flex-grow-1 p-2 text-center " + (this.isOnPage(0) ? this.enabledRightDivClasses : this.disabledRightDivClasses);
+  }
+  
+  public get registerButtonClasses() {
+    return "d-flex flex-column flex-grow-1 p-2 text-center " + (this.isOnPage(1) ? this.enabledLeftDivClasses : this.disabledLeftDivClasses);
+  }
 
   constructor(private currentIdentityPageService: CurrentIdentityPageService) { }
 
@@ -24,6 +32,7 @@ export class NavigationHeaderComponent implements OnInit {
   }
 
   isOnPage(page: IdentityPage) {
+    console.log(this.currentIdentityPageService.currentPage == page)
     return this.currentIdentityPageService.currentPage == page;
   }
 

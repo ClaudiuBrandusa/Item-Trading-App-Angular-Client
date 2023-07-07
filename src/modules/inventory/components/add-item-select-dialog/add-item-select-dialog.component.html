@@ -6,7 +6,7 @@
       [hideNextButton]="true">
       <div class="d-flex flex-column h-min-5rem h-max-35rem">
         <div class="d-flex flex-row flex-0 m-2">
-          <div class="d-flex flex-grow-1 mr-1">
+          <div class="d-flex flex-grow-1 me-1">
             <input
               [(ngModel)]="searchString"
               (ngModelChange)="onSearchStringChange()"
@@ -15,7 +15,7 @@
               (keyup.enter)="search()"
               placeholder="Enter item name"/>
           </div>
-          <div class="d-flex flex-0 ml-1">
+          <div class="d-flex flex-0 ms-1">
             <app-button (click)="search()" [rounded]="true">Search</app-button>
           </div>
         </div>

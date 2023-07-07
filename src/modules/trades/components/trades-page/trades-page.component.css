@@ -16,3 +16,11 @@ input[type=checkbox] {
 input[type=checkbox]:checked {
   accent-color: #b52e31 !important;
 }
+
+.search-bar-elements-gap {
+  gap: 0.5rem;
+}
+
+.short-elements-gap {
+  gap: 0.2rem;
+}

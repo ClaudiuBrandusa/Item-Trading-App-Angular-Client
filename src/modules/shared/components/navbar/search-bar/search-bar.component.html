@@ -1,14 +1,14 @@
 <div class="d-flex bg-outer-space-crayola border-style-solid border-thin border-red border-bottom p-2">
-  <div class="d-flex flex-grow-1 pr-2">
+  <div class="d-flex flex-grow-1 pe-2">
     <input placeholder="{{placeholder}}" [(ngModel)]="searchString" class="border w-100 rounded-pill border-thin border-dark-red bg-gunmetal pb-1" type="text" />
   </div>
-  <div *ngIf="hasFiltering" class="d-flex ml-auto p-0 flex-0 pr-2">
-    <select [(ngModel)]="selectedFilterValue" class="bg-dark-red rounded-pill border-normal color-white border-0 p-1 pl-1 pr-1">
+  <div *ngIf="hasFiltering" class="d-flex ms-auto p-0 flex-0 pe-2">
+    <select [(ngModel)]="selectedFilterValue" class="bg-dark-red rounded-pill border-normal color-white border-0 p-1 ps-1 pe-1">
       <option [ngValue]="value" *ngFor="let value of filteringOptions">{{value}}</option>
     </select>
   </div>
   <ng-content></ng-content>
-  <div class="d-flex ml-auto p-0 flex-0">
-    <button class="bg-dark-red rounded-pill border-normal color-white border-0 p-1 pl-3 pr-3 no-select" (click)="search()">Search</button>
+  <div class="d-flex ms-auto p-0 flex-0">
+    <button class="bg-dark-red rounded-pill border-normal color-white border-0 p-1 ps-3 pe-3 no-select" (click)="search()">Search</button>
   </div>
 </div>

@@ -37,13 +37,13 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
     this.eventBusUtility = new EventBusUtils(eventBusService);
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.initEvents();
 
     this.checkIfIsSelected();
   }
   
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.eventBusUtility.clearSubscriptions();
   }
 

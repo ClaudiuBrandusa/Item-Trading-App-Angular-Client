@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { IdentityPage } from '../../enums/identity-page';
 import { CurrentIdentityPageService } from '../../services/current-identity-page.service';
 
@@ -7,7 +7,7 @@ import { CurrentIdentityPageService } from '../../services/current-identity-page
   templateUrl: './navigation-header.component.html',
   styleUrls: ['./navigation-header.component.css']
 })
-export class NavigationHeaderComponent implements OnInit {
+export class NavigationHeaderComponent {
 
   public disabledAnchorClasses = "disabled color-black";
   public enabledAnchorClasses = "color-white";
@@ -32,7 +32,6 @@ export class NavigationHeaderComponent implements OnInit {
   }
 
   isOnPage(page: IdentityPage) {
-    console.log(this.currentIdentityPageService.currentPage == page)
     return this.currentIdentityPageService.currentPage == page;
   }
 

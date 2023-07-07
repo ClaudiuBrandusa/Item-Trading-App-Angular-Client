@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
   templateUrl: './identity-dialog.component.html',
   styleUrls: ['./identity-dialog.component.css']
 })
-export class IdentityDialogComponent implements OnInit {
+export class IdentityDialogComponent {
 
   @Input()
   formGroup: FormGroup;
@@ -18,8 +18,5 @@ export class IdentityDialogComponent implements OnInit {
   submitButtonText ='';
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

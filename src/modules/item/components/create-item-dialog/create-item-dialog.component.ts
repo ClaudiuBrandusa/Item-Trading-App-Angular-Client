@@ -15,7 +15,7 @@ export class CreateItemDialogComponent implements OnDestroy {
 
   constructor(private fb: FormBuilder, private navigationService: NavigationService, private store: Store<Item>) {}
   
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.store.dispatch(createItemTerminated());
   }
 

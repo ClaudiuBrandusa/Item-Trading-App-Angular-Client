@@ -1,7 +1,6 @@
 import { CreateItemRequest } from 'src/modules/item/models/requests/create-item-request.model';
 import { UpdateItemRequest } from 'src/modules/item/models/requests/update-item-request.model';
-import { createAction, props } from '@ngrx/store';
-import { DefaultException } from '../../shared/models/errors/default-exception';
+import { createAction } from '@ngrx/store';
 import { Item } from '../models/responses/item';
 
 export enum ItemActionType {
@@ -19,8 +18,7 @@ export enum ItemActionType {
   DeleteItemInit = "delete_item_initiated",
   DeleteItemSucceeded = "delete_item_succeeded",
   SelectItem = "select_item",
-  DeselectItem = "deselect_item",
-  DefaultItemFailedResponse = "default_item_failed_response"
+  DeselectItem = "deselect_item"
 }
 
 export const loadItemsInitiated = createAction(ItemActionType.LoadItemsInit, (searchString: string) => ({ searchString }));
@@ -52,5 +50,3 @@ export const deleteItemSucceeded = createAction(ItemActionType.DeleteItemSucceed
 export const selectItem = createAction(ItemActionType.SelectItem, (itemId) => ({ itemId }));
 
 export const deselectItem = createAction(ItemActionType.DeselectItem);
-
-export const defaultItemFailedResponse = createAction(ItemActionType.DefaultItemFailedResponse, (errorMessage: string, errorBody: any) => (new DefaultException({ message: errorMessage, body: errorBody })));

@@ -1,0 +1,15 @@
+hr {
+  margin: 0.15rem 0;
+}
+
+.expanded-description {
+  max-height: 10rem;
+}
+
+.me-05 {
+  margin-right: 0.125rem;
+}
+
+.mb-05 {
+  margin-bottom: 0.125rem;
+}

@@ -41,6 +41,9 @@
     "Wallet": {
       "get": "/wallet/get",
       "update": "/wallet/update"
+    },
+    "SignalR": {
+      "hub": "http://localhost:5000/hubs/notification"
     }
   }
 }

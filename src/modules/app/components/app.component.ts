@@ -1,4 +1,4 @@
-import { Component, ComponentRef, ViewChild } from '@angular/core';
+import { Component, ComponentRef, HostListener, ViewChild } from '@angular/core';
 import { EventBusService } from '../../shared/services/event-bus.service';
 import { EventBusUtils } from '../../shared/utils/event-bus.utility';
 import { ModalConfig } from '../models/modal-config';
@@ -7,6 +7,8 @@ import { ViewReferenceDirective } from '../directives/view-reference.directive';
 import { TradePopupsNames } from '../../trades/enums/trade-popups-names';
 import { RemoveTradeItemPopupComponent } from '../../trades/components/remove-trade-item-popup/remove-trade-item-popup.component';
 import { NavigationEvents } from '../../shared/enums/navigation-events.enum';
+import { SignalR } from '../../shared/enums/signal-r.enum';
+import { EventData } from '../../shared/utils/event-data';
 
 @Component({
   selector: 'app-root',
@@ -32,7 +34,7 @@ export class AppComponent {
 
   @ViewChild(ViewReferenceDirective, {static: true}) viewRef!: ViewReferenceDirective;
 
-  constructor(eventBus: EventBusService) {
+  constructor(private eventBus: EventBusService) {
     this.eventBusUtility = new EventBusUtils(eventBus);
     
     this.eventBusUtility.on(NavigationEvents.OpenAsPopup, (popupName) => {
@@ -49,5 +51,10 @@ export class AppComponent {
 
       modal.destroy();
     });
+  }
+  
+  @HostListener('window:beforeunload', ['$event'])
+  public beforeUnloadHandler(_$event) {
+    this.eventBus.emit(new EventData(SignalR.Disconnected));
   }
 }

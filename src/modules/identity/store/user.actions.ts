@@ -1,6 +1,4 @@
 import { createAction } from "@ngrx/store";
-import { FoundUsersResponse } from "../../trades/models/responses/found-users.response";
-import { DefaultException } from "../../shared/models/errors/default-exception";
 import { FoundUserResponse } from "../models/responses/found-user.response";
 
 export enum UserActionType {
@@ -8,8 +6,7 @@ export enum UserActionType {
   ListUsersSucceeded = "list_users_succeeded",
   GetUserInit = "get_user_initiated",
   GetUserSucceeded = "get_user_succeeded",
-  ClearUsersList = "clear_users_list",
-  DefaultUserFailedResponse = "default_failed_response"
+  ClearUsersList = "clear_users_list"
 }
 
 export const listUsersInit = createAction(UserActionType.ListUsersInit, (searchString: string) => ({ searchString }));
@@ -21,5 +18,3 @@ export const getUserInit = createAction(UserActionType.GetUserInit, (userId: str
 export const getUserSucceeded = createAction(UserActionType.GetUserSucceeded, (foundUser: FoundUserResponse) => ({ foundUser }));
 
 export const clearUsersList = createAction(UserActionType.ClearUsersList);
-
-export const defaultUserFailedResponse = createAction(UserActionType.DefaultUserFailedResponse, (errorMessage: string, errorBody: any) => (new DefaultException({ message: errorMessage, body: errorBody })));

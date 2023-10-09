@@ -1,5 +1,4 @@
 import { createAction } from "@ngrx/store";
-import { DefaultException } from "../../../shared/models/errors/default-exception";
 import { InventoryItem } from "../../models/responses/inventory-item";
 import { AddItemRequest } from "../../models/requests/add-item-request.model";
 import { DropItemRequest } from "../../models/requests/drop-item-request.model";
@@ -15,8 +14,7 @@ export enum InventoryItemActionType {
   AddItemSucceeded = "add_inventory_item_succeeded",
   DropItem = "drop_inventory_item",
   DropItemSucceeded = "drop_inventory_item_succeeded",
-  ClearSearchedItems = "clear_searched_inventory_items",
-  DefaultItemFailedResponse = "default_inventory_item_failed_response"
+  ClearSearchedItems = "clear_searched_inventory_items"
 }
 
 export const loadItemsInit = createAction(InventoryItemActionType.LoadItemsInit, (searchString: string) => ({ searchString }));
@@ -40,5 +38,3 @@ export const dropItem = createAction(InventoryItemActionType.DropItem, (request:
 export const dropItemSucceeded = createAction(InventoryItemActionType.DropItemSucceeded, (response: any) => ({ response }))
 
 export const clearSearchedItems = createAction(InventoryItemActionType.ClearSearchedItems);
-
-export const defaultItemFailedResponse = createAction(InventoryItemActionType.DefaultItemFailedResponse, (errorMessage: string, errorBody: any) => (new DefaultException({ message: errorMessage, body: errorBody })));

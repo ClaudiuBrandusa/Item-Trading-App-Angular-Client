@@ -1,0 +1,17 @@
+<div [ngClass]="{'fade-out-05' : clicked, 'bg-charcoal' : !isError, 'bg-dark-red' : isError}" class="position-relative d-flex flex-grow-1 flex-column border border-thin border-radius-small-rounded p-1 me-1">
+  <div class="d-flex flex-row">
+    <i [ngClass]="{'fa-triangle-exclamation' : isError, 'fa-circle-info' : !isError}" class="fa-solid font-size-medium m-auto pe-1"></i>
+    <span class="d-flex flex-grow-1 allow-select pe-3">
+      {{ data.title | truncate:(35) }}
+    </span>
+    <span class="d-flex justify-content-end">
+      <i (click)="dismissNotification()" class="fa-solid fa-xmark position-absolute cursor-pointer me-05"></i>
+      <i [hidden]="!truncated" (click)="expandNotification()" [ngClass]="{'fa-rotate-180' : expand}" class="fa-solid fa-angle-down position-absolute bottom-0 cursor-pointer me-05"></i>
+    </span>
+  </div>    
+  <hr>
+  <span [ngClass]="{'overflow-y-scroll expanded-description' : expand}" class="font-size-medium allow-select mb-3">
+    {{ expand ? data.description : data.description | truncate:(100) }}
+  </span>
+  <span [ngClass]="{'color-gray' : !isError, 'color-light-gray' : isError}" class="position-absolute bottom-0 color-gray font-size-small mb-05">{{ createdTime }}</span>
+</div>

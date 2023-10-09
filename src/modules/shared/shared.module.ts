@@ -17,7 +17,13 @@ import { PageNavigationService } from './services/page-navigation.service';
 import { DefaultDialogComponent } from './components/default-dialog/default-dialog.component';
 import { DarkBackgroundComponent } from './components/dark-background/dark-background.component';
 import { StoreModule, provideStore } from '@ngrx/store';
-
+import { NotificationsComponent } from './components/notification/notifications/notifications.component';
+import { NotificationReducer } from './store/notification/notification.reducer';
+import { NotificationComponent } from './components/notification/notification/notification.component';
+import { ReplaceOverMaxWithPlusPipe } from './pipes/numbers/replace-over-max-with-plus.pipe';
+import { TruncatePipe } from './pipes/text/truncate.pipe';
+import * as notificationEffects from './store/notification/notification.effects';
+import { provideEffects } from '@ngrx/effects';
 
 
 @NgModule({
@@ -35,11 +41,16 @@ import { StoreModule, provideStore } from '@ngrx/store';
     MediumDialogComponent,
     HugeDialogComponent,
     DefaultDialogComponent,
-    DarkBackgroundComponent
+    DarkBackgroundComponent,
+    NotificationsComponent,
+    NotificationComponent,
+    ReplaceOverMaxWithPlusPipe,
+    TruncatePipe
   ],
   imports: [
     CommonModule,
     FormsModule,
+    StoreModule.forFeature("notification", NotificationReducer),
     StoreModule.forRoot({})
   ],
   exports: [
@@ -55,10 +66,13 @@ import { StoreModule, provideStore } from '@ngrx/store';
     MediumDialogComponent,
     HugeDialogComponent,
     DefaultDialogComponent,
-    DarkBackgroundComponent
+    DarkBackgroundComponent,
+    ReplaceOverMaxWithPlusPipe,
+    TruncatePipe
   ],
   providers: [
-    provideStore()
+    provideStore(),
+    provideEffects(notificationEffects)
   ]
 })
 export class SharedModule {

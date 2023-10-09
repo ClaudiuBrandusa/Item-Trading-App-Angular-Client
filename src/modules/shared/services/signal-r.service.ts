@@ -1,22 +1,32 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import * as signalR from "@microsoft/signalr"
 import { SignalR } from '../enums/signal-r.enum';
 import { EventBusUtils } from '../utils/event-bus.utility';
 import { EventBusService } from './event-bus.service';
 import { CustomHttpClient } from '../utils/custom-http-client';
 import { RefreshTokenService } from '../../identity/services/refresh-token.service';
+import { SignalRNotification } from '../models/signal-r/signal-r-notification';
+import { NetworkService } from './network.service';
+import { SignalREndpoints } from '../models/endpoints/signal-r-endpoints.config';
+import { EndpointsService } from '../../app/services/endpoints.service';
+import { SignalREvents } from '../enums/signal-r-events.enum';
+import { Store } from '@ngrx/store';
+import { handleReceivedNotification } from '../store/notification/notification.actions';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SignalRService {
+export class SignalRService extends NetworkService<SignalREndpoints> implements OnDestroy {
 
   private hubConnection: signalR.HubConnection;
   private eventBusUtility: EventBusUtils;
   private connectionStatus: Boolean;
   private httpClient: CustomHttpClient;
+  private endpoints: SignalREndpoints;
   
-  constructor(eventBus: EventBusService, private refreshTokenService: RefreshTokenService) {
+  constructor(protected endpointsService: EndpointsService, eventBus: EventBusService, refreshTokenService: RefreshTokenService, private store: Store) {
+    super(endpointsService);
+    this.endpoints = endpointsService.getSignalR();
     this.httpClient = new CustomHttpClient(refreshTokenService);
     this.eventBusUtility = new EventBusUtils(eventBus);
     this.eventBusUtility.on(SignalR.Connected, (token) => {
@@ -30,6 +40,10 @@ export class SignalRService {
     });
   }
 
+  ngOnDestroy() {
+    this.eventBusUtility.clearSubscriptions();
+  }
+
   public connect(token: string) {
     if (!!!token) return;
     if (this.hubConnection && this.connectionStatus) return;
@@ -40,7 +54,7 @@ export class SignalRService {
 
   startConnection = (token: string) => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('http://localhost:5000/hubs/notification', {
+      .withUrl(this.endpoints.hub, {
         transport: signalR.HttpTransportType.LongPolling,
         headers: {
           'Authorization': `Bearer ${token}`
@@ -55,8 +69,12 @@ export class SignalRService {
   }
 
   addConnectListener = () => {
-    this.hubConnection.on('connect', (data) => {
-      console.log('connect ', data);
-    })
+    this.hubConnection.on(SignalREvents.Connect, (data) => {
+      console.log(SignalREvents.Connect, data);
+    });
+
+    this.hubConnection.on(SignalREvents.Notify, (data: SignalRNotification) => {
+      this.store.dispatch(handleReceivedNotification(data));
+    });
   }
 }

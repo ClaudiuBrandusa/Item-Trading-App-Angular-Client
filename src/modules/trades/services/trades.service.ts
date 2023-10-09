@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { EndpointsService } from '../../app/services/endpoints.service';
 import { TradeEndpoints } from '../../shared/models/endpoints/trade-endpoints.config';
-import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
 import { TradeResponse } from '../enums/trade-response';
 import { AcceptTradeOfferRequest } from '../models/requests/accept-trade-offer.request';
@@ -13,8 +12,8 @@ import { TradeOfferRequest } from '../models/requests/trade-offer.request';
 @Injectable()
 export class TradesService extends NetworkService<TradeEndpoints> {
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService) {
-    super(http, endpointsService, eventBus);
+  constructor(private http: HttpClient, protected endpointsService: EndpointsService) {
+    super(endpointsService);
     this.endpointsModel = this.endpointsService.getTrade();
   }
 

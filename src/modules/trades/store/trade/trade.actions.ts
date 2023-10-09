@@ -1,5 +1,4 @@
 import { createAction } from "@ngrx/store";
-import { DefaultException } from "../../../shared/models/errors/default-exception";
 import { Trade } from "../../models/responses/trade";
 import { TradesSearchOptions } from "../../models/trades-search-options";
 import { TradeItem } from "../../models/trade-item";
@@ -21,11 +20,11 @@ export enum TradeActionType {
   ListSentTrades = "list_sent_trades",
   ListReceivedTrades = "list_received_trades",
   ListTradesSucceeded = "list_trades_succeeded",
+  AddTradeData = "add_trade_data",
   LoadTradeInit = "load_trade_initialized",
   LoadTradeSucceeded = "load_trade_succeeded",
   RespondTradeInit = "respond_trade_initialized",
-  RespondTradeSucceeded = "respond_trade_succeeded",
-  DefaultTradeFailedResponse = "default_trade_failed_response"
+  RespondTradeSucceeded = "respond_trade_succeeded"
 }
 
 export const createTradeInitiated = createAction(TradeActionType.CreateTradeInit);
@@ -52,6 +51,8 @@ export const listReceivedTrades = createAction(TradeActionType.ListReceivedTrade
 
 export const listTradesSucceeded = createAction(TradeActionType.ListTradesSucceeded, (response: TradeBaseData[]) => ({ response }));
 
+export const addTradeData = createAction(TradeActionType.AddTradeData, (tradeData: TradeBaseData) => ({ tradeData }));
+
 export const loadTradeInit = createAction(TradeActionType.LoadTradeInit, (tradeId: string, isSentTrade: boolean, isRespondedTrade: boolean = false) => ({ tradeId, isSentTrade, isRespondedTrade }));
 
 export const loadTradeSucceeded = createAction(TradeActionType.LoadTradeSucceeded, (trade: Trade) => ({ trade }));
@@ -59,5 +60,3 @@ export const loadTradeSucceeded = createAction(TradeActionType.LoadTradeSucceede
 export const respondTradeInit = createAction(TradeActionType.RespondTradeInit, (tradeId: string, response: TradeResponse) => ({ tradeId, response }));
 
 export const respondTradeSucceeded = createAction(TradeActionType.RespondTradeSucceeded, (response: RespondedTradeResponse) => ({ response }));
-
-export const defaultTradeFailedResponse = createAction(TradeActionType.DefaultTradeFailedResponse, (errorMessage: string, errorBody: any) => (new DefaultException({ message: errorMessage, body: errorBody })));

@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { RefreshTokenService } from 'src/modules/identity/services/refresh-token.service';
+import { selectNotificationsCount, selectNotificationsMenuVisibility } from '../../store/notification/notification.selector';
+import { closeNotificationsMenu, openNotificationsMenu, resetNotifications } from '../../store/notification/notification.actions';
 
 @Component({
   selector: 'app-navbar',
@@ -8,9 +11,64 @@ import { RefreshTokenService } from 'src/modules/identity/services/refresh-token
 })
 export class NavbarComponent {
 
-  constructor(public authService: RefreshTokenService) { }
+  public notificationsMenuOpened = false;
+  @ViewChild('notificationsButton', {read: ElementRef})
+  notificationsButtonElementReference: ElementRef
+
+  @ViewChild('notifications', {read: ElementRef})
+  notificationsElementReference: ElementRef
+
+  notificationsCount;
+
+  constructor(public authService: RefreshTokenService, private store: Store) {
+    store.select(selectNotificationsCount).subscribe((count) => {
+      this.notificationsCount = count;
+    });
+
+    store.select(selectNotificationsMenuVisibility).subscribe((isMenuOpened) => {
+      this.toggleNotificationsMenu(isMenuOpened);
+    });
+  }
+
+  private dispatchNotificationsMenu(state = !this.notificationsMenuOpened) {
+    if (state) {
+      this.store.dispatch(openNotificationsMenu());
+    } else {
+      this.store.dispatch(closeNotificationsMenu());
+    }
+  }
+
+  private toggleNotificationsMenu(state) {
+    this.notificationsMenuOpened = state;
+  }
+
+  isLoggedIn() {
+    return this.authService.isLoggedIn();
+  }
 
   logout() {
+    this.store.dispatch(resetNotifications());
     this.authService.signOut();
+  }
+
+  @HostListener('document:click', ['$event'])
+  click(event) {
+    if (!this.isLoggedIn()) return;
+
+    if (this.notificationsButtonElementReference.nativeElement.contains(event.target)) {
+      this.dispatchNotificationsMenu();
+      return;
+    }
+
+    if (!this.notificationsMenuOpened) return;
+
+    // checking if a navigation button was clicked
+    if (event.y < this.notificationsButtonElementReference.nativeElement.clientHeight) {
+      return;
+    }
+
+    if (!event.composedPath().find(x => x === this.notificationsElementReference.nativeElement)) {
+      this.dispatchNotificationsMenu(false);
+    }
   }
 }

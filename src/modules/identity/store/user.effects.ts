@@ -1,11 +1,11 @@
 import { inject } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { UserService } from "../services/user.service";
-import { defaultUserFailedResponse, getUserInit, getUserSucceeded, listUsersInit, listUsersSucceeded } from "./user.actions";
+import { getUserInit, getUserSucceeded, listUsersInit, listUsersSucceeded } from "./user.actions";
 import { catchError, concatMap, exhaustMap, map, of, tap } from "rxjs";
-import { DefaultException } from "../../shared/models/errors/default-exception";
 import { FoundUserResponse } from "../models/responses/found-user.response";
 import { Store } from "@ngrx/store";
+import { handleDefaultException } from "../../shared/store/notification/notification.actions";
 
 export const listUsers = createEffect(
   (actions$ = inject(Actions), service = inject(UserService), store = inject(Store<FoundUserResponse>)) => {
@@ -18,7 +18,7 @@ export const listUsers = createEffect(
             return listUsersSucceeded(response.usersId)
           }),
           catchError(error =>
-            of(defaultUserFailedResponse('Error found at list users: ', error)))
+            of(handleDefaultException('Error found at list users', error)))
         )
       )
     )
@@ -36,22 +36,10 @@ export const getUser = createEffect(
             getUserSucceeded(response)
           ),
           catchError(error =>
-            of(defaultUserFailedResponse(`Error at loading user data for id ${userId}: `, error)))
+            of(handleDefaultException(`Error at loading user data for id ${userId}`, error)))
         )
       )
     )
   },
   { functional: true }
-);
-
-export const defaultUserError = createEffect(
-  (actions$ = inject(Actions)) => {
-    return actions$.pipe(
-      ofType(defaultUserFailedResponse),
-      tap((error: DefaultException) => {
-        console.log(error.message, error.body)
-      })
-    )
-  },
-  { functional: true, dispatch: false }
 );

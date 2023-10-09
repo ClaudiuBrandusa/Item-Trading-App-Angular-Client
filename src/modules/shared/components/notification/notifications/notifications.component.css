@@ -1,0 +1,10 @@
+.content-size {
+  min-height: 16rem;
+  max-height: 22rem;
+  width: 22rem;
+}
+
+.content-position {
+  top: 3.8rem;
+  right: 0.5rem;
+}

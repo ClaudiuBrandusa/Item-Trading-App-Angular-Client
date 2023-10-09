@@ -34,7 +34,6 @@ import { InventoryModule } from '../inventory/inventory.module';
 import { LockedInventoryItemAmountReducer } from '../inventory/store/locked-amount/locked-amount.reducer';
 
 
-
 @NgModule({
   declarations: [
     TradesPageComponent,

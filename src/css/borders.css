@@ -36,6 +36,10 @@
   border-bottom-left-radius: 0% !important;
 }
 
+.border-radius-small-rounded {
+  border-radius: 0.5rem !important;
+}
+
 /* border width */
 
 .border-bold {

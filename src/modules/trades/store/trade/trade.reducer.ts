@@ -1,6 +1,6 @@
 import { Action, createReducer, on } from "@ngrx/store";
 import { TradeState, adapter, initialState } from "./trade.state";
-import { createTradeInitiated, createTradeTerminated, currentTradeSelectionInitiated, currentTradeSelectionTerminated, listTradesSucceeded, loadTradeSucceeded, removeTradeReceiver, respondTradeSucceeded, sendTradeOfferSucceeded, setTradeReceiver } from "./trade.actions";
+import { addTradeData, createTradeInitiated, createTradeTerminated, currentTradeSelectionInitiated, currentTradeSelectionTerminated, listTradesSucceeded, loadTradeSucceeded, removeTradeReceiver, respondTradeSucceeded, sendTradeOfferSucceeded, setTradeReceiver } from "./trade.actions";
 import { CurrentTrade } from "../../models/current-trade";
 import { TradeBaseData } from "../../models/trade-base-data";
 
@@ -21,6 +21,7 @@ const tradeReducer = createReducer(
   on(currentTradeSelectionInitiated, (state, { tradeId, tradeItems, isSentTrade, isRespondedTrade }) => ({...state, currentTrade: new CurrentTrade({ tradeId: tradeId, tradeItems: tradeItems, isSentTrade, isRespondedTrade }) })),
   on(currentTradeSelectionTerminated, (state) => ({ ...state, currentTrade: new CurrentTrade() })),
   on(listTradesSucceeded, (state, { response }) => ({ ...state, tradesData: [ ...response ], displayRespondedTrades: response.length > 0 ? response[0].isRespondedTrade : initialState.displayRespondedTrades })),
+  on(addTradeData, (state, { tradeData }) => ({ ...state, tradesData: [ ...state.tradesData, tradeData ]})),
   on(loadTradeSucceeded, (state, { trade }) => adapter.addOne(trade, state)),
   on(respondTradeSucceeded, (state, { response }) => {
     const tradeId = response.id ?? (response as any).tradeOfferId

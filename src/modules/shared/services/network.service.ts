@@ -1,8 +1,7 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ItemError } from '../models/errors/item-error';
 import { EndpointsService } from '../../app/services/endpoints.service';
-import { EventBusService } from './event-bus.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +12,7 @@ export abstract class NetworkService<T> {
   protected endpointsModel: T;
   protected base_path = "";
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService) {
+  constructor(protected endpointsService: EndpointsService) {
     this.initEndpoints();
   }
 

@@ -12,7 +12,7 @@ import { SignalR } from '../../shared/enums/signal-r.enum';
 export abstract class IdentityService extends NetworkService<IdentityEndpoints> {
 
   constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected navigationService: NavigationService) {
-    super(http, endpointsService, eventBus);
+    super(endpointsService);
     this.endpointsModel = this.endpointsService.getIdentity();
    }
 

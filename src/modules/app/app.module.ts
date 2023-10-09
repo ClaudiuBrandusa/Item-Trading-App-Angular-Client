@@ -71,7 +71,8 @@ export function refreshTokenGetter() {
       deps: [SignalRService, RefreshTokenService],
       multi: true
     },
-    provideEffects(itemEffects) ],
+    provideEffects(itemEffects)
+  ],
   exports: [AppRoutingModule],
   bootstrap: [AppComponent]
 })

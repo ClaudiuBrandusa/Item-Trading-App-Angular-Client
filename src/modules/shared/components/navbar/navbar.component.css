@@ -1,16 +1,30 @@
 * {
-    color: white;
-    user-select: none;
-    -moz-user-select: none;
-    -khtms-user-select: none;
-    -webkit-user-select: none;
-    -o-user-select: none;
+  color: white;
+  user-select: none;
+  -moz-user-select: none;
+  -khtms-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
 }
 
 ul {
-    list-style-type: none;
-    display: inline-block;
-    margin-right: 1.5rem;
-    margin-left: 1.5rem;
-    padding: 0;
+  list-style-type: none;
+  display: inline-block;
+  margin-right: 1.5rem;
+  margin-left: 1.5rem;
+  padding: 0;
+}
+
+.flex-gap {
+  gap: 0.35rem;
+}
+
+li {
+  margin: 0.2rem 0.4rem;
+  padding: 0.3rem;
+  font-size: 1.5rem;
+}
+
+.notification-bubble-size {
+  min-width: 1.25rem;
 }

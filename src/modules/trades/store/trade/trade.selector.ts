@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { TradeState, adapter } from "./trade.state";
+import { TradeState } from "./trade.state";
 
 export const selectTrade = createFeatureSelector<TradeState>("trade");
 

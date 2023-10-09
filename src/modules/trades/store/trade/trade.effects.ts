@@ -1,14 +1,15 @@
 import { inject } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { TradesService } from "../../services/trades.service";
-import { defaultTradeFailedResponse, listReceivedTrades, listSentTrades, listTradesInit, listTradesSucceeded, loadTradeInit, loadTradeSucceeded, respondTradeInit, respondTradeSucceeded, sendTradeOfferInit, sendTradeOfferSucceeded } from "./trade.actions";
-import { catchError, combineLatest, concatMap, exhaustMap, map, of, tap } from "rxjs";
-import { DefaultException } from "../../../shared/models/errors/default-exception";
+import { addTradeData, listReceivedTrades, listSentTrades, listTradesInit, listTradesSucceeded, loadTradeInit, loadTradeSucceeded, respondTradeInit, respondTradeSucceeded, sendTradeOfferInit, sendTradeOfferSucceeded } from "./trade.actions";
+import { catchError, combineLatest, concatMap, exhaustMap, filter, map, mergeMap, of } from "rxjs";
 import { Trade } from "../../models/responses/trade";
 import { TradesListResponse } from "../../models/responses/trades-list.response";
 import { TradeBaseData } from "../../models/trade-base-data";
 import { RespondedTradeResponse } from "../../models/responses/responded-trade.response";
 import { TradeResponse } from "../../enums/trade-response";
+import { changedNotification, createdNotification, handleDefaultException } from "../../../shared/store/notification/notification.actions";
+import { NotificationCategoryTypes } from "../../../shared/enums/notification-category-types.enum";
 
 export const listTrades = createEffect(
   (actions$ = inject(Actions), service = inject(TradesService)) => {
@@ -28,7 +29,7 @@ export const listTrades = createEffect(
               )
             }),
             catchError(error =>
-              of(defaultTradeFailedResponse("Something went wrong while loading the trades: ", error))
+              of(handleDefaultException("Something went wrong while loading the trades", error))
             )
           )
         } else if (searchOptions.selectedFilterValue === "Sent") {
@@ -36,7 +37,7 @@ export const listTrades = createEffect(
         } else if (searchOptions.selectedFilterValue === "Received") {
           return of(listReceivedTrades(searchOptions.showRespondedTrades))
         } else {
-          return of(defaultTradeFailedResponse("Unknown search options selection filter: ", searchOptions))
+          return of(handleDefaultException("Unknown search options selection filter", searchOptions))
         }
       })
     )
@@ -56,7 +57,7 @@ export const loadSentTrades = createEffect(
             )
           ),
           catchError(error =>
-            of(defaultTradeFailedResponse("Error found at loading the sent trades: ", error))
+            of(handleDefaultException("Error found at loading the sent trades", error))
           )
         )
       )
@@ -77,7 +78,7 @@ export const loadReceivedTrades = createEffect(
             )
           ),
           catchError(error =>
-            of(defaultTradeFailedResponse("Error found at loading the received trades: ", error))
+            of(handleDefaultException("Error found at loading the received trades", error))
           )
         )
       )
@@ -96,7 +97,7 @@ export const loadTrade = createEffect(
             loadTradeSucceeded(response as Trade)
           ),
           catchError(error =>
-            of(defaultTradeFailedResponse(`Error found at loading trade with id '${tradeId}' : `, error))
+            of(handleDefaultException(`Error found at loading trade with id '${tradeId}'`, error))
           )
         )
       )
@@ -115,7 +116,7 @@ export const sendTradeOffer = createEffect(
             sendTradeOfferSucceeded(response as Trade)
           ),
           catchError(error =>
-            of(defaultTradeFailedResponse('Error found at sending the trade offer: ', error))
+            of(handleDefaultException('Error found at sending the trade offer', error))
           )
         )
       )
@@ -136,7 +137,7 @@ export const respondTrade = createEffect(
             return respondTradeSucceeded(result);
           }),
           catchError(error =>
-            of(defaultTradeFailedResponse(`Error found at responding to trade with id '${tradeId}' : `, error))
+            of(handleDefaultException(`Error found at responding to trade with id '${tradeId}'`, error))
           )
         )
       )
@@ -145,14 +146,39 @@ export const respondTrade = createEffect(
   { functional: true }
 );
 
-export const defaultTradeError = createEffect(
+// notification effects
+
+export const createdNotificationEffect = createEffect(
   (actions$ = inject(Actions)) => {
     return actions$.pipe(
-      ofType(defaultTradeFailedResponse),
-      tap((error: DefaultException) => {
-        console.log(error.message, error.body)
-      })
-    );
+      ofType(createdNotification),
+      map(action => action.notification),
+      filter(notification => notification.category == NotificationCategoryTypes.Trade),
+      mergeMap(( notification: any ) => 
+        of(addTradeData(new TradeBaseData({ tradeId: notification.id, isSentTrade: false, isRespondedTrade: false })))
+      )
+    )
   },
-  { functional: true, dispatch: false }
+  { functional: true }
+);
+
+export const changedNotificationEffect = createEffect(
+  (actions$ = inject(Actions)) => {
+    return actions$.pipe(
+      ofType(changedNotification),
+      map(action => action.notification),
+      filter(notification => notification.category == NotificationCategoryTypes.Trade),
+      mergeMap(( notification: any ) => {
+        const responseObject = new RespondedTradeResponse(
+          {
+            id: notification.id,
+            response: notification.customData.response as boolean | undefined
+          });
+          
+          return of(respondTradeSucceeded(responseObject))
+        }
+      )
+    )
+  },
+  { functional: true }
 );

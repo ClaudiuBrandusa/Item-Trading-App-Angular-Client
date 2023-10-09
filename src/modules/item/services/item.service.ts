@@ -6,14 +6,13 @@ import { UpdateItemRequest } from 'src/modules/item/models/requests/update-item-
 import { Item } from 'src/modules/item/models/responses/item';
 import { EndpointsService } from '../../app/services/endpoints.service';
 import { ItemEndpoints } from '../../shared/models/endpoints/item-endpoints.config';
-import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
 
 @Injectable()
 export class ItemService extends NetworkService<ItemEndpoints> {
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService) {
-    super(http, endpointsService, eventBus);
+  constructor(private http: HttpClient, protected endpointsService: EndpointsService) {
+    super(endpointsService);
     this.endpointsModel = this.endpointsService.getItem();
   }
 

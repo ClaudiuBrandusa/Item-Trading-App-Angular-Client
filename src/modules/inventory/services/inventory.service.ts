@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { AddItemRequest } from 'src/modules/inventory/models/requests/add-item-request.model';
 import { DropItemRequest } from 'src/modules/inventory/models/requests/drop-item-request.model';
 import { InventoryItem } from 'src/modules/inventory/models/responses/inventory-item';
-import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
 import { catchError, Observable, throwError } from 'rxjs';
 import { InventoryEndpoints } from '../../shared/models/endpoints/inventory-endpoints.config';
@@ -12,8 +11,8 @@ import { EndpointsService } from '../../app/services/endpoints.service';
 @Injectable()
 export class InventoryService extends NetworkService<InventoryEndpoints> {
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService) {
-    super(http, endpointsService, eventBus);
+  constructor(private http: HttpClient, protected endpointsService: EndpointsService) {
+    super(endpointsService);
     this.endpointsModel = this.endpointsService.getInventory();
   }
 

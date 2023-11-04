@@ -1,4 +1,4 @@
-<div *ngIf="isLoggedIn()" class="d-flex flex-row flex-grow-1 align-self-stretch bg-outer-space-crayola h-3.5rem border-normal border-bottom border-dark-red">
+<div *ngIf="isConnected$ | async" class="d-flex flex-row flex-grow-1 align-self-stretch bg-outer-space-crayola h-3.5rem border-normal border-bottom border-dark-red">
   <ul class="d-flex flex-row">
     <navbar-button route="">Index</navbar-button>
     <navbar-button route="items">Items</navbar-button>

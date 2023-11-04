@@ -9,9 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app.component';
 import { IdentityModule } from 'src/modules/identity/identity.module';
 import { SharedModule } from 'src/modules/shared/shared.module';
-import { AuthGuardService } from './guards/auth-guard.service';
 import { EndpointsService } from './services/endpoints.service';
-import { UnauthGuardService } from './guards/unauth-guard.service';
 import { ItemModule } from 'src/modules/item/item.module';
 import { IndexModule } from 'src/modules/index/index.module';
 import { InventoryModule } from 'src/modules/inventory/inventory.module';
@@ -56,7 +54,7 @@ export function refreshTokenGetter() {
     InventoryModule,
     TradesModule
   ],
-  providers: [AuthGuardService, UnauthGuardService, EndpointsService,
+  providers: [EndpointsService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthenticationInterceptor,

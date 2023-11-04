@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuardService } from 'src/modules/app/guards/auth-guard.service';
+import { authGuard } from 'src/modules/app/guards/auth-guard.service';
 import { TradesPageComponent } from './components/trades-page/trades-page.component';
 import { TradeRoutes } from './enums/trade-routes';
 import { SelectTradeReceiverDialogComponent } from './components/select-trade-receiver-dialog/select-trade-receiver-dialog.component';
@@ -14,7 +14,7 @@ import { selectedTradeGuard } from './guards/selected-trade.guard';
 const routes: Routes = [{
   path: TradeRoutes.Base,
   component: TradesPageComponent,
-  canActivate: [AuthGuardService],
+  canActivate: [authGuard],
   children: [
   {
     path: TradeRoutes.Create,

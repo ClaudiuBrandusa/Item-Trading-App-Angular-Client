@@ -1,11 +1,11 @@
 import { inject } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { UserService } from "../services/user.service";
+import { UserService } from "../../services/user.service";
 import { getUserInit, getUserSucceeded, listUsersInit, listUsersSucceeded } from "./user.actions";
-import { catchError, concatMap, exhaustMap, map, of, tap } from "rxjs";
-import { FoundUserResponse } from "../models/responses/found-user.response";
+import { catchError, concatMap, exhaustMap, map, of } from "rxjs";
+import { FoundUserResponse } from "../../models/responses/found-user.response";
 import { Store } from "@ngrx/store";
-import { handleDefaultException } from "../../shared/store/notification/notification.actions";
+import { handleDefaultException } from "../../../shared/store/notification/notification.actions";
 
 export const listUsers = createEffect(
   (actions$ = inject(Actions), service = inject(UserService), store = inject(Store<FoundUserResponse>)) => {

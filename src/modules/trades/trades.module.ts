@@ -24,11 +24,11 @@ import * as tradeEffects from './store/trade/trade.effects';
 import * as inventoryEffects from '../inventory/store/inventory/inventory.effects'
 import * as lockedAmountEffects from '../inventory/store/locked-amount/locked-amount.effects';
 import * as itemEffects from '../item/store/item.effects';
-import * as userEffects from '../identity/store/user.effects';
+import * as userEffects from '../identity/store/user/user.effects';
 import { provideEffects } from '@ngrx/effects';
 import { InventoryItemReducer } from '../inventory/store/inventory/inventory.reducer';
 import { ItemReducer } from '../item/store/item.reducer';
-import { UserReducer } from '../identity/store/user.reducer';
+import { UserReducer } from '../identity/store/user/user.reducer';
 import { TradeItemReducer } from './store/trade-item/trade-item.reducer';
 import { InventoryModule } from '../inventory/inventory.module';
 import { LockedInventoryItemAmountReducer } from '../inventory/store/locked-amount/locked-amount.reducer';

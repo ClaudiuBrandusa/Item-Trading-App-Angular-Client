@@ -1,5 +1,5 @@
 import { createAction } from "@ngrx/store";
-import { FoundUserResponse } from "../models/responses/found-user.response";
+import { FoundUserResponse } from "../../models/responses/found-user.response";
 
 export enum UserActionType {
   ListUsersInit = "list_users_initiated",

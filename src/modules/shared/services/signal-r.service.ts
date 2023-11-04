@@ -1,8 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import * as signalR from "@microsoft/signalr"
-import { SignalR } from '../enums/signal-r.enum';
 import { EventBusUtils } from '../utils/event-bus.utility';
-import { EventBusService } from './event-bus.service';
 import { CustomHttpClient } from '../utils/custom-http-client';
 import { RefreshTokenService } from '../../identity/services/refresh-token.service';
 import { SignalRNotification } from '../models/signal-r/signal-r-notification';
@@ -24,20 +22,10 @@ export class SignalRService extends NetworkService<SignalREndpoints> implements 
   private httpClient: CustomHttpClient;
   private endpoints: SignalREndpoints;
   
-  constructor(protected endpointsService: EndpointsService, eventBus: EventBusService, refreshTokenService: RefreshTokenService, private store: Store) {
+  constructor(protected endpointsService: EndpointsService, private refreshTokenService: RefreshTokenService, private store: Store) {
     super(endpointsService);
     this.endpoints = endpointsService.getSignalR();
     this.httpClient = new CustomHttpClient(refreshTokenService);
-    this.eventBusUtility = new EventBusUtils(eventBus);
-    this.eventBusUtility.on(SignalR.Connected, (token) => {
-      this.connect(token);
-    });
-
-    this.eventBusUtility.on(SignalR.Disconnected, (token) => {
-      this.connectionStatus = false;
-      this.httpClient.setToken(token);
-      if (this.hubConnection) this.hubConnection.stop();
-    });
   }
 
   ngOnDestroy() {
@@ -45,11 +33,23 @@ export class SignalRService extends NetworkService<SignalREndpoints> implements 
   }
 
   public connect(token: string) {
-    if (!!!token) return;
+    if (!!!token || this.refreshTokenService.canRefreshTokens()) return;
     if (this.hubConnection && this.connectionStatus) return;
     this.connectionStatus = true;
     this.startConnection(token);
     this.addConnectListener();
+  }
+
+  public async disconnect(token: string) {
+    if(!this.connectionStatus) {
+      return;
+    }
+    this.connectionStatus = false;
+    this.httpClient.setToken(token);
+
+    if (this.hubConnection) {
+      await this.hubConnection.stop();
+    }
   }
 
   startConnection = (token: string) => {

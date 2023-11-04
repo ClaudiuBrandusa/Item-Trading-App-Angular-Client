@@ -23,7 +23,9 @@ import { NotificationComponent } from './components/notification/notification/no
 import { ReplaceOverMaxWithPlusPipe } from './pipes/numbers/replace-over-max-with-plus.pipe';
 import { TruncatePipe } from './pipes/text/truncate.pipe';
 import * as notificationEffects from './store/notification/notification.effects';
+import * as identityEffects from '../identity/store/identity/identity.effects';
 import { provideEffects } from '@ngrx/effects';
+import { IdentityReducer } from '../identity/store/identity/identity.reducer';
 
 
 @NgModule({
@@ -51,6 +53,7 @@ import { provideEffects } from '@ngrx/effects';
     CommonModule,
     FormsModule,
     StoreModule.forFeature("notification", NotificationReducer),
+    StoreModule.forFeature("identity", IdentityReducer),
     StoreModule.forRoot({})
   ],
   exports: [
@@ -72,7 +75,8 @@ import { provideEffects } from '@ngrx/effects';
   ],
   providers: [
     provideStore(),
-    provideEffects(notificationEffects)
+    provideEffects(notificationEffects),
+    provideEffects(identityEffects)
   ]
 })
 export class SharedModule {

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-
 import { IdentityRoutingModule } from './identity-routing.module';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
@@ -14,8 +13,8 @@ import { LoginService } from './services/login.service';
 import { RegisterService } from './services/register.service';
 import { FoundUserComponent } from './components/found-user/found-user.component';
 import { provideEffects } from '@ngrx/effects';
-import { UserReducer } from './store/user.reducer';
-import * as userEffects from './store/user.effects';
+import { UserReducer } from './store/user/user.reducer';
+import * as userEffects from './store/user/user.effects';
 import { StoreModule } from '@ngrx/store';
 
 @NgModule({

@@ -1,4 +1,4 @@
 export enum IdentityPage {
-    Login,
-    Register
-  }
+  Login,
+  Register
+}

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuardService } from 'src/modules/app/guards/auth-guard.service';
+import { authGuard } from 'src/modules/app/guards/auth-guard.service';
 import { InventoryPageComponent } from './components/inventory-page/inventory-page.component';
 import { InventoryRoutes } from './enums/inventory-routes';
 import { AddItemSelectDialogComponent } from './components/add-item-select-dialog/add-item-select-dialog.component'
@@ -12,7 +12,7 @@ import { shouldSelectItemGuard } from './guards/should-select-item.guard';
 const routes: Routes = [{
     path: InventoryRoutes.Base,
     component: InventoryPageComponent,
-    canActivate: [AuthGuardService],
+    canActivate: [authGuard],
     children: [
       { path: InventoryRoutes.Select, component: AddItemSelectDialogComponent, canActivate: [shouldSelectItemGuard] },
       { path: InventoryRoutes.Quantity, component: AddItemQuantityDialogComponent, canActivate: [hasItemSelectedGuard] },

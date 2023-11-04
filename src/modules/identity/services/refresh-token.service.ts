@@ -1,42 +1,45 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
-import { EventBusService } from '../../shared/services/event-bus.service';
-import { EventBusUtils } from '../../shared/utils/event-bus.utility';
 import { IdentityService } from './identity.service';
 import { RefreshTokenRequest } from 'src/modules/identity/models/requests/refresh-token-request.model';
 import { EndpointsService } from '../../app/services/endpoints.service';
-import { SignalR } from '../../shared/enums/signal-r.enum';
 import { NavigationService } from '../../shared/services/navigation.service';
-import { TimeSpan } from '../../shared/utils/time-span';
-
-const REFRESH_TOKEN_MILLISECONDS_BEFORE_EXPIRATION = 1500;
-const DEFAULT_REFRESH_TOKEN_MILLISECONDS = 5000;
+import { Store } from '@ngrx/store';
+import { disconnectInit } from '../store/identity/identity.actions';
+import { AuthenticationResponse } from '../models/responses/authentication.response';
 
 @Injectable({
   providedIn: "root"
 })
 export class RefreshTokenService extends IdentityService {
-
-  private eventBusUtility: EventBusUtils;
-  private timeout: NodeJS.Timeout | undefined;
-  
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected navigationService: NavigationService) {
-    super(http, endpointsService, eventBus, navigationService);
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected navigationService: NavigationService, private store: Store) {
+    super(http, endpointsService, navigationService);
     this.refresh_path = this.base_path + this.endpointsModel.refresh;
-    this.eventBusUtility = new EventBusUtils(eventBus);
   }
 
   private refresh_path = this.base_path + "refresh";
 
   getToken() {
-    var result = localStorage.getItem("token");
+    const result = localStorage.getItem("token");
     return result === null ? "" : result.toString();
   }
 
   getRefreshToken() {
-    var result = localStorage.getItem("refreshToken");
+    const result = localStorage.getItem("refreshToken");
     return result === null ? "" : result.toString();
+  }
+
+  getTokenExpirationDate() {
+    const result = localStorage.getItem("expirationDateTime");
+    return result === null ? null : new Date(result);
+  }
+
+  isTokenExpired() {
+    const result = localStorage.getItem("expirationDateTime");
+    if (result === null) return false;
+    const expirationDate = new Date(result);
+    return new Date() > expirationDate;
   }
 
   private getRefreshTokenOptions() {
@@ -48,15 +51,19 @@ export class RefreshTokenService extends IdentityService {
 
   canRefreshTokens() {
     // if we have token and refresh token then it means that we have the necessarily data for token refresh
-    return this.getToken() !== "" && this.getRefreshToken() !== "";
+    return this.getToken() !== "" && this.getRefreshToken() !== "" && !this.isTokenExpired();
   }
 
   getRefreshTokenObservable() {
-    return this.http.post(this.refresh_path, this.getRefreshTokenOptions());
+    return this.http.post<AuthenticationResponse>(this.refresh_path, this.getRefreshTokenOptions());
   }
 
   async refresh() {
-    if (!this.canRefreshTokens()) return Promise.reject();
+    if (!this.canRefreshTokens()) {
+      const token = this.getToken();
+      this.store.dispatch(disconnectInit(token));
+      return Promise.reject();
+    }
 
     const promise = new Promise(async (resolve, reject) => {
       try {
@@ -70,7 +77,7 @@ export class RefreshTokenService extends IdentityService {
         }
       } catch (exception) {
         if (exception.status === 400) {
-          this.signOut();
+          this.store.dispatch(disconnectInit(""));
         }
         reject();
       }
@@ -79,32 +86,12 @@ export class RefreshTokenService extends IdentityService {
     return promise;
   }
 
-  isLoggedIn() {
-    return this.canRefreshTokens();
-  }
-
   signOut() {
-    if (this.timeout) {
-      clearTimeout(this.timeout);
-      this.timeout = undefined;
-    }
-    const token = this.getToken();
-    if (token) this.eventBusUtility.emit(SignalR.Disconnected, token);
-    this.clearTokens();
+    this.discardData();
     this.navigationService.redirect("login");
   }
 
-  protected override onTokenSet(tokenResponseObject: Object) {
-    this.scheduleNextSilentRefresh(new Date((<any>tokenResponseObject).expirationDateTime));
-  }
-
-  private scheduleNextSilentRefresh(date: Date) {
-    const currentDate = new Date();
-
-    const duration = new TimeSpan(date.valueOf() - currentDate.valueOf());
-    
-    this.timeout = setTimeout(() => {
-      this.refresh();
-    }, duration.milliseconds > REFRESH_TOKEN_MILLISECONDS_BEFORE_EXPIRATION ? duration.milliseconds - REFRESH_TOKEN_MILLISECONDS_BEFORE_EXPIRATION : DEFAULT_REFRESH_TOKEN_MILLISECONDS);
+  discardData() {
+    this.clearTokens();
   }
 }

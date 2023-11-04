@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuardService } from 'src/modules/app/guards/auth-guard.service';
+import { authGuard } from 'src/modules/app/guards/auth-guard.service';
 import { ItemsComponent } from './components/items-page/items-page.component';
 import { CreateItemDialogComponent } from './components/create-item-dialog/create-item-dialog.component'
 import { DetailsItemDialogComponent } from './components/details-item-dialog/details-item-dialog.component'
@@ -13,7 +13,7 @@ import { hasItemSelectedGuard } from './guards/has-item-selected';
 const routes: Routes = [{
   path: ItemRoutes.Base,
   component: ItemsComponent,
-  canActivate: [AuthGuardService],
+  canActivate: [authGuard],
   children: [
     { path: ItemRoutes.Create, component: CreateItemDialogComponent, canActivate: [isCreatingNewItemGuard] },
     { path: ItemRoutes.Details, component: DetailsItemDialogComponent, canActivate: [hasItemSelectedGuard] },

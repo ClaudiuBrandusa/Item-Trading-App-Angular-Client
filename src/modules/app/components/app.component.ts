@@ -7,8 +7,13 @@ import { ViewReferenceDirective } from '../directives/view-reference.directive';
 import { TradePopupsNames } from '../../trades/enums/trade-popups-names';
 import { RemoveTradeItemPopupComponent } from '../../trades/components/remove-trade-item-popup/remove-trade-item-popup.component';
 import { NavigationEvents } from '../../shared/enums/navigation-events.enum';
-import { SignalR } from '../../shared/enums/signal-r.enum';
-import { EventData } from '../../shared/utils/event-data';
+import { Store } from '@ngrx/store';
+import { selectConnected } from '../../identity/store/identity/identity.selector';
+import { SignalRService } from '../../shared/services/signal-r.service';
+import { RefreshTokenService } from '../../identity/services/refresh-token.service';
+import { disconnectInit } from '../../identity/store/identity/identity.actions';
+import { SilentTokenRefreshService } from '../../identity/services/silent-token-refresh.service';
+import { TimeSpan } from '../../shared/utils/time-span';
 
 @Component({
   selector: 'app-root',
@@ -34,7 +39,7 @@ export class AppComponent {
 
   @ViewChild(ViewReferenceDirective, {static: true}) viewRef!: ViewReferenceDirective;
 
-  constructor(private eventBus: EventBusService) {
+  constructor(private silentTokenRefreshService: SilentTokenRefreshService, eventBus: EventBusService, private store: Store, private signalRService: SignalRService, private tokenService: RefreshTokenService) {
     this.eventBusUtility = new EventBusUtils(eventBus);
     
     this.eventBusUtility.on(NavigationEvents.OpenAsPopup, (popupName) => {
@@ -51,10 +56,27 @@ export class AppComponent {
 
       modal.destroy();
     });
+
+    this.store.select(selectConnected).subscribe(connected => {
+      const token = this.tokenService.getToken();
+      if (connected) {
+        const currentDate = new Date();
+        const expirationDate = this.tokenService.getTokenExpirationDate();
+        const duration = expirationDate === null ? 0 : new TimeSpan(expirationDate!.valueOf() - currentDate.valueOf()).milliseconds;
+
+        this.silentTokenRefreshService.start(duration);
+        
+        this.signalRService.connect(token);
+      } else {
+        this.silentTokenRefreshService.stop();
+        this.signalRService.disconnect(token);
+      }
+    });
   }
   
   @HostListener('window:beforeunload', ['$event'])
   public beforeUnloadHandler(_$event) {
-    this.eventBus.emit(new EventData(SignalR.Disconnected));
+    const token = this.tokenService.getToken();
+    this.store.dispatch(disconnectInit(token));
   }
 }

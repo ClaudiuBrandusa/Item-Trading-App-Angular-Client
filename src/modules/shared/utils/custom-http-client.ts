@@ -15,8 +15,7 @@ export class CustomHttpClient extends DefaultHttpClient {
     request.headers = { ...request.headers, ...authHeaders };
 
     try {
-      const response = await super.send(request);
-      return response;
+      return await super.send(request);
     } catch (er) {
       if (er instanceof HttpError) {
         const error = er as HttpError;
@@ -26,6 +25,7 @@ export class CustomHttpClient extends DefaultHttpClient {
           request.headers = { ...request.headers, ...authHeaders };
         }
       } else {
+        console.log("throw error");
         throw er;
       }
     }

@@ -1,41 +1,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { EventBusService } from '../../shared/services/event-bus.service';
 import { NetworkService } from '../../shared/services/network.service';
 import { NavigationService } from '../../shared/services/navigation.service';
-import { EventData } from '../../shared/utils/event-data';
 import { IdentityEndpoints } from '../../shared/models/endpoints/identity-endpoints.config';
 import { EndpointsService } from '../../app/services/endpoints.service';
-import { SignalR } from '../../shared/enums/signal-r.enum';
+import { AuthenticationResponse } from '../models/responses/authentication.response';
 
 @Injectable()
 export abstract class IdentityService extends NetworkService<IdentityEndpoints> {
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected navigationService: NavigationService) {
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected navigationService: NavigationService) {
     super(endpointsService);
     this.endpointsModel = this.endpointsService.getIdentity();
    }
 
-  setTokens(response: Object) {
+  setTokens(response: AuthenticationResponse) {
     this.clearTokens();
     
     var somethingWentWrong = false;
-      
-    if(response.hasOwnProperty("token")) {
-      localStorage.setItem("token", (<any>response).token);
-    } else {
-      somethingWentWrong = true;
-    }
-
-    if(response.hasOwnProperty("refreshToken")) {
-      localStorage.setItem("refreshToken", (<any>response).refreshToken);
-    } else {
-      somethingWentWrong = true;
-    }
-
-    if(response.hasOwnProperty("expirationDateTime")) {
-      localStorage.setItem("expirationDateTime", (<any>response).expirationDateTime);
-    } else {
+    
+    try {
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("refreshToken", response.refreshToken);
+      localStorage.setItem("expirationDateTime", response.expirationDateTime.toString());
+    } catch{
       somethingWentWrong = true;
     }
 
@@ -60,8 +48,5 @@ export abstract class IdentityService extends NetworkService<IdentityEndpoints> 
   }
   
   /** Gets called when the token is set */
-  protected onTokenSet(tokenResponseObject: Object) {
-    this.eventBus.emit(new EventData(SignalR.Connected, (<any>tokenResponseObject).token));
-    this.redirectToDefaultPage();
-  }
+  protected onTokenSet(_authenticationResponse: AuthenticationResponse) {}
 }

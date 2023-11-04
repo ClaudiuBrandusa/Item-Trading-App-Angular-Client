@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { UserState, adapter } from "./user.state";
-import { FoundUserResponse } from "../models/responses/found-user.response";
+import { FoundUserResponse } from "../../models/responses/found-user.response";
 
 export const selectUserFeature = createFeatureSelector<UserState>("user");
 

@@ -3,6 +3,9 @@ import { Store } from '@ngrx/store';
 import { RefreshTokenService } from 'src/modules/identity/services/refresh-token.service';
 import { selectNotificationsCount, selectNotificationsMenuVisibility } from '../../store/notification/notification.selector';
 import { closeNotificationsMenu, openNotificationsMenu, resetNotifications } from '../../store/notification/notification.actions';
+import { disconnectInit } from '../../../identity/store/identity/identity.actions';
+import { Observable, map } from 'rxjs';
+import { selectConnected } from '../../../identity/store/identity/identity.selector';
 
 @Component({
   selector: 'app-navbar',
@@ -20,7 +23,10 @@ export class NavbarComponent {
 
   notificationsCount;
 
-  constructor(public authService: RefreshTokenService, private store: Store) {
+  isConnected$: Observable<boolean>;
+  connected = false;
+
+  constructor(public refreshTokenService: RefreshTokenService, private store: Store) {
     store.select(selectNotificationsCount).subscribe((count) => {
       this.notificationsCount = count;
     });
@@ -28,6 +34,14 @@ export class NavbarComponent {
     store.select(selectNotificationsMenuVisibility).subscribe((isMenuOpened) => {
       this.toggleNotificationsMenu(isMenuOpened);
     });
+
+    this.isConnected$ = store.select(selectConnected).pipe(
+      map(connected => {
+        this.connected = connected;
+
+        return connected;
+      })
+    );
   }
 
   private dispatchNotificationsMenu(state = !this.notificationsMenuOpened) {
@@ -42,18 +56,14 @@ export class NavbarComponent {
     this.notificationsMenuOpened = state;
   }
 
-  isLoggedIn() {
-    return this.authService.isLoggedIn();
-  }
-
   logout() {
     this.store.dispatch(resetNotifications());
-    this.authService.signOut();
+    this.store.dispatch(disconnectInit(this.refreshTokenService.getToken()));
   }
 
   @HostListener('document:click', ['$event'])
   click(event) {
-    if (!this.isLoggedIn()) return;
+    if (!this.connected) return;
 
     if (this.notificationsButtonElementReference.nativeElement.contains(event.target)) {
       this.dispatchNotificationsMenu();

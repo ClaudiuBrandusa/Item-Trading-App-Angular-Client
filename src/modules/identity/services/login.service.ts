@@ -1,33 +1,29 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { LoginRequest } from 'src/modules/identity/models/requests/login-request.model';
 import { IdentityService } from './identity.service';
-import { EventBusService } from '../../shared/services/event-bus.service';
-import { catchError, throwError } from 'rxjs';
 import { EndpointsService } from '../../app/services/endpoints.service';
 import { NavigationService } from '../../shared/services/navigation.service';
+import { Store } from '@ngrx/store';
+import { AuthenticationResponse } from '../models/responses/authentication.response';
+import { connectInit } from '../store/identity/identity.actions';
 
 @Injectable()
 export class LoginService extends IdentityService {
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected navigationService: NavigationService){
-    super(http, endpointsService, eventBus, navigationService);
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected navigationService: NavigationService, private store: Store){
+    super(http, endpointsService, navigationService);
     this.login_path = this.base_path + this.endpointsModel.login;
   }
 
   private login_path = "";
 
-  login(form: FormGroup) {
-    let model = this.form2LoginRequest(form);
-
-    return this.http.post(this.login_path, model).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
+  login(model: LoginRequest) {
+    return this.http.post<AuthenticationResponse>(this.login_path, model);
   }
-
-  private form2LoginRequest(form: FormGroup) {
-    var model = new LoginRequest();
-    model.username = form.get('username')?.value;
-    model.password = form.get('password')?.value;
-    return model;
+  
+  protected onTokenSet(authenticationResponse: AuthenticationResponse) {
+    this.store.dispatch(connectInit(authenticationResponse));
+    this.redirectToDefaultPage();
   }
 }

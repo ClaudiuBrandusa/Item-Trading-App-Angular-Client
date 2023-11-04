@@ -6,7 +6,10 @@ import { AtLeastASpecialCharacterValidator } from 'src/modules/shared/validators
 import { AtLeastAnUppercaseValidator } from 'src/modules/shared/validators/at-least-an-uppercase.validator';
 import { ConfirmPasswordValidator } from 'src/modules/shared/validators/confirm-password.validator';
 import { CurrentIdentityPageService } from '../../services/current-identity-page.service';
-import { RegisterService } from '../../services/register.service';
+import { RegisterRequest } from 'src/modules/identity/models/requests/register-request.model';
+import { Store } from '@ngrx/store';
+import { selectConnected } from '../../store/identity/identity.selector';
+import { registerInit } from '../../store/identity/identity.actions';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +18,13 @@ import { RegisterService } from '../../services/register.service';
 })
 export class RegisterComponent implements OnInit {
 
-  constructor(private fb: FormBuilder, private service: RegisterService, private currentIdentityPageService: CurrentIdentityPageService) {}
+  constructor(private fb: FormBuilder, private currentIdentityPageService: CurrentIdentityPageService, private store: Store) {
+    this.store.select(selectConnected).subscribe(connected => {
+      if (connected) {
+        this.form.reset();
+      }
+    });
+  }
 
   form = this.fb.group({
     username: new FormControl('', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(30)])),
@@ -36,16 +45,7 @@ export class RegisterComponent implements OnInit {
   confirmPasswordValid: AbstractControl = this.form.controls["confirm_password"];
 
   register() {
-    this.service.register(this.form).subscribe({
-      next: (response) => {
-        this.form.reset();
-        this.service.setTokens(response);
-      },
-      error: (error) => {
-        console.log('Error found at register: ', error);
-      }
-    });
-    this.form.reset();
+    this.store.dispatch(registerInit(this.form2RegisterRequest()))
   }
 
   match_password(formGroup: FormGroup) {
@@ -58,6 +58,15 @@ export class RegisterComponent implements OnInit {
     this.form.get('password')?.valueChanges.subscribe(() => this.confirmPasswordValid.updateValueAndValidity());
   
     this.currentIdentityPageService.setPage(1);
+  }
+
+  private form2RegisterRequest() {
+    var model = new RegisterRequest();
+    model.username = this.form.get('username')?.value;
+    model.email = this.form.get('email')?.value;
+    model.password = this.form.get('password')?.value;
+    model.confirmPassword = this.form.get('confirm_password')?.value;
+    return model;
   }
 }
 

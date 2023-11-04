@@ -3,9 +3,9 @@ import { NavigationService } from '../../../shared/services/navigation.service';
 import { TradeRoutes } from '../../enums/trade-routes';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { selectUsers } from '../../../identity/store/user.selector';
+import { selectUsers } from '../../../identity/store/user/user.selector';
 import { FoundUserResponse } from '../../../identity/models/responses/found-user.response';
-import { listUsersInit, clearUsersList } from '../../../identity/store/user.actions';
+import { listUsersInit, clearUsersList } from '../../../identity/store/user/user.actions';
 import { Trade } from '../../models/responses/trade';
 import { setTradeReceiver } from '../../store/trade/trade.actions';
 

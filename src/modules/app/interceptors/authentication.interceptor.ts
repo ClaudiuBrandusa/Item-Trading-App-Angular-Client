@@ -8,6 +8,8 @@ import {
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { switchMap, filter, catchError, take } from 'rxjs/operators';
 import { RefreshTokenService } from '../../identity/services/refresh-token.service';
+import { Store } from '@ngrx/store';
+import { disconnectInit } from '../../identity/store/identity/identity.actions';
 
 const TOKEN_HEADER_KEY = 'Authorization';
 
@@ -17,7 +19,7 @@ export class AuthenticationInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
-  constructor(private tokenService: RefreshTokenService) { }
+  constructor(private tokenService: RefreshTokenService, private store: Store) { }
 
   intercept(request: HttpRequest<Object>, next: HttpHandler): Observable<HttpEvent<Object>> {
     let authReq = request;
@@ -54,7 +56,7 @@ export class AuthenticationInterceptor implements HttpInterceptor {
           }),
           catchError((err) => {
             this.isRefreshing = false;
-            this.tokenService.signOut();
+            this.store.dispatch(disconnectInit(token))
             return throwError(err);
           })
         );

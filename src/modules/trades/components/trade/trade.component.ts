@@ -33,7 +33,9 @@ export class TradeComponent implements OnInit {
   response: string;
   userId: string;
   respondedButtonClass: string;
-  private baseRespondedButtonClass = "p-2 color-white no-select cursor-pointer";
+  respondedIcon: string;
+  private baseRespondedButtonClass = "d-flex p-2 color-white no-select cursor-pointer";
+  private baseRespondedIconClass = " my-auto ms-1";
 
   constructor(private navigationService: NavigationService, private store: Store<Trade>, private tradeItemStore: Store<TradeItem>) {}
   
@@ -88,9 +90,11 @@ export class TradeComponent implements OnInit {
     if (this.trade.response) {
       this.response = "Accepted";
       this.respondedButtonClass = this.baseRespondedButtonClass + " bg-cadet-blue";
+      this.respondedIcon = "fa-solid fa-check" + this.baseRespondedIconClass;
     } else {
       this.response = "Rejected";
       this.respondedButtonClass = this.baseRespondedButtonClass + " bg-dark-red";
+      this.respondedIcon = "fa-solid fa-xmark" + this.baseRespondedIconClass;
     }
   }
 }

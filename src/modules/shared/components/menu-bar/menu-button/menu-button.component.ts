@@ -18,6 +18,9 @@ export class MenuButtonComponent implements OnInit, OnDestroy {
   @Input()
   route: string = "";
 
+  @Input()
+  icon: string;
+
   @Output()
   selected = false;
 

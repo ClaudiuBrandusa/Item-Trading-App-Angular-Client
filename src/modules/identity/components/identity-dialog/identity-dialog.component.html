@@ -7,7 +7,10 @@
       <div class="p-3"></div>
     </div>
     <div class="d-flex justify-content-center border border-top-0 border-normal border-dark-red border-radius-rounded-bottom-left border-radius-rounded-bottom-right">
-      <app-button type="submit" [disabled]="!formGroup.valid">{{submitButtonText}}</app-button>
+      <app-button type="submit" [disabled]="!formGroup.valid">
+        {{submitButtonText}}
+        <i class="fa-solid fa-key"></i>
+      </app-button>
       <br><br><br>
     </div>
   </form>

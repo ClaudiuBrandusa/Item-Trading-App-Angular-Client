@@ -4,7 +4,7 @@ import { RefreshTokenService } from 'src/modules/identity/services/refresh-token
 import { selectNotificationsCount, selectNotificationsMenuVisibility } from '../../store/notification/notification.selector';
 import { closeNotificationsMenu, openNotificationsMenu, resetNotifications } from '../../store/notification/notification.actions';
 import { disconnectInit } from '../../../identity/store/identity/identity.actions';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { selectConnected } from '../../../identity/store/identity/identity.selector';
 
 @Component({
@@ -35,13 +35,9 @@ export class NavbarComponent {
       this.toggleNotificationsMenu(isMenuOpened);
     });
 
-    this.isConnected$ = store.select(selectConnected).pipe(
-      map(connected => {
-        this.connected = connected;
-
-        return connected;
-      })
-    );
+    store.select(selectConnected).subscribe(connected => {
+      this.connected = connected;
+    });
   }
 
   private dispatchNotificationsMenu(state = !this.notificationsMenuOpened) {

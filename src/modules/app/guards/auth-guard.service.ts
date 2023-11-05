@@ -16,8 +16,9 @@ export const authGuard = () => {
     map(isConnected => {
       if (isConnected) {
         return true;
-      } else if (tokenService.canRefreshTokens()){
+      } else if (tokenService.canRefreshTokens()) {
         store.dispatch(connected());
+        return true
       }
 
       navigationService.redirect("login");

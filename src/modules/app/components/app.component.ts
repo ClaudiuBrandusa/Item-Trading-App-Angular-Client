@@ -77,6 +77,6 @@ export class AppComponent {
   @HostListener('window:beforeunload', ['$event'])
   public beforeUnloadHandler(_$event) {
     const token = this.tokenService.getToken();
-    this.store.dispatch(disconnectInit(token));
+    this.store.dispatch(disconnectInit(token, true));
   }
 }

@@ -17,7 +17,7 @@ export const login = createEffect(
         service.login(request).pipe(
           map((response: AuthenticationResponse) => {
             service.setTokens(response);
-            return connectInit(response)
+            return connectInit(response);
           }
           ),
           catchError(error =>
@@ -38,7 +38,7 @@ export const register = createEffect(
         service.register(request).pipe(
           map((response: AuthenticationResponse) => {
             service.setTokens(response);
-            return connectInit(response)
+            return connectInit(response);
           }
           ),
           catchError(error =>
@@ -74,11 +74,11 @@ export const disconnect = createEffect(
   (action$ = inject(Actions), service = inject(SignalRService), tokenService = inject(RefreshTokenService)) => {
     return action$.pipe(
       ofType(disconnectInit),
-      exhaustMap(({ token }) =>
+      exhaustMap(({ token, keepData }) =>
         from(service.disconnect(token)).pipe(
           map(() => {
-            tokenService.signOut()
-            return disconnected()
+            if (!keepData) tokenService.signOut();
+            return disconnected();
           }),
           catchError(error =>
             of(handleDefaultException('Error found at disconnect user', error)))

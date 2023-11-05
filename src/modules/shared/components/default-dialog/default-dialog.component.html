@@ -2,6 +2,8 @@
   <span class="m-2"><strong>{{title}}</strong></span>
   <br/>
   <ng-content></ng-content>
-  <app-button class="ms-2" (click)="cancel()" [disabled]="isCancelButtonDisabled">{{cancelButtonName}}</app-button>
-  <app-button class="float-right me-2" *ngIf="!hideNextButton" [disabled]="isNextButtonDisabled" (click)="next()">{{nextButtonName}}</app-button>
+  <div class="d-flex flex-row">
+    <app-button class="d-flex flex-column ms-2" (click)="cancel()" [disabled]="isCancelButtonDisabled">{{cancelButtonName}}</app-button>
+    <app-button class="d-flex flex-column ms-auto me-2" *ngIf="!hideNextButton" [disabled]="isNextButtonDisabled" (click)="next()">{{nextButtonName}}</app-button>
+  </div>
 </div>

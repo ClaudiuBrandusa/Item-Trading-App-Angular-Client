@@ -14,17 +14,20 @@
       <strong>Total price</strong>:
       {{ totalPrice }}
     </div>
-    <div (click)="details()" class="d-flex flex-column color-blue no-select cursor-pointer"><strong>Details</strong></div>
+    <div (click)="details()" class="d-flex flex-column color-blue no-select cursor-pointer">
+      <strong>Details</strong>
+    </div>
   </div>
   <div class="d-flex flex-row align-items-center flex-0 p-0 ps-1 text-center no-select cursor-pointer">
     <span *ngIf="!isRespondedTrade">
-      <div *ngIf="isSentTrade" class="d-flex p-2 bg-dark-red color-white no-select cursor-pointer" (click)="cancel()">
+      <div *ngIf="isSentTrade" class="d-flex my-auto mx-auto p-2 w-7-5rem bg-dark-red color-white no-select cursor-pointer" (click)="cancel()">
         <strong>Cancel</strong>
-        <i class="fa-solid fa-trash my-auto ms-1"></i>
+        <i class="fa-solid fa-trash my-auto ms-auto"></i>
       </div>
       
-      <div *ngIf="!isSentTrade" class="p-2 bg-cadet-blue color-white no-select cursor-pointer" (click)="respond()">
+      <div *ngIf="!isSentTrade" class="d-flex my-auto mx-auto p-2 w-7-5rem bg-cadet-blue color-white no-select cursor-pointer" (click)="respond()">
         <strong>Respond</strong>
+        <i class="fa-solid fa-handshake my-auto ms-auto"></i>
       </div>
     </span>
     <div *ngIf="isRespondedTrade" [class]="respondedButtonClass">

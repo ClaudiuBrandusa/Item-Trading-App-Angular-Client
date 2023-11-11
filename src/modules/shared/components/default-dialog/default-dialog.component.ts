@@ -17,6 +17,9 @@ export class DefaultDialogComponent {
   nextButtonName = "Next";
 
   @Input()
+  hideCancelButton: boolean;
+
+  @Input()
   hideNextButton: boolean;
   
   @Input()

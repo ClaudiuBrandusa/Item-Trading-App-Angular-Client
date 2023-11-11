@@ -34,7 +34,7 @@ export class TradeComponent implements OnInit {
   userId: string;
   respondedButtonClass: string;
   respondedIcon: string;
-  private baseRespondedButtonClass = "d-flex p-2 w-7-5rem color-white no-select cursor-pointer";
+  private baseRespondedButtonClass = "d-flex p-2 w-7-5rem color-white no-select";
   private baseRespondedIconClass = " my-auto ms-auto";
 
   constructor(private navigationService: NavigationService, private store: Store<Trade>, private tradeItemStore: Store<TradeItem>) {}

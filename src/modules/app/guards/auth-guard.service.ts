@@ -21,6 +21,7 @@ export const authGuard = () => {
         return true
       }
 
+      tokenService.discardData();
       navigationService.redirect("login");
       return false;
     })

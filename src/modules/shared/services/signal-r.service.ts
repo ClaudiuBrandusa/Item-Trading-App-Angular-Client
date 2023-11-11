@@ -33,7 +33,7 @@ export class SignalRService extends NetworkService<SignalREndpoints> implements 
   }
 
   public connect(token: string) {
-    if (!!!token || this.refreshTokenService.canRefreshTokens()) return;
+    if (!!!token || !this.refreshTokenService.canRefreshTokens()) return;
     if (this.hubConnection && this.connectionStatus) return;
     this.connectionStatus = true;
     this.startConnection(token);

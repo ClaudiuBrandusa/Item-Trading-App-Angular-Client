@@ -74,8 +74,8 @@ export const disconnect = createEffect(
   (action$ = inject(Actions), service = inject(SignalRService), tokenService = inject(RefreshTokenService)) => {
     return action$.pipe(
       ofType(disconnectInit),
-      exhaustMap(({ token, keepData }) =>
-        from(service.disconnect(token)).pipe(
+      exhaustMap(({ keepData }) =>
+        from(service.disconnect()).pipe(
           map(() => {
             if (!keepData) tokenService.signOut();
             return disconnected();

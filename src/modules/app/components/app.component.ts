@@ -69,14 +69,13 @@ export class AppComponent {
         this.signalRService.connect(token);
       } else {
         this.silentTokenRefreshService.stop();
-        this.signalRService.disconnect(token);
+        this.signalRService.disconnect();
       }
     });
   }
   
   @HostListener('window:beforeunload', ['$event'])
   public beforeUnloadHandler(_$event) {
-    const token = this.tokenService.getToken();
-    this.store.dispatch(disconnectInit(token, true));
+    this.store.dispatch(disconnectInit(true));
   }
 }

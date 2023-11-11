@@ -20,6 +20,6 @@ export const loginInit = createAction(IdentityActionType.LoginInit, (request: Lo
 
 export const registerInit = createAction(IdentityActionType.RegisterInit, (request: RegisterRequest) => ({ request }));
 
-export const disconnectInit = createAction(IdentityActionType.DisconnectInit, (token: string, keepData = false) => ({ token, keepData }));
+export const disconnectInit = createAction(IdentityActionType.DisconnectInit, (keepData = false) => ({ keepData }));
 
 export const disconnected = createAction(IdentityActionType.Disconnected);

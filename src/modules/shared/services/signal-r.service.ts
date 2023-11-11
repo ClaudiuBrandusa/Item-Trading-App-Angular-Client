@@ -1,7 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import * as signalR from "@microsoft/signalr"
 import { EventBusUtils } from '../utils/event-bus.utility';
-import { CustomHttpClient } from '../utils/custom-http-client';
 import { RefreshTokenService } from '../../identity/services/refresh-token.service';
 import { SignalRNotification } from '../models/signal-r/signal-r-notification';
 import { NetworkService } from './network.service';
@@ -19,13 +18,11 @@ export class SignalRService extends NetworkService<SignalREndpoints> implements 
   private hubConnection: signalR.HubConnection;
   private eventBusUtility: EventBusUtils;
   private connectionStatus: Boolean;
-  private httpClient: CustomHttpClient;
   private endpoints: SignalREndpoints;
   
   constructor(protected endpointsService: EndpointsService, private refreshTokenService: RefreshTokenService, private store: Store) {
     super(endpointsService);
     this.endpoints = endpointsService.getSignalR();
-    this.httpClient = new CustomHttpClient(refreshTokenService);
   }
 
   ngOnDestroy() {
@@ -40,12 +37,11 @@ export class SignalRService extends NetworkService<SignalREndpoints> implements 
     this.addConnectListener();
   }
 
-  public async disconnect(token: string) {
+  public async disconnect() {
     if(!this.connectionStatus) {
       return;
     }
     this.connectionStatus = false;
-    this.httpClient.setToken(token);
 
     if (this.hubConnection) {
       await this.hubConnection.stop();
@@ -54,12 +50,11 @@ export class SignalRService extends NetworkService<SignalREndpoints> implements 
 
   startConnection = (token: string) => {
     this.hubConnection = new signalR.HubConnectionBuilder()
+      .configureLogging(signalR.LogLevel.Error)
       .withUrl(this.endpoints.hub, {
-        transport: signalR.HttpTransportType.LongPolling,
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        httpClient: this.httpClient
+        transport: signalR.HttpTransportType.WebSockets,
+        accessTokenFactory: () => token,
+        skipNegotiation: true
       })
       .build();
       

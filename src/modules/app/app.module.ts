@@ -61,14 +61,6 @@ export function refreshTokenGetter() {
       multi: true
     },
     SignalRService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (signalRService: SignalRService, refreshTokenService: RefreshTokenService) => () => {
-        signalRService.connect(refreshTokenService.getToken());
-      },
-      deps: [SignalRService, RefreshTokenService],
-      multi: true
-    },
     provideEffects(itemEffects)
   ],
   exports: [AppRoutingModule],

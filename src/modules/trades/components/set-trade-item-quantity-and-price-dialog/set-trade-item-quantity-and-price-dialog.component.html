@@ -5,7 +5,8 @@
       (onContinue)="confirm()"
       (onExit)="cancel()"
       nextButtonName="Confirm"
-      cancelButtonName="Deny">
+      cancelButtonName="Deny"
+      [isNextButtonDisabled]="!form.valid">
       <form [formGroup]="form" class="mx-2 mb-2">
         <div class="d-flex flex-column mx-auto my-2">
           <span class="mx-2 header-font">Set the quantity and the price for <strong>{{currentTradeItem ? currentTradeItem.name : ""}}</strong> item.</span>

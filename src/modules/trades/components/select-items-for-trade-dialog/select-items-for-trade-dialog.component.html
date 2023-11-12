@@ -6,6 +6,7 @@
         cancelButtonName="Change receiver"
         nextButtonName="Create trade"
         [hideXButton]="true"
+        [isNextButtonDisabled]="!isTradeValid()"
         (onContinue)="createTrade()"
         (onExit)="exit()">
 			  <div class="d-flex flex-column h-min-5rem h-max-35rem">

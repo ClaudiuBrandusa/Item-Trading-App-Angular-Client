@@ -28,7 +28,6 @@ export class SelectItemsForTradeDialogComponent implements OnDestroy {
   selectedTradeItems = new Array<TradeItem>();
   private tradeOfferReceiverId: string;
   searchString = "";
-  tradeValid = false;
   
   constructor(private navigationService: NavigationService, private inventoryStore: Store<InventoryItem>, private store: Store<Trade>, private tradeItemStore: Store<TradeItem>) {
     this.foundItemIds$ = this.inventoryStore.select(selectInventoryItemIdsThatAreNotSelectedAsTradeItems);

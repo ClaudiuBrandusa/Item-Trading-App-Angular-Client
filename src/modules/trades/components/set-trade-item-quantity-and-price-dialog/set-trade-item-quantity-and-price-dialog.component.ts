@@ -45,7 +45,7 @@ export class SetTradeItemQuantityAndPriceDialogComponent implements OnInit {
 
   form = this.fb.group({
     quantity: new FormControl('', [Validators.required, Validators.min(1)]),
-    price: new FormControl('', [Validators.required, Validators.min(0)])
+    price: new FormControl('', [Validators.required, Validators.min(1)])
   })
 
   ngOnInit() {
@@ -64,14 +64,26 @@ export class SetTradeItemQuantityAndPriceDialogComponent implements OnInit {
 
     const quantity = Number(this.form.get('quantity')?.value ?? 1);
 
+    if (quantity < 1) {
+      this.errorMessage = "Unable to set a quantity lower than 1";
+      return;
+    }
+
     const availableQuantity = this.inventoryItem.quantity - this.lockedItemAmount.lockedAmount;
     if (quantity > availableQuantity) {
       this.errorMessage = `You do not own ${quantity} of ${this.inventoryItem.itemName}.`
       return;
     }
     
+    const price = Number(this.form.get('price')?.value ?? 1);
+
+    if (price < 1) {
+      this.errorMessage = "Unable to set a price lower than 1";
+      return;
+    }
+    
     this.currentTradeItem.quantity = quantity;
-    this.currentTradeItem.price = Number(this.form.get('price')?.value ?? 0);
+    this.currentTradeItem.price = price;
     this.store.dispatch(addTradeItem({ ...this.currentTradeItem }));
     this.store.dispatch(deselectTradeItem());
     this.exit();

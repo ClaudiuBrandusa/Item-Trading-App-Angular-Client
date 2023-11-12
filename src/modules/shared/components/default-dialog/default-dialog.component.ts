@@ -21,6 +21,9 @@ export class DefaultDialogComponent {
 
   @Input()
   hideNextButton: boolean;
+
+  @Input()
+  hideXButton: boolean;
   
   @Input()
   isNextButtonDisabled = false;

@@ -54,7 +54,7 @@ export class NavbarComponent {
 
   logout() {
     this.store.dispatch(resetNotifications());
-    this.store.dispatch(disconnectInit(this.refreshTokenService.getToken()));
+    this.store.dispatch(disconnectInit());
   }
 
   @HostListener('document:click', ['$event'])

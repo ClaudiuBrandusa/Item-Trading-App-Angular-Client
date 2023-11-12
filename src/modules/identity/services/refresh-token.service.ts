@@ -60,8 +60,7 @@ export class RefreshTokenService extends IdentityService {
 
   async refresh() {
     if (!this.canRefreshTokens()) {
-      const token = this.getToken();
-      this.store.dispatch(disconnectInit(token));
+      this.store.dispatch(disconnectInit());
       return Promise.reject();
     }
 
@@ -77,7 +76,7 @@ export class RefreshTokenService extends IdentityService {
         }
       } catch (exception) {
         if (exception.status === 400) {
-          this.store.dispatch(disconnectInit(""));
+          this.store.dispatch(disconnectInit());
         }
         reject();
       }

@@ -56,7 +56,7 @@ export class AuthenticationInterceptor implements HttpInterceptor {
           }),
           catchError((err) => {
             this.isRefreshing = false;
-            this.store.dispatch(disconnectInit(token))
+            this.store.dispatch(disconnectInit())
             return throwError(err);
           })
         );

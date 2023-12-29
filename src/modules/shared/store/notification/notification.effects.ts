@@ -34,8 +34,8 @@ export const defaultNotificationError = createEffect(
   (actions$ = inject(Actions)) => {
     return actions$.pipe(
       ofType(handleDefaultException),
-      exhaustMap((error: DefaultException) =>
-        of(addNotification(createErrorNotification(error.message)))
+      exhaustMap((error: DefaultException) => 
+        of(addNotification(createErrorNotification(error.message, error.body.message)))
       )
     );
   },

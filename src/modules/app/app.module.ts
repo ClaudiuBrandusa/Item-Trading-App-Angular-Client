@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -16,10 +16,10 @@ import { InventoryModule } from 'src/modules/inventory/inventory.module';
 import { TradesModule } from 'src/modules/trades/trades.module';
 import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
 import { SignalRService } from '../shared/services/signal-r.service';
-import { RefreshTokenService } from '../identity/services/refresh-token.service';
 import { ViewReferenceDirective } from './directives/view-reference.directive';
 import { provideEffects } from '@ngrx/effects';
 import * as itemEffects from '../item/store/item.effects';
+import { ModalManagerComponent } from "../../standalone/modal-manager/modal-manager.component";
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -34,6 +34,17 @@ export function refreshTokenGetter() {
     AppComponent,
     ViewReferenceDirective
   ],
+  providers: [EndpointsService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthenticationInterceptor,
+      multi: true
+    },
+    SignalRService,
+    provideEffects(itemEffects)
+  ],
+  exports: [AppRoutingModule],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -52,18 +63,8 @@ export function refreshTokenGetter() {
     ItemModule,
     IndexModule,
     InventoryModule,
-    TradesModule
-  ],
-  providers: [EndpointsService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthenticationInterceptor,
-      multi: true
-    },
-    SignalRService,
-    provideEffects(itemEffects)
-  ],
-  exports: [AppRoutingModule],
-  bootstrap: [AppComponent]
+    TradesModule,
+    ModalManagerComponent
+  ]
 })
 export class AppModule { }

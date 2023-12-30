@@ -26,6 +26,7 @@ import * as notificationEffects from './store/notification/notification.effects'
 import * as identityEffects from '../identity/store/identity/identity.effects';
 import { provideEffects } from '@ngrx/effects';
 import { IdentityReducer } from '../identity/store/identity/identity.reducer';
+import { ModalReducer } from '../../standalone/modal-manager/store/modal.reducer';
 
 
 @NgModule({
@@ -54,6 +55,7 @@ import { IdentityReducer } from '../identity/store/identity/identity.reducer';
     FormsModule,
     StoreModule.forFeature("notification", NotificationReducer),
     StoreModule.forFeature("identity", IdentityReducer),
+    StoreModule.forFeature("modal", ModalReducer),
     StoreModule.forRoot({})
   ],
   exports: [

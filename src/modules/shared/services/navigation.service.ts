@@ -6,7 +6,8 @@ import { DialogEvents } from '../enums/dialog-events.enum';
 import { Stack } from '../../shared/utils/stack';
 import { NavigationHistory } from '../models/navigation/navigation-history';
 import { filter } from 'rxjs';
-import { NavigationEvents } from '../enums/navigation-events.enum';
+import { Store } from '@ngrx/store';
+import { openPopupInitiated, closePopupInitiated } from '../../../standalone/modal-manager/store/modal.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class NavigationService {
   private activeModals = new Array<string>();
   private modalStack = new Stack<string>();
 
-  constructor(private router: Router, private eventBus: EventBusService) {
+  constructor(private router: Router, private eventBus: EventBusService, private store: Store) {
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event) => {
       event = event as NavigationEnd;
       this.history.push(new NavigationHistory({ id: event.id, route: event.url }));
@@ -52,7 +53,7 @@ export class NavigationService {
     this.modalStack.add(popupName);
     this.activeModals.push(popupName);
 
-    this.eventBus.emit(new EventData(NavigationEvents.OpenAsPopup, popupName));
+    this.store.dispatch(openPopupInitiated(popupName));
   }
 
   async redirect(route: string) {
@@ -120,7 +121,7 @@ export class NavigationService {
     const modal = this.modalStack.pop();
     if (!modal || !this.activeModals.includes(modal)) return;
     this.activeModals.splice(this.activeModals.indexOf(modal), 1);
-    this.eventBus.emit(new EventData(NavigationEvents.ClosePopup, modal));
+    this.store.dispatch(closePopupInitiated(modal));
   }
 
   private emitExitEventForDialog(dialog: string, data = null) {

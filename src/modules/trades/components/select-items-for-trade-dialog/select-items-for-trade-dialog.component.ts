@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TradeItem } from '../../models/trade-item';
 import { Trade } from '../../models/responses/trade';
 import { NavigationService } from '../../../shared/services/navigation.service';
@@ -21,7 +21,7 @@ import { clearArray } from '../../../shared/utils/array-utils';
   templateUrl: './select-items-for-trade-dialog.component.html',
   styleUrls: ['./select-items-for-trade-dialog.component.css']
 })
-export class SelectItemsForTradeDialogComponent implements OnDestroy {
+export class SelectItemsForTradeDialogComponent implements OnInit, OnDestroy {
 
   foundItems = new Array<InventoryItem>();
   foundItemIds$: Observable<string[]>;
@@ -45,6 +45,10 @@ export class SelectItemsForTradeDialogComponent implements OnDestroy {
       clearArray(this.selectedTradeItems);
       tradeItems.forEach(tradeItem => tradeItem && this.selectedTradeItems.push(tradeItem));
     });
+  }
+
+  ngOnInit() {
+    this.search();
   }
 
   ngOnDestroy() {

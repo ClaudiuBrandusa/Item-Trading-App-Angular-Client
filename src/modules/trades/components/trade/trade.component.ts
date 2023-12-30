@@ -68,7 +68,7 @@ export class TradeComponent implements OnInit {
   }
 
   cancel() {
-    this.select();
+    this.select(false);
     this.openDialog(TradeRoutes.Cancel);
   }
 
@@ -77,9 +77,9 @@ export class TradeComponent implements OnInit {
     this.openDialog(TradeRoutes.Details);
   }
 
-  private select() {
+  private select(selectTradeItems: Boolean = true) {
     this.store.dispatch(currentTradeSelectionInitiated(this.trade.tradeId, this.trade.items, this.isSentTrade, this.isRespondedTrade));
-    this.tradeItemStore.dispatch(addTradeItems(this.trade.items));
+    selectTradeItems && this.tradeItemStore.dispatch(addTradeItems(this.trade.items));
   }
 
   private openDialog(dialog: string) {

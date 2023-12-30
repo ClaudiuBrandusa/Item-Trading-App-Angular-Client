@@ -8,8 +8,9 @@
         [hideXButton]="true"
         [isNextButtonDisabled]="!isTradeValid()"
         (onContinue)="createTrade()"
-        (onExit)="exit()">
-			  <div class="d-flex flex-column h-min-5rem h-max-35rem">
+        (onExit)="exit()"
+        ngClass="d-block h-inherit">
+			  <div class="d-flex flex-column flex-grow-1 h-min-5rem h-max-35rem">
           <div class="d-flex flex-row flex-0 m-2">
             <div class="d-flex flex-grow-1 me-1">
               <input

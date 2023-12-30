@@ -6,6 +6,8 @@
 
 .h-min-0 { min-height: 0; }
 
+.h-inherit { height: inherit; }
+
 /* virtual */
 
 .w-45 { width: 45vw; }
@@ -46,6 +48,8 @@
 .h-5rem { height: 5rem; }
 
 .h-10rem { height: 10rem; }
+
+.h-25rem { height: 25rem; }
 
 .h-8rem {
     height: 8rem;

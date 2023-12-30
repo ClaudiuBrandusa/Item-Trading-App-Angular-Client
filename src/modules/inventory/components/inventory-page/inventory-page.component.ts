@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { InventoryRoutes } from '../../enums/inventory-routes';
 import { InventoryItem } from '../../models/responses/inventory-item';
 import { Store } from '@ngrx/store';
-import { loadItemsInitiated } from '../../../item/store/item.actions';
+import { loadItemsInit } from '../../store/inventory/inventory.actions';
 
 @Component({
   selector: 'app-inventory',
@@ -16,7 +16,7 @@ export class InventoryPageComponent {
   constructor(private store: Store<InventoryItem>) {}
 
   search(searchBody) {
-    this.store.dispatch(loadItemsInitiated(searchBody.searchString));
+    this.store.dispatch(loadItemsInit(searchBody.searchString));
   }
 
   getEventValue(event: Event) {

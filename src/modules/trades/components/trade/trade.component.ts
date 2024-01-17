@@ -9,6 +9,7 @@ import { selectTradeById } from '../../store/trade/trade.selector';
 import { Observable, map } from 'rxjs';
 import { TradeItem } from '../../models/trade-item';
 import { addTradeItems } from '../../store/trade-item/trade-item.actions';
+import { clearArray } from '../../../shared/utils/array-utils';
 
 @Component({
   selector: 'app-trade',
@@ -31,11 +32,13 @@ export class TradeComponent implements OnInit {
   isRespondedTrade: boolean;
 
   response: string;
-  userId: string;
+  userName: string;
   respondedButtonClass: string;
   respondedIcon: string;
   private baseRespondedButtonClass = "d-flex p-2 w-7-5rem color-white no-select";
   private baseRespondedIconClass = " my-auto ms-auto";
+
+  tradeItemNames = new Array<string>();
 
   constructor(private navigationService: NavigationService, private store: Store<Trade>, private tradeItemStore: Store<TradeItem>) {}
   
@@ -43,9 +46,13 @@ export class TradeComponent implements OnInit {
     this.trade$ = this.store.select(selectTradeById(this.tradeId)).pipe(map(trade => {
       if (!trade) return new Trade();
       this.trade = trade;
-      this.userId = getTradeReceiverOrSender(trade);
+      this.userName = getTradeReceiverOrSender(trade);
       this.totalPrice = 0;
-      trade.items.forEach(item => this.totalPrice += item.price);
+      clearArray(this.tradeItemNames);
+      trade.items.forEach(item => {
+        this.totalPrice += item.price;
+        this.tradeItemNames.push(item.name);
+      });
       if (trade.response != null) {
         this.isRespondedTrade = true;
         this.handleTradeResponse();

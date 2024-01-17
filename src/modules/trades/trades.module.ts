@@ -32,6 +32,7 @@ import { UserReducer } from '../identity/store/user/user.reducer';
 import { TradeItemReducer } from './store/trade-item/trade-item.reducer';
 import { InventoryModule } from '../inventory/inventory.module';
 import { LockedInventoryItemAmountReducer } from '../inventory/store/locked-amount/locked-amount.reducer';
+import { TradeItemTagComponent } from './components/trade-item-tag/trade-item-tag.component';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { LockedInventoryItemAmountReducer } from '../inventory/store/locked-amou
     SetTradeItemQuantityAndPriceDialogComponent,
     RemoveTradeItemPopupComponent,
     RespondTradeDialogComponent,
-    CancelTradeDialogComponent
+    CancelTradeDialogComponent,
+    TradeItemTagComponent
   ],
   imports: [
     CommonModule,

@@ -5,18 +5,21 @@
       </i>
     </div>
   </div>
-  <div class="d-flex flex-column mx-2 flex-grow-1">
-    <div class="flex-row flex-grow-1">
+  <div class="d-flex flex-column mx-2">
+    <div class="flex-row">
       <strong>{{ isSentTrade ? 'Sent to' : 'Received from' }}</strong>:
-      {{ userId }}
+      {{ userName | truncate:(25) }}
     </div>
-    <div class="flex-row flex-grow-1">
+    <div class="flex-row">
       <strong>Total price</strong>:
-      {{ totalPrice }}
+      {{ totalPrice | toString | truncate:(15) }}
     </div>
     <div (click)="details()" class="d-flex flex-column color-blue no-select cursor-pointer">
       <strong>Details</strong>
     </div>
+  </div>
+  <div class="d-flex flex-row flex-wrap flex-grow-1">
+    <app-trade-item-tag  *ngFor="let itemName of tradeItemNames" [itemName]="itemName"></app-trade-item-tag>
   </div>
   <div class="d-flex flex-row align-content-start flex-wrap flex-0 p-0 ps-1 no-select cursor-pointer">
     <span *ngIf="!isRespondedTrade">

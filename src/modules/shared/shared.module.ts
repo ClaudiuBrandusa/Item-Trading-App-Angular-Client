@@ -22,6 +22,7 @@ import { NotificationReducer } from './store/notification/notification.reducer';
 import { NotificationComponent } from './components/notification/notification/notification.component';
 import { ReplaceOverMaxWithPlusPipe } from './pipes/numbers/replace-over-max-with-plus.pipe';
 import { TruncatePipe } from './pipes/text/truncate.pipe';
+import { ToString } from './pipes/text/to-string.pipe';
 import * as notificationEffects from './store/notification/notification.effects';
 import * as identityEffects from '../identity/store/identity/identity.effects';
 import { provideEffects } from '@ngrx/effects';
@@ -48,7 +49,8 @@ import { ModalReducer } from '../../standalone/modal-manager/store/modal.reducer
     NotificationsComponent,
     NotificationComponent,
     ReplaceOverMaxWithPlusPipe,
-    TruncatePipe
+    TruncatePipe,
+    ToString
   ],
   imports: [
     CommonModule,
@@ -73,7 +75,8 @@ import { ModalReducer } from '../../standalone/modal-manager/store/modal.reducer
     DefaultDialogComponent,
     DarkBackgroundComponent,
     ReplaceOverMaxWithPlusPipe,
-    TruncatePipe
+    TruncatePipe,
+    ToString
   ],
   providers: [
     provideStore(),

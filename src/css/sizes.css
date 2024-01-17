@@ -8,6 +8,8 @@
 
 .h-inherit { height: inherit; }
 
+.max-w-fit { max-width: fit-content; }
+
 /* virtual */
 
 .w-45 { width: 45vw; }

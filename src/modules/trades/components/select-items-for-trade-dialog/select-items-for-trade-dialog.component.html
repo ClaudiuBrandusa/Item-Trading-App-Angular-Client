@@ -9,7 +9,7 @@
         [isNextButtonDisabled]="!isTradeValid()"
         (onContinue)="createTrade()"
         (onExit)="exit()"
-        ngClass="d-block h-inherit">
+        ngClass="h-inherit">
 			  <div class="d-flex flex-column flex-grow-1 h-min-5rem h-max-35rem">
           <div class="d-flex flex-row flex-0 m-2">
             <div class="d-flex flex-grow-1 me-1">
@@ -41,7 +41,7 @@
       </app-default-dialog>
     </app-huge-dialog>
     <app-dialog class="right-side-panel-size">
-      <span class="m-2"><strong>Selected items</strong></span>
+      <span class="m-2 position-relative top-5"><strong>Selected items</strong></span>
       <div class="right-side-panel-height overflow-y-auto overflow-x-hidden mb-1 right-side-panel-size">
         <div class="mx-1">
           <app-selected-trade-items-list></app-selected-trade-items-list>

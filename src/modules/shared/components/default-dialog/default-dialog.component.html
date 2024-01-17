@@ -1,4 +1,4 @@
-<div class="d-flex flex-column h-inherit">
+<div class="d-flex flex-grow-1 flex-column">
   <span class="m-2"><strong>{{title | truncate:(45)}}</strong></span>
   <i *ngIf="!hideXButton" (click)="cancel()" class="fa-solid fa-xmark position-absolute top-0 right-0 mt-3 me-3 cursor-pointer"></i>
   <ng-content></ng-content>

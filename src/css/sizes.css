@@ -59,6 +59,18 @@
     min-height: 5rem;
 }
 
+.h-min-15rem {
+    min-height: 15rem;
+}
+
+.h-max-15rem {
+    max-height: 15rem;
+}
+
+.h-max-30rem {
+    max-height: 30rem;
+}
+
 .h-max-35rem {
     max-height: 35rem;
 }

@@ -17,6 +17,7 @@ export class AddItemSelectDialogComponent {
 
   public foundItemIds$ = this.itemStore.select(selectItemIds);
   searchString = "";
+  initSearch = false;
 
   constructor(private navigationService: NavigationService, private store: Store<InventoryItem>, private itemStore: Store<Item>) {}
 
@@ -46,6 +47,7 @@ export class AddItemSelectDialogComponent {
   }
 
   private listItems() {
+    this.initSearch = true;
     this.itemStore.dispatch(loadItemsInitiated(this.searchString));
   }
 

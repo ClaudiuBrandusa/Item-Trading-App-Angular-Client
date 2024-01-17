@@ -1,6 +1,7 @@
 import { Action, createReducer, on } from "@ngrx/store";
 import { UserState, adapter, initialState } from "./user.state";
 import { clearUsersList, getUserSucceeded } from "./user.actions";
+import { disconnected } from "../identity/identity.actions";
 
 export function UserReducer(
   state: UserState = initialState,
@@ -12,5 +13,6 @@ export function UserReducer(
 const userReducer = createReducer(
   initialState,
   on(getUserSucceeded, (state, { foundUser }) => adapter.addOne(foundUser, state)),
-  on(clearUsersList, (state) => adapter.removeAll(state))
+  on(clearUsersList, (state) => adapter.removeAll(state)),
+  on(disconnected, () => adapter.removeAll({ ...initialState }))
 );

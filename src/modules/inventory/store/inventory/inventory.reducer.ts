@@ -1,6 +1,7 @@
 import { Action, createReducer, on } from "@ngrx/store";
 import { InventoryItemState, adapter, initialState } from "./inventory.state";
 import { addItemSucceeded, clearSearchedItems, deselectItem, dropItemSucceeded, loadItemSucceeded, loadItemsSucceeded, selectItem } from "./inventory.actions";
+import { disconnected } from "../../../identity/store/identity/identity.actions";
 
 export function InventoryItemReducer(
   state: InventoryItemState = initialState,
@@ -29,7 +30,6 @@ const inventoryItemReducer = createReducer(
       return adapter.updateOne({ id: response.itemId, changes: response }, state);
     }
   }),
-  on(clearSearchedItems, (state) => {
-    return adapter.removeAll({ ...state, itemIds: initialState.itemIds });
-  })
+  on(clearSearchedItems, (state) => adapter.removeAll({ ...state, itemIds: initialState.itemIds })),
+  on(disconnected, () => adapter.removeAll({ ...initialState }))
 )

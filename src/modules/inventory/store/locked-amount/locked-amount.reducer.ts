@@ -1,6 +1,7 @@
 import { Action, createReducer, on } from "@ngrx/store";
 import { LockedInventoryItemAmountState, adapter, initialState } from "./locked-amount.state";
-import { clearInventoryItemLockedAmount, loadInventoryItemLockedAmountSucceeded } from "./locked-amount.actions";
+import { loadInventoryItemLockedAmountSucceeded } from "./locked-amount.actions";
+import { disconnected } from "../../../identity/store/identity/identity.actions";
 
 export function LockedInventoryItemAmountReducer(
   state: LockedInventoryItemAmountState = initialState,
@@ -12,5 +13,5 @@ export function LockedInventoryItemAmountReducer(
 const lockedInventoryItemAmountReducer = createReducer(
   initialState,
   on(loadInventoryItemLockedAmountSucceeded, (state, { entity }) => adapter.addOne(entity, state)),
-  on(clearInventoryItemLockedAmount, (state) => adapter.removeAll(state))
+  on(disconnected, () => adapter.removeAll({ ...initialState }))
 );

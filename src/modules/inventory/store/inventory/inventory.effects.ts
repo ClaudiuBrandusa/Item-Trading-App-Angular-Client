@@ -13,9 +13,9 @@ export const loadInventoryItems = createEffect(
       ofType(loadItemsInit),
       exhaustMap(({ searchString }) =>
         service.list(searchString).pipe(
-          map((response: any) => {
-            return loadItemsSucceeded(response.itemsId)
-          }),
+          map((response: any) =>
+            loadItemsSucceeded(response.itemsId)
+          ),
           catchError(error =>
             of(handleDefaultException('Error found at list items', error))
           )
@@ -32,8 +32,8 @@ export const loadInventoryItem = createEffect(
       ofType(loadItemInit),
       concatMap(({ itemId }) =>
         service.getItem(itemId).pipe(
-          map((response) => {
-            return loadItemSucceeded(response)}
+          map((response) =>
+            loadItemSucceeded(response)
           ),
           catchError(error =>
             of(handleDefaultException('Error found at load item', error))

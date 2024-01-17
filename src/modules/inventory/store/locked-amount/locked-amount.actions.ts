@@ -3,12 +3,9 @@ import { LockedInventoryItemAmount } from "../../models/responses/locked-invento
 
 export enum LockedInventoryItemAmountActionType {
   LoadInventoryItemLockedAmountInit = "load_inventory_item_locked_amount_initiated",
-  LoadInventoryItemLockedAmountSucceeded = "load_inventory_item_locked_amount_succeeded",
-  ClearInventoryItemLockedAmount = "clear_inventory_item_locked_amount"
+  LoadInventoryItemLockedAmountSucceeded = "load_inventory_item_locked_amount_succeeded"
 }
 
 export const loadInventoryItemLockedAmountInit = createAction(LockedInventoryItemAmountActionType.LoadInventoryItemLockedAmountInit, (itemId: string) => ({ itemId }));
 
 export const loadInventoryItemLockedAmountSucceeded = createAction(LockedInventoryItemAmountActionType.LoadInventoryItemLockedAmountSucceeded, (entity: LockedInventoryItemAmount) => ({ entity }));
-
-export const clearInventoryItemLockedAmount = createAction(LockedInventoryItemAmountActionType.ClearInventoryItemLockedAmount);

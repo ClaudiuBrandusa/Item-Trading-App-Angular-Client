@@ -3,6 +3,7 @@ import { TradeState, adapter, initialState } from "./trade.state";
 import { addTradeData, createTradeInitiated, createTradeTerminated, currentTradeSelectionInitiated, currentTradeSelectionTerminated, listTradesSucceeded, loadTradeSucceeded, removeTradeReceiver, respondTradeSucceeded, sendTradeOfferSucceeded, setTradeReceiver } from "./trade.actions";
 import { CurrentTrade } from "../../models/current-trade";
 import { TradeBaseData } from "../../models/trade-base-data";
+import { disconnected } from "../../../identity/store/identity/identity.actions";
 
 export function TradeReducer(
   state: TradeState = initialState,
@@ -37,5 +38,6 @@ const tradeReducer = createReducer(
       newTradesData = [ ...filteredTradesData ];
     }
     return adapter.updateOne({ id: tradeId, changes: { ...state.entities[tradeId], response: response.response } }, { ...state, tradesData: [ ...newTradesData ]})
-  })
+  }),
+  on(disconnected, () => adapter.removeAll({ ...initialState }))
 );

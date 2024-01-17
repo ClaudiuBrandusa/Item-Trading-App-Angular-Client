@@ -11,7 +11,6 @@ export enum NotificationActionType {
   RemoveNotification = "remove_notification",
   OpenNotificationsMenu = "open_notifications_menu",
   CloseNotificationsMenu = "close_notifications_menu",
-  ResetNotifications = "reset_notifications",
   CreatedNotification = "created_notification",
   ChangedNotification = "changed_notification",
   DeletedNotification = "deleted_notification"
@@ -28,8 +27,6 @@ export const removeNotification = createAction(NotificationActionType.RemoveNoti
 export const openNotificationsMenu = createAction(NotificationActionType.OpenNotificationsMenu);
 
 export const closeNotificationsMenu = createAction(NotificationActionType.CloseNotificationsMenu);
-
-export const resetNotifications = createAction(NotificationActionType.ResetNotifications);
 
 export const createdNotification = createAction(NotificationActionType.CreatedNotification, (notification: ModifiedNotification) => ({ notification }));
 

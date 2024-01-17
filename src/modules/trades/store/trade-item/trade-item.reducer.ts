@@ -1,6 +1,7 @@
 import { Action, createReducer, on } from "@ngrx/store";
 import { TradeItemState, adapter, initialState } from "./trade-item.state";
 import { addTradeItem, addTradeItems, deselectTradeItem, discardTradeItems, removeTradeItem, selectTradeItem } from "./trade-item.actions";
+import { disconnected } from "../../../identity/store/identity/identity.actions";
 
 export function TradeItemReducer(
   state: TradeItemState = initialState,
@@ -22,5 +23,6 @@ const tradeItemReducer = createReducer(
   }),
   on(addTradeItems, (state, { tradeItems }) => adapter.addMany(tradeItems, state)),
   on(removeTradeItem, (state, { tradeItem }) => adapter.removeOne(tradeItem.id, state)),
-  on(discardTradeItems, (state) => adapter.removeAll({ ...state, currentTradeItem: initialState.currentTradeItem }))
+  on(discardTradeItems, (state) => adapter.removeAll({ ...state, currentTradeItem: initialState.currentTradeItem })),
+  on(disconnected, () => adapter.removeAll({ ...initialState }))
 );

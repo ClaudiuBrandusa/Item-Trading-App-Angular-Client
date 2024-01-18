@@ -32,7 +32,7 @@ export class TradeComponent implements OnInit {
   isRespondedTrade: boolean;
 
   response: string;
-  userName: string;
+  userName: string = "";
   respondedButtonClass: string;
   respondedIcon: string;
   private baseRespondedButtonClass = "d-flex p-2 w-7-5rem color-white no-select";

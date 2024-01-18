@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { TradePopupsNames } from '../../enums/trade-popups-names';
+import { TradePopupNames } from '../../enums/trade-popup-names';
 import { TradeItem } from '../../models/trade-item';
 import { NavigationService } from '../../../shared/services/navigation.service';
 import { Store } from '@ngrx/store';
@@ -37,14 +37,14 @@ export class SelectedTradeItemComponent implements OnInit {
   edit() {
     if (this.editable) {
       this.store.dispatch(selectTradeItem({ ...this.item }));
-      this.navigationService.openPopup(TradePopupsNames.SetItemQuantityAndPrice);
+      this.navigationService.openPopup(TradePopupNames.SetItemQuantityAndPrice);
     }
   }
 
   remove() {
     if (this.editable) {
       this.store.dispatch(selectTradeItem({ ...this.item }));
-      this.navigationService.openPopup(TradePopupsNames.RemoveItem);
+      this.navigationService.openPopup(TradePopupNames.RemoveItem);
     }
   }
 }

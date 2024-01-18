@@ -1,7 +1,7 @@
 import { Action, createReducer, on } from "@ngrx/store";
 import { clearSearchedItems, createItemInitiated, createItemSucceeded, createItemTerminated, deleteItemSucceeded, deselectItem, loadItemSucceeded, loadItemsSucceeded, selectItem, updateItemSucceeded } from "./item.actions";
 import { ItemState, adapter, initialState } from "./item.state";
-import { disconnected } from "../../identity/store/identity/identity.actions";
+import { disconnected } from "../../../identity/store/identity/identity.actions";
 
 export function ItemReducer(
   state: ItemState = initialState,

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { loadItemsInitiated } from '../../store/item.actions';
-import { selectItemIds } from '../../store/item.selector';
+import { loadItemsInitiated } from '../../store/item/item.actions';
+import { selectItemIds } from '../../store/item/item.selector';
 import { Item } from '../../models/responses/item';
 
 @Component({

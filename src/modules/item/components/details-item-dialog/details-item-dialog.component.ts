@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Item } from 'src/modules/item/models/responses/item';
 import { NavigationService } from '../../../shared/services/navigation.service';
 import { Store } from '@ngrx/store';
-import { deselectItem } from '../../store/item.actions';
-import { selectCurrentItem } from '../../store/item.selector';
+import { deselectItem } from '../../store/item/item.actions';
+import { selectCurrentItem } from '../../store/item/item.selector';
 import { Observable, map } from 'rxjs';
 
 @Component({

@@ -15,7 +15,9 @@ import { FoundUserComponent } from './components/found-user/found-user.component
 import { provideEffects } from '@ngrx/effects';
 import { UserReducer } from './store/user/user.reducer';
 import * as userEffects from './store/user/user.effects';
+import * as identityEffects from '../identity/store/identity/identity.effects';
 import { StoreModule } from '@ngrx/store';
+import { IdentityReducer } from './store/identity/identity.reducer';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { StoreModule } from '@ngrx/store';
     IdentityRoutingModule,
     SharedModule,
     ReactiveFormsModule,
-    StoreModule.forFeature("user", UserReducer)
+    StoreModule.forFeature("user", UserReducer),
+    StoreModule.forFeature("identity", IdentityReducer)
   ],
   exports: [
     LoginComponent,
@@ -43,7 +46,8 @@ import { StoreModule } from '@ngrx/store';
     CurrentIdentityPageService,
     LoginService,
     RegisterService,
-    provideEffects(userEffects)
+    provideEffects(userEffects),
+    provideEffects(identityEffects)
   ]
 })
 export class IdentityModule { }

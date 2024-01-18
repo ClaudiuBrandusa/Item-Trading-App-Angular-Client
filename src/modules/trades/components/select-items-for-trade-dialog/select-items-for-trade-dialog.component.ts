@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TradeItem } from '../../models/trade-item';
 import { Trade } from '../../models/responses/trade';
 import { NavigationService } from '../../../shared/services/navigation.service';
-import { TradePopupsNames } from '../../enums/trade-popups-names';
+import { TradePopupNames } from '../../enums/trade-popup-names';
 import { TradeRoutes } from '../../enums/trade-routes';
 import { Store } from '@ngrx/store';
 import { removeTradeReceiver, sendTradeOfferInit } from '../../store/trade/trade.actions';
@@ -87,7 +87,7 @@ export class SelectItemsForTradeDialogComponent implements OnInit, OnDestroy {
     if (!item) return;
     const tradeItem = new TradeItem({ id: id, name: item.itemName });
     this.tradeItemStore.dispatch(selectTradeItem(tradeItem));
-    this.navigationService.openPopup(TradePopupsNames.SetItemQuantityAndPrice);
+    this.navigationService.openPopup(TradePopupNames.SetItemQuantityAndPrice);
   }
 
   createTrade() {

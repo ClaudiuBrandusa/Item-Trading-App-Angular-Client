@@ -4,8 +4,8 @@ import { Item } from 'src/modules/item/models/responses/item';
 import { NavigationService } from '../../../shared/services/navigation.service';
 import { Store } from '@ngrx/store';
 import { UpdateItemRequest } from '../../models/requests/update-item-request.model';
-import { selectCurrentItem } from '../../store/item.selector';
-import { deselectItem, updateItemInit } from '../../store/item.actions';
+import { selectCurrentItem } from '../../store/item/item.selector';
+import { deselectItem, updateItemInit } from '../../store/item/item.actions';
 
 @Component({
   selector: 'dialog-edit-item',

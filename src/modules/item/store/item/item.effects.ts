@@ -1,15 +1,15 @@
 import { inject } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { ItemService } from "../services/item.service";
+import { ItemService } from "../../services/item.service";
 import { createItemRequestSent, createItemSucceeded, deleteItemInitiated, deleteItemSucceeded, loadItemInitiated, loadItemSucceeded, loadItemsInitiated, loadItemsSucceeded, updateItemInit, updateItemSucceeded } from "./item.actions";
 import { catchError, concatMap, exhaustMap, filter, map, mergeMap, of } from "rxjs";
-import { NavigationService } from "../../shared/services/navigation.service";
+import { NavigationService } from "../../../shared/services/navigation.service";
 import { CreateItemRequest } from 'src/modules/item/models/requests/create-item-request.model';
 import { UpdateItemRequest } from 'src/modules/item/models/requests/update-item-request.model';
-import { ItemUpdated } from '../models/responses/item-updated';
-import { Item } from "../models/responses/item";
-import { changedNotification, createdNotification, deletedNotification, handleDefaultException } from "../../shared/store/notification/notification.actions";
-import { NotificationCategoryTypes } from "../../shared/enums/notification-category-types.enum";
+import { ItemUpdated } from '../../models/responses/item-updated';
+import { Item } from "../../models/responses/item";
+import { changedNotification, createdNotification, deletedNotification, handleDefaultException } from "../../../shared/store/notification/notification.actions";
+import { NotificationCategoryTypes } from "../../../shared/enums/notification-category-types.enum";
 
 export const loadItems = createEffect(
   (actions$ = inject(Actions), service = inject(ItemService)) => {

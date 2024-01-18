@@ -20,6 +20,7 @@
     "Item": {
       "get": "/item/get",
       "list": "/item/list",
+      "list_trades_using_the_item": "/item/list_trades_using_the_item",
       "create": "/item/create",
       "update": "/item/update",
       "delete": "/item/delete"

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { EventBusService } from './event-bus.service';
 import { EventData } from '../utils/event-data';
-import { DialogEvents } from '../enums/dialog-events.enum';
+import { DialogEvents } from '../../dialog/enums/dialog-events.enum';
 import { Stack } from '../../shared/utils/stack';
 import { NavigationHistory } from '../models/navigation/navigation-history';
 import { filter } from 'rxjs';

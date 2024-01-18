@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { DialogEvents } from '../../../enums/dialog-events.enum';
+import { DialogEvents } from '../../../../dialog/enums/dialog-events.enum';
 import { EventBusService } from '../../../services/event-bus.service';
 import { NavigationService } from '../../../services/navigation.service';
 import { EventBusUtils } from '../../../utils/event-bus.utility';

@@ -1,7 +1,7 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { InventoryItemState, adapter } from "./inventory.state";
-import { selectItemFeature } from "../../../item/store/item.selector";
-import { ItemState } from "../../../item/store/item.state";
+import { selectItemFeature } from "../../../item/store/item/item.selector";
+import { ItemState } from "../../../item/store/item/item.state";
 import { InventoryItem } from "../../models/responses/inventory-item";
 import { selectTradeItemFeature } from "../../../trades/store/trade-item/trade-item.selector";
 import { TradeItemState } from "../../../trades/store/trade-item/trade-item.state";

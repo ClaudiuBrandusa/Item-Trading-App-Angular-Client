@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { TradePopupsNames } from '../../enums/trade-popups-names';
+import { TradePopupNames } from '../../enums/trade-popup-names';
 import { TradeItem } from '../../models/trade-item';
 import { InventoryItem } from '../../../inventory/models/responses/inventory-item';
 import { LockedInventoryItemAmount } from '../../../inventory/models/responses/locked-inventory-item-amount.response';
@@ -22,7 +22,7 @@ export class SetTradeItemQuantityAndPriceDialogComponent implements OnInit {
   inventoryItem: InventoryItem;
   lockedItemAmount: LockedInventoryItemAmount;
   errorMessage = "";
-  eventId = TradePopupsNames.SetItemQuantityAndPrice;
+  eventId = TradePopupNames.SetItemQuantityAndPrice;
 
   constructor(private fb: FormBuilder, private navigationService: NavigationService, private store: Store<TradeItem>, inventoryStore: Store<InventoryItem>, private lockedAmountStore: Store<LockedInventoryItemAmount>) {
     store.select(selectCurrentTradeItem).subscribe(currentTradeItem => {

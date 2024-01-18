@@ -3,7 +3,7 @@ import { map, take } from "rxjs";
 import { NavigationService } from "../../shared/services/navigation.service";
 import { ItemRoutes } from "../enums/item-routes";
 import { Store } from "@ngrx/store";
-import { selectItemCreationStatus } from "../store/item.selector";
+import { selectItemCreationStatus } from "../store/item/item.selector";
 import { Item } from "../models/responses/item";
 
 export const isCreatingNewItemGuard = () => {

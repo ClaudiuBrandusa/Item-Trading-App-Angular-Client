@@ -1,7 +1,7 @@
 <app-dark-background (onBackgroundClicked)="exit()">
   <div class="d-flex position-absolute transform-center">
     <app-huge-dialog class="me-1">
-      <app-default-dialog
+      <app-dialog-body
         title="Select items"
         cancelButtonName="Change receiver"
         nextButtonName="Create trade"
@@ -38,15 +38,15 @@
             </div>
           </div>
         </div>
-      </app-default-dialog>
+      </app-dialog-body>
     </app-huge-dialog>
-    <app-dialog class="right-side-panel-size">
+    <app-dialog-template class="right-side-panel-size">
       <span class="m-2 position-relative top-5"><strong>Selected items</strong></span>
       <div class="right-side-panel-height overflow-y-auto overflow-x-hidden mb-1 right-side-panel-size">
         <div class="mx-1">
           <app-selected-trade-items-list></app-selected-trade-items-list>
         </div>
       </div>
-    </app-dialog>
+    </app-dialog-template>
   </div>
 </app-dark-background>

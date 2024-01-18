@@ -1,6 +1,6 @@
 <app-dark-background (onBackgroundClicked)="exit()">
   <app-medium-dialog class="position-fixed transform-center">
-    <app-default-dialog
+    <app-dialog-body
       title="Create item"
       [isNextButtonDisabled]="form == undefined ? false : !form.valid"
       (onContinue)="submit()"
@@ -18,6 +18,6 @@
           <app-error class="text-center" [controlName]="form.controls['itemDescription']"></app-error>
         </div>
       </form>
-    </app-default-dialog>
+    </app-dialog-body>
   </app-medium-dialog>
 </app-dark-background>

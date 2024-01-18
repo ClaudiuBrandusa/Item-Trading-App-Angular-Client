@@ -2,7 +2,7 @@
   <span class="m-2"><strong>{{title | truncate:(45)}}</strong></span>
   <i *ngIf="!hideXButton" (click)="cancel()" class="fa-solid fa-xmark position-absolute top-0 right-0 mt-3 me-3 cursor-pointer"></i>
   <ng-content></ng-content>
-  <div class="d-flex flex-row mb-2">
+  <div class="d-flex flex-row justify-content-center mb-2">
     <app-button class="d-flex flex-column ms-2" *ngIf="!hideCancelButton" (click)="cancel()" [disabled]="isCancelButtonDisabled">{{cancelButtonName}}</app-button>
     <app-button class="d-flex flex-column ms-auto me-2" *ngIf="!hideNextButton" [disabled]="isNextButtonDisabled" (click)="next()">{{nextButtonName}}</app-button>
   </div>

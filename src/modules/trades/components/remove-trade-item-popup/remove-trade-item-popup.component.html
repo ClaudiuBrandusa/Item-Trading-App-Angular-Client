@@ -1,12 +1,12 @@
 <app-dark-background (onBackgroundClicked)="deny()">
   <app-small-dialog class="position-fixed transform-center">
-    <app-default-dialog
+    <app-dialog-body
       title="Remove trade item"
       (onContinue)="confirm()"
       (onExit)="deny()"
       nextButtonName="Yes"
       cancelButtonName="No">
-    </app-default-dialog>
+    </app-dialog-body>
   </app-small-dialog>
 </app-dark-background>
   

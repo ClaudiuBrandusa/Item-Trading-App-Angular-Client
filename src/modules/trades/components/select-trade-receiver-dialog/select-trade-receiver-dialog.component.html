@@ -1,6 +1,6 @@
 <app-dark-background (onBackgroundClicked)="exit()">
     <app-medium-dialog class="position-fixed transform-center">
-      <app-default-dialog
+      <app-dialog-body
         title="Select user"
         [hideNextButton]="true"
         (onExit)="exit()">
@@ -23,6 +23,6 @@
             </div>
           </div>
         </div>
-      </app-default-dialog>
+      </app-dialog-body>
     </app-medium-dialog>
   </app-dark-background>

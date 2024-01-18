@@ -12,8 +12,13 @@ import { EditItemDialogComponent } from './components/edit-item-dialog/edit-item
 import { DetailsItemDialogComponent } from './components/details-item-dialog/details-item-dialog.component';
 import { ItemsComponent } from './components/items-page/items-page.component';
 import { RouterModule } from '@angular/router';
-import { ItemReducer } from './store/item.reducer';
+import { ItemReducer } from './store/item/item.reducer';
 import { StoreModule } from '@ngrx/store';
+import { ItemUsedReducer } from './store/item_used/item_used.reducer';
+import { provideEffects } from '@ngrx/effects';
+import * as itemEffects from './store/item/item.effects';
+import * as itemUsedEffects from './store/item_used/item_used.effects';
+
 
 
 
@@ -32,7 +37,8 @@ import { StoreModule } from '@ngrx/store';
     SharedModule,
     ReactiveFormsModule,
     RouterModule,
-    StoreModule.forFeature("item", ItemReducer)
+    StoreModule.forFeature("item", ItemReducer),
+    StoreModule.forFeature("item_used", ItemUsedReducer)
   ],
   exports: [
     ItemsComponent,
@@ -40,7 +46,9 @@ import { StoreModule } from '@ngrx/store';
     ItemComponent
   ],
   providers: [
-    ItemService
+    ItemService,
+    provideEffects(itemEffects),
+    provideEffects(itemUsedEffects)
   ]
 })
 export class ItemModule { }

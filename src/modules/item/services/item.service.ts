@@ -47,4 +47,12 @@ export class ItemService extends NetworkService<ItemEndpoints> {
     
     return this.http.get<any>(this.base_path + this.endpointsModel.list, { params }).pipe(catchError((error) => (this.buildError(error))));
   }
+
+  listTradesUsingTheItem(itemId: string) {
+    const params = this.getQueryParamsFromObject({
+      itemId
+    });
+
+    return this.http.get<any>(this.base_path + this.endpointsModel.list_trades_using_the_item, { params }).pipe(catchError((error) => (this.buildError(error))));
+  }
 }

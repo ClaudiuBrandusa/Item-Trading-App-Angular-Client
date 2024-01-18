@@ -1,6 +1,6 @@
 <app-dark-background (onBackgroundClicked)="cancel()">
   <app-medium-dialog class="position-fixed transform-center">
-    <app-default-dialog
+    <app-dialog-body
       title="Select item"
       (onExit)="cancel()"
       [hideNextButton]="true">
@@ -31,6 +31,6 @@
           </div>
         </div>
       </div>
-    </app-default-dialog>
+    </app-dialog-body>
   </app-medium-dialog>
 </app-dark-background>

@@ -4,7 +4,7 @@ import { AddItemRequest } from 'src/modules/inventory/models/requests/add-item-r
 import { NavigationService } from '../../../shared/services/navigation.service';
 import { InventoryRoutes } from '../../enums/inventory-routes';
 import { Store } from '@ngrx/store';
-import { clearSearchedItems } from '../../../item/store/item.actions';
+import { clearSearchedItems } from '../../../item/store/item/item.actions';
 import { Item } from '../../../item/models/responses/item';
 import { Observable, map } from 'rxjs';
 import { InventoryItem } from '../../models/responses/inventory-item';

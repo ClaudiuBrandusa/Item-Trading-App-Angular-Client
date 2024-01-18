@@ -3,7 +3,7 @@ import { map, take } from 'rxjs';
 import { NavigationService } from '../../shared/services/navigation.service';
 import { InventoryRoutes } from '../enums/inventory-routes';
 import { Store } from '@ngrx/store';
-import { selectCurrentItemStatus } from '../../item/store/item.selector';
+import { selectCurrentItemStatus } from '../../item/store/item/item.selector';
 import { Item } from '../../item/models/responses/item';
 
 export const shouldSelectItemGuard = () => {

@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { NavigationService } from '../../../shared/services/navigation.service';
 import { Store } from '@ngrx/store';
 import { CreateItemRequest } from '../../models/requests/create-item-request.model';
-import { createItemRequestSent, createItemTerminated } from '../../store/item.actions';
+import { createItemRequestSent, createItemTerminated } from '../../store/item/item.actions';
 import { Item } from '../../models/responses/item';
 
 @Component({

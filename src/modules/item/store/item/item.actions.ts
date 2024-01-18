@@ -1,7 +1,7 @@
 import { CreateItemRequest } from 'src/modules/item/models/requests/create-item-request.model';
 import { UpdateItemRequest } from 'src/modules/item/models/requests/update-item-request.model';
 import { createAction } from '@ngrx/store';
-import { Item } from '../models/responses/item';
+import { Item } from '../../models/responses/item';
 
 export enum ItemActionType {
   LoadItemsInit = "load_items_init",

@@ -4,7 +4,7 @@ import { InventoryRoutes } from '../../enums/inventory-routes';
 import { NavigationService } from '../../../shared/services/navigation.service';
 import { Store } from '@ngrx/store';
 import { deselectItem, loadItemInit, selectItem } from '../../store/inventory/inventory.actions';
-import { loadItemInitiated } from '../../../item/store/item.actions';
+import { loadItemInitiated } from '../../../item/store/item/item.actions';
 import { Observable } from 'rxjs';
 import { selectItemById } from '../../store/inventory/inventory.selector';
 import { Item } from '../../../item/models/responses/item';

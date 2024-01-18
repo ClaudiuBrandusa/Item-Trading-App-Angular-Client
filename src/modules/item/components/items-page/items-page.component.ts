@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ItemRoutes } from '../../enums/item-routes';
 import { Store } from '@ngrx/store';
-import { createItemInitiated, loadItemsInitiated } from '../../store/item.actions';
+import { createItemInitiated, loadItemsInitiated } from '../../store/item/item.actions';
 import { Item } from '../../models/responses/item';
 
 @Component({

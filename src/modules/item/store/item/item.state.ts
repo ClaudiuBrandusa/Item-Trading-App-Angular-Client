@@ -1,4 +1,4 @@
-import { Item } from "../models/responses/item";
+import { Item } from "../../models/responses/item";
 import { EntityAdapter, EntityState, createEntityAdapter } from "@ngrx/entity";
 
 export interface ItemState extends EntityState<Item> {

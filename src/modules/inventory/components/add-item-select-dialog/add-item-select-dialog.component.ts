@@ -5,8 +5,8 @@ import { Store } from '@ngrx/store';
 import { Item } from '../../../item/models/responses/item';
 import { InventoryItem } from '../../models/responses/inventory-item';
 import { selectItem } from '../../store/inventory/inventory.actions';
-import { clearSearchedItems, loadItemsInitiated } from '../../../item/store/item.actions';
-import { selectItemIds } from '../../../item/store/item.selector';
+import { clearSearchedItems, loadItemsInitiated } from '../../../item/store/item/item.actions';
+import { selectItemIds } from '../../../item/store/item/item.selector';
 
 @Component({
   selector: 'dialog-add-item-select',

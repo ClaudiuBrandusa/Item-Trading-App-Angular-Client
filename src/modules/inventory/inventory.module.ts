@@ -13,11 +13,8 @@ import { ItemModule } from '../item/item.module';
 import { DropItemQuantityDialogComponent } from './components/drop-item-dialog-quantity/drop-item-quantity-dialog.component';
 import { StoreModule } from '@ngrx/store';
 import { InventoryItemReducer } from './store/inventory/inventory.reducer';
-import { ItemReducer } from '../item/store/item.reducer';
-import * as inventoryEffects from './store/inventory/inventory.effects'
-import * as itemEffects from '../item/store/item.effects';
+import * as inventoryEffects from './store/inventory/inventory.effects';
 import { provideEffects } from '@ngrx/effects';
-import { InventoryItem } from './models/responses/inventory-item';
 
 
 
@@ -36,8 +33,7 @@ import { InventoryItem } from './models/responses/inventory-item';
     FormsModule,
     ReactiveFormsModule,
     ItemModule,
-    StoreModule.forFeature("inventory", InventoryItemReducer),
-    StoreModule.forFeature("item", ItemReducer)
+    StoreModule.forFeature("inventory", InventoryItemReducer)
   ],
   exports: [
     InventoryPageComponent,
@@ -46,8 +42,7 @@ import { InventoryItem } from './models/responses/inventory-item';
   ],
   providers: [
     InventoryService,
-    provideEffects(inventoryEffects),
-    provideEffects(itemEffects)
+    provideEffects(inventoryEffects)
   ]
 })
 export class InventoryModule { }

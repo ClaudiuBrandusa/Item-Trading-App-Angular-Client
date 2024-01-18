@@ -21,18 +21,13 @@ import { CancelTradeDialogComponent } from './components/cancel-trade-dialog/can
 import { TradeReducer } from './store/trade/trade.reducer';
 import { StoreModule } from '@ngrx/store';
 import * as tradeEffects from './store/trade/trade.effects';
-import * as inventoryEffects from '../inventory/store/inventory/inventory.effects'
 import * as lockedAmountEffects from '../inventory/store/locked-amount/locked-amount.effects';
-import * as itemEffects from '../item/store/item.effects';
-import * as userEffects from '../identity/store/user/user.effects';
 import { provideEffects } from '@ngrx/effects';
-import { InventoryItemReducer } from '../inventory/store/inventory/inventory.reducer';
-import { ItemReducer } from '../item/store/item.reducer';
-import { UserReducer } from '../identity/store/user/user.reducer';
 import { TradeItemReducer } from './store/trade-item/trade-item.reducer';
 import { InventoryModule } from '../inventory/inventory.module';
 import { LockedInventoryItemAmountReducer } from '../inventory/store/locked-amount/locked-amount.reducer';
 import { TradeItemTagComponent } from './components/trade-item-tag/trade-item-tag.component';
+
 
 
 @NgModule({
@@ -59,10 +54,7 @@ import { TradeItemTagComponent } from './components/trade-item-tag/trade-item-ta
     InventoryModule,
     FormsModule,
     ReactiveFormsModule,
-    StoreModule.forFeature("inventory", InventoryItemReducer),
-    StoreModule.forFeature("item", ItemReducer),
     StoreModule.forFeature("trade", TradeReducer),
-    StoreModule.forFeature("user", UserReducer),
     StoreModule.forFeature("trade-item", TradeItemReducer),
     StoreModule.forFeature("locked-amount", LockedInventoryItemAmountReducer)
   ],
@@ -72,9 +64,6 @@ import { TradeItemTagComponent } from './components/trade-item-tag/trade-item-ta
   providers: [
     TradesService,
     provideEffects(tradeEffects),
-    provideEffects(inventoryEffects),
-    provideEffects(itemEffects),
-    provideEffects(userEffects),
     provideEffects(lockedAmountEffects)
   ]
 })

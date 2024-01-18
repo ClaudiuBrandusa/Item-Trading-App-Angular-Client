@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { NotificationState } from "./notification.state";
-import { MessageNotification } from "../../models/notifications/message-notification";
+import { MessageNotification } from "../models/message-notification";
 
 export const selectNotificationFeature = createFeatureSelector<NotificationState>("notification");
 

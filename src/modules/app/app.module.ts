@@ -20,9 +20,7 @@ import { ModalManagerComponent } from "../../standalone/modal-manager/modal-mana
 import { WarningPopupComponent } from '../../standalone/popups/warning/warning-popup.component';
 import { StoreModule, provideStore } from '@ngrx/store';
 import { ModalReducer } from '../../standalone/modal-manager/store/modal.reducer';
-import { NotificationReducer } from '../shared/store/notification/notification.reducer';
-import { provideEffects } from '@ngrx/effects';
-import * as notificationEffects from '../shared/store/notification/notification.effects';
+import { NotificationModule } from '../notification/notification.module';
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -44,7 +42,6 @@ export function refreshTokenGetter() {
       multi: true
     },
     SignalRService,
-    provideEffects(notificationEffects),
     provideStore()
   ],
   exports: [AppRoutingModule],
@@ -67,9 +64,9 @@ export function refreshTokenGetter() {
     IndexModule,
     InventoryModule,
     TradesModule,
+    NotificationModule,
     ModalManagerComponent,
     WarningPopupComponent,
-    StoreModule.forFeature("notification", NotificationReducer),
     StoreModule.forFeature("modal", ModalReducer),
     StoreModule.forRoot({})
   ]

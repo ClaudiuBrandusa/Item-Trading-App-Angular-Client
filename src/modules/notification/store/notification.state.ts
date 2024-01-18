@@ -1,5 +1,5 @@
 import { EntityAdapter, EntityState, createEntityAdapter } from "@ngrx/entity";
-import { MessageNotification } from "../../models/notifications/message-notification";
+import { MessageNotification } from "../models/message-notification";
 
 export interface NotificationState extends EntityState<MessageNotification> {
   menuOpened: boolean;

@@ -1,8 +1,8 @@
 import { createAction } from "@ngrx/store";
-import { MessageNotification } from "../../models/notifications/message-notification";
-import { SignalRNotification } from "../../models/signal-r/signal-r-notification";
-import { DefaultException } from "../../models/errors/default-exception";
-import { ModifiedNotification } from "../../models/notifications/modified-notification";
+import { MessageNotification } from "../models/message-notification";
+import { SignalRNotification } from "../../shared/models/signal-r/signal-r-notification";
+import { DefaultException } from "../../shared/models/errors/default-exception";
+import { ModifiedNotification } from "../models/modified-notification";
 
 export enum NotificationActionType {
   HandleReceivedNotification = "handle_received_notification",

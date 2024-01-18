@@ -9,10 +9,9 @@ import { FormsModule } from '@angular/forms';
 import { MenuBarComponent } from './components/menu-bar/menu-bar.component';
 import { MenuButtonComponent } from './components/menu-bar/menu-button/menu-button.component';
 import { PageNavigationService } from './services/page-navigation.service';
-import { NotificationsComponent } from './components/notification/notifications/notifications.component';
-import { NotificationComponent } from './components/notification/notification/notification.component';
 import { PipeModule } from '../pipe/pipe.module';
 import { DialogModule } from '../dialog/dialog.module';
+import { NotificationModule } from '../notification/notification.module';
 
 
 @NgModule({
@@ -24,14 +23,13 @@ import { DialogModule } from '../dialog/dialog.module';
     SearchBarComponent,
     MenuBarComponent,
     MenuButtonComponent,
-    NotificationsComponent,
-    NotificationComponent,
   ],
   imports: [
     CommonModule,
     FormsModule,
     PipeModule,
-    DialogModule
+    DialogModule,
+    NotificationModule
   ],
   exports: [
     DialogModule,

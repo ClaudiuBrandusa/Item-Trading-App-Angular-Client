@@ -1,11 +1,11 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { RefreshTokenService } from 'src/modules/identity/services/refresh-token.service';
-import { selectNotificationsCount, selectNotificationsMenuVisibility } from '../../store/notification/notification.selector';
-import { closeNotificationsMenu, openNotificationsMenu } from '../../store/notification/notification.actions';
 import { disconnectInit } from '../../../identity/store/identity/identity.actions';
 import { Observable } from 'rxjs';
 import { selectConnected } from '../../../identity/store/identity/identity.selector';
+import { closeNotificationsMenu, openNotificationsMenu } from '../../../notification/store/notification.actions';
+import { selectNotificationsCount, selectNotificationsMenuVisibility } from '../../../notification/store/notification.selector';
 
 @Component({
   selector: 'app-navbar',

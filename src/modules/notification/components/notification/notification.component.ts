@@ -1,8 +1,8 @@
 import { Component, Input, OnDestroy } from '@angular/core';
-import { MessageNotification } from '../../../models/notifications/message-notification';
+import { MessageNotification } from '../../models/message-notification';
 import { Store } from '@ngrx/store';
-import { removeNotification } from '../../../store/notification/notification.actions';
-import { TimeSpan } from '../../../utils/time-span';
+import { removeNotification } from '../../store/notification.actions';
+import { TimeSpan } from '../../../shared/utils/time-span';
 import { Observable, Subscription } from 'rxjs';
 
 @Component({

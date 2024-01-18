@@ -8,8 +8,8 @@ import { CreateItemRequest } from 'src/modules/item/models/requests/create-item-
 import { UpdateItemRequest } from 'src/modules/item/models/requests/update-item-request.model';
 import { ItemUpdated } from '../../models/responses/item-updated';
 import { Item } from "../../models/responses/item";
-import { changedNotification, createdNotification, deletedNotification, handleDefaultException } from "../../../shared/store/notification/notification.actions";
-import { NotificationCategoryTypes } from "../../../shared/enums/notification-category-types.enum";
+import { changedNotification, createdNotification, deletedNotification, handleDefaultException } from "../../../notification/store/notification.actions";
+import { NotificationCategoryTypes } from "../../../notification/enums/notification-category-types.enum";
 
 export const loadItems = createEffect(
   (actions$ = inject(Actions), service = inject(ItemService)) => {

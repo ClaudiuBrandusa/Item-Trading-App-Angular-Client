@@ -2,10 +2,10 @@ import { inject } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { addNotification, changedNotification, createdNotification, deletedNotification, handleDefaultException, handleReceivedNotification } from "./notification.actions";
 import { exhaustMap, of } from "rxjs";
-import { createErrorNotification, createMessageNotification } from "../../utils/notification-utils";
-import { NotificationTypes } from "../../enums/notification-types.enum";
-import { DefaultException } from "../../models/errors/default-exception";
-import { ModifiedNotification } from "../../models/notifications/modified-notification";
+import { createErrorNotification, createMessageNotification } from "../utils/notification-utils";
+import { NotificationTypes } from "../enums/notification-types.enum";
+import { DefaultException } from "../../shared/models/errors/default-exception";
+import { ModifiedNotification } from "../models/modified-notification";
 
 export const receivedNotification = createEffect(
   (actions$ = inject(Actions)) => {

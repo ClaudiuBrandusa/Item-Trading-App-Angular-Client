@@ -8,8 +8,9 @@ import { TradesListResponse } from "../../models/responses/trades-list.response"
 import { TradeBaseData } from "../../models/trade-base-data";
 import { RespondedTradeResponse } from "../../models/responses/responded-trade.response";
 import { TradeResponse } from "../../enums/trade-response";
-import { changedNotification, createdNotification, handleDefaultException } from "../../../shared/store/notification/notification.actions";
-import { NotificationCategoryTypes } from "../../../shared/enums/notification-category-types.enum";
+import { NotificationCategoryTypes } from "../../../notification/enums/notification-category-types.enum";
+import { changedNotification, createdNotification, handleDefaultException } from "../../../notification/store/notification.actions";
+
 
 export const listTrades = createEffect(
   (actions$ = inject(Actions), service = inject(TradesService)) => {

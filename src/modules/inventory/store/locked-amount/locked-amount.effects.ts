@@ -4,7 +4,7 @@ import { catchError, concatMap, map, of } from "rxjs";
 import { loadInventoryItemLockedAmountInit, loadInventoryItemLockedAmountSucceeded } from "./locked-amount.actions";
 import { InventoryService } from "../../services/inventory.service";
 import { LockedInventoryItemAmount } from "../../models/responses/locked-inventory-item-amount.response";
-import { handleDefaultException } from "../../../shared/store/notification/notification.actions";
+import { handleDefaultException } from "../../../notification/store/notification.actions";
 
 export const loadInventoryItemLockedAmount = createEffect(
   (actions$ = inject(Actions), service = inject(InventoryService)) => {

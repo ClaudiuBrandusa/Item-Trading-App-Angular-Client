@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Observable, interval, map } from 'rxjs';
-import { MessageNotification } from '../../../models/notifications/message-notification';
+import { MessageNotification } from '../../models/message-notification';
 import { Store } from '@ngrx/store';
-import { selectNotifications } from '../../../store/notification/notification.selector';
+import { selectNotifications } from '../../store/notification.selector';
 
 @Component({
   selector: 'app-notifications',

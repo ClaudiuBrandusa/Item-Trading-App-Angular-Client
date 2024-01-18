@@ -8,7 +8,7 @@ import { SignalREndpoints } from '../models/endpoints/signal-r-endpoints.config'
 import { EndpointsService } from '../../app/services/endpoints.service';
 import { SignalREvents } from '../enums/signal-r-events.enum';
 import { Store } from '@ngrx/store';
-import { handleReceivedNotification } from '../store/notification/notification.actions';
+import { handleReceivedNotification } from '../../notification/store/notification.actions';
 
 @Injectable({
   providedIn: 'root'

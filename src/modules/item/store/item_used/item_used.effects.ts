@@ -3,8 +3,8 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { ItemService } from "../../services/item.service";
 import { loadTradesUsingTheItemInit, loadTradesUsingTheItemSucceeded } from "./item_used.actions";
 import { catchError, map, mergeMap, of } from "rxjs";
-import { handleDefaultException } from "../../../shared/store/notification/notification.actions";
 import { ItemTrades } from "../../models/item-trades";
+import { handleDefaultException } from "../../../notification/store/notification.actions";
 
 export const loadTradesUsingTheItem = createEffect(
   (actions$ = inject(Actions), service = inject(ItemService)) => {

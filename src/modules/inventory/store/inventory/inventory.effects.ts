@@ -4,8 +4,8 @@ import { InventoryService } from "../../services/inventory.service";
 import { addItem, addItemSucceeded, dropItem, dropItemSucceeded, loadItemInit, loadItemSucceeded, loadItemsInit, loadItemsSucceeded } from "./inventory.actions";
 import { catchError, concatMap, exhaustMap, filter, map, mergeMap, of } from "rxjs";
 import { InventoryItem } from "../../models/responses/inventory-item";
-import { changedNotification, deletedNotification, handleDefaultException } from "../../../shared/store/notification/notification.actions";
-import { NotificationCategoryTypes } from "../../../shared/enums/notification-category-types.enum";
+import { changedNotification, deletedNotification, handleDefaultException } from "../../../notification/store/notification.actions";
+import { NotificationCategoryTypes } from "../../../notification/enums/notification-category-types.enum";
 
 export const loadInventoryItems = createEffect(
   (actions$ = inject(Actions), service = inject(InventoryService)) => {

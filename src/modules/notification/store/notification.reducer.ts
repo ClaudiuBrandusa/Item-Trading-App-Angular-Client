@@ -1,7 +1,7 @@
 import { Action, createReducer, on } from "@ngrx/store";
 import { NotificationState, adapter, initialState } from "./notification.state";
 import { addNotification, closeNotificationsMenu, openNotificationsMenu, removeNotification } from "./notification.actions";
-import { disconnected } from "../../../identity/store/identity/identity.actions";
+import { disconnected } from "../../identity/store/identity/identity.actions";
 
 export function NotificationReducer(
   state: NotificationState = initialState,

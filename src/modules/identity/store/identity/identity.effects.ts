@@ -4,7 +4,7 @@ import { RefreshTokenService } from "../../services/refresh-token.service";
 import { connectInit, connected, disconnectInit, disconnected, loginInit, registerInit } from "./identity.actions";
 import { catchError, exhaustMap, from, map, of } from "rxjs";
 import { SignalRService } from "../../../shared/services/signal-r.service";
-import { handleDefaultException } from "../../../shared/store/notification/notification.actions";
+import { handleDefaultException } from "../../../notification/store/notification.actions";
 import { LoginService } from "../../services/login.service";
 import { AuthenticationResponse } from "../../models/responses/authentication.response";
 import { RegisterService } from "../../services/register.service";

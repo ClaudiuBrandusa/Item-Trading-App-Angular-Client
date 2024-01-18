@@ -1,4 +1,4 @@
-import { MessageNotification } from "../models/notifications/message-notification";
+import { MessageNotification } from "../models/message-notification";
 
 export function createMessageNotification(content: string, dateTime: Date) {
   return new MessageNotification({ id: MessageNotification.currentId++, title: "Message notification", description: content, dateTime })

@@ -27,6 +27,8 @@ import { TradeItemReducer } from './store/trade-item/trade-item.reducer';
 import { InventoryModule } from '../inventory/inventory.module';
 import { LockedInventoryItemAmountReducer } from '../inventory/store/locked-amount/locked-amount.reducer';
 import { TradeItemTagComponent } from './components/trade-item-tag/trade-item-tag.component';
+import { TradeItemTagsComponent } from './components/trade-item-tags/trade-item-tags.component';
+import { TradeItemSidebarFilterComponent } from './components/trade-item-sidebar-filter/trade-item-sidebar-filter.component';
 
 
 
@@ -44,7 +46,9 @@ import { TradeItemTagComponent } from './components/trade-item-tag/trade-item-ta
     RemoveTradeItemPopupComponent,
     RespondTradeDialogComponent,
     CancelTradeDialogComponent,
-    TradeItemTagComponent
+    TradeItemTagComponent,
+    TradeItemTagsComponent,
+    TradeItemSidebarFilterComponent
   ],
   imports: [
     CommonModule,

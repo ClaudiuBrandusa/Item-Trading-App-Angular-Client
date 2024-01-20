@@ -12,6 +12,7 @@ import { createTradeInitiated, listTradesInit } from '../../store/trade/trade.ac
   styleUrls: ['./trades-page.component.css']
 })
 export class TradesPageComponent implements OnInit {
+  selectedTradeItems = new Array<string>();
   filteringOptions: Array<string>;
   searchOptions = new TradesSearchOptions();
   createTradeEventId = TradeRoutes.SelectReceiver;
@@ -26,10 +27,18 @@ export class TradesPageComponent implements OnInit {
   }
 
   search() {
+    const arr = new Array<string>();
+    this.selectedTradeItems.forEach(itemName => arr.push(itemName));
+    this.searchOptions.tradeItemIds = arr;
+    
     this.store.dispatch(listTradesInit({ ...this.searchOptions }));
   }
 
   onCreateTradeClicked() {
     this.store.dispatch(createTradeInitiated());
+  }
+
+  onTradeItemsSelected(selectedTradeItems) {
+    this.selectedTradeItems = selectedTradeItems;
   }
 }

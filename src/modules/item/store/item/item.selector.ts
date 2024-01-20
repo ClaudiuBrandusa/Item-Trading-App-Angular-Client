@@ -37,3 +37,9 @@ export const selectCurrentItem =
     selectEntities,
     (state: ItemState) => state.entities[state.selectedItem]
   );
+
+export const selectItemNames =
+  createSelector(
+    selectItemFeature,
+    (state: ItemState) => Object.assign({}, ...Object.values(state.entities).map(x => ({ [x!.name]: x?.id} )))
+  );

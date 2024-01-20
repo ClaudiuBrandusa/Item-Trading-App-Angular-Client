@@ -45,9 +45,9 @@ export const sendTradeOfferSucceeded = createAction(TradeActionType.SendTradeOff
 
 export const listTradesInit = createAction(TradeActionType.ListTradesInit, (searchOptions: TradesSearchOptions) => ({ searchOptions }));
 
-export const listSentTrades = createAction(TradeActionType.ListSentTrades, (loadRespondedTrades: boolean) => ({ loadRespondedTrades }));
+export const listSentTrades = createAction(TradeActionType.ListSentTrades, (tradeItemIds: string[], loadRespondedTrades: boolean) => ({ tradeItemIds, loadRespondedTrades }));
 
-export const listReceivedTrades = createAction(TradeActionType.ListReceivedTrades, (loadRespondedTrades: boolean) => ({ loadRespondedTrades }));
+export const listReceivedTrades = createAction(TradeActionType.ListReceivedTrades, (tradeItemIds: string[], loadRespondedTrades: boolean) => ({ tradeItemIds, loadRespondedTrades }));
 
 export const listTradesSucceeded = createAction(TradeActionType.ListTradesSucceeded, (response: TradeBaseData[]) => ({ response }));
 

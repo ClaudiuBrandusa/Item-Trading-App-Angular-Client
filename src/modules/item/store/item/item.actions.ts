@@ -4,6 +4,8 @@ import { createAction } from '@ngrx/store';
 import { Item } from '../../models/responses/item';
 
 export enum ItemActionType {
+  SearchItemByNameInit = "search_item_by_name_initiated",
+  SearchItemByNameSucceeded = "search_item_by_name_succeeded",
   LoadItemsInit = "load_items_init",
   LoadItemsSucceeded = "load_items_succeeded",
   LoadItemInit = "load_item_initiated",
@@ -20,6 +22,10 @@ export enum ItemActionType {
   SelectItem = "select_item",
   DeselectItem = "deselect_item"
 }
+
+export const searchItemByNameInit = createAction(ItemActionType.SearchItemByNameInit, (searchString: string) => ({ searchString }));
+
+export const searchItemByNameSucceeded = createAction(ItemActionType.SearchItemByNameSucceeded, (items: Item[]) => ({ items }));
 
 export const loadItemsInitiated = createAction(ItemActionType.LoadItemsInit, (searchString: string) => ({ searchString }));
 

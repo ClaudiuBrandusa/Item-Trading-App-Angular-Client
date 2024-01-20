@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-trade-item-tag',
@@ -8,4 +8,14 @@ import { Component, Input } from '@angular/core';
 export class TradeItemTagComponent {
   @Input()
   itemName: string;
+
+  @Input()
+  hasRemoveButton = false;
+
+  @Output()
+  onRemoveClicked = new EventEmitter<string>();
+
+  remove() {
+    this.onRemoveClicked.emit(this.itemName);
+  }
 }

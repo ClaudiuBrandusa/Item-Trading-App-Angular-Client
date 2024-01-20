@@ -1,8 +1,8 @@
 import { inject } from "@angular/core";
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { ItemService } from "../../services/item.service";
-import { createItemRequestSent, createItemSucceeded, deleteItemInitiated, deleteItemSucceeded, loadItemInitiated, loadItemSucceeded, loadItemsInitiated, loadItemsSucceeded, updateItemInit, updateItemSucceeded } from "./item.actions";
-import { catchError, concatMap, exhaustMap, filter, map, mergeMap, of } from "rxjs";
+import { createItemRequestSent, createItemSucceeded, deleteItemInitiated, deleteItemSucceeded, loadItemInitiated, loadItemSucceeded, loadItemsInitiated, loadItemsSucceeded, searchItemByNameInit, searchItemByNameSucceeded, updateItemInit, updateItemSucceeded } from "./item.actions";
+import { catchError, concatMap, exhaustMap, filter, from, map, mergeMap, of, toArray } from "rxjs";
 import { NavigationService } from "../../../shared/services/navigation.service";
 import { CreateItemRequest } from 'src/modules/item/models/requests/create-item-request.model';
 import { UpdateItemRequest } from 'src/modules/item/models/requests/update-item-request.model';
@@ -10,6 +10,30 @@ import { ItemUpdated } from '../../models/responses/item-updated';
 import { Item } from "../../models/responses/item";
 import { changedNotification, createdNotification, deletedNotification, handleDefaultException } from "../../../notification/store/notification.actions";
 import { NotificationCategoryTypes } from "../../../notification/enums/notification-category-types.enum";
+
+export const searchItemByName = createEffect(
+  (action$ = inject(Actions), service = inject(ItemService)) => {
+    return action$.pipe(
+      ofType(searchItemByNameInit),
+      exhaustMap(({ searchString }) =>
+        service.listItems(searchString)
+          .pipe(
+            mergeMap(listResponse =>
+              from(listResponse.itemsId).pipe(
+                mergeMap((id: any) => service.getItem(id))
+              )
+            ),
+            toArray()
+          )
+          .pipe(
+            map((items: Item[]) =>
+              searchItemByNameSucceeded(items))
+          )
+        )
+      )
+  },
+  { functional: true }
+);
 
 export const loadItems = createEffect(
   (actions$ = inject(Actions), service = inject(ItemService)) => {

@@ -61,6 +61,10 @@
     min-height: 5rem;
 }
 
+.h-min-10rem {
+    min-height: 10rem;
+}
+
 .h-min-15rem {
     min-height: 15rem;
 }

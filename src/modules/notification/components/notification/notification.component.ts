@@ -8,7 +8,7 @@ import { Observable, Subscription } from 'rxjs';
 @Component({
   selector: 'app-notification',
   templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.css', '../../../../../css/effects.css']
+  styleUrls: ['./notification.component.css', '../../../../css/effects.css']
 })
 export class NotificationComponent implements OnDestroy {
   private notificationData: MessageNotification;

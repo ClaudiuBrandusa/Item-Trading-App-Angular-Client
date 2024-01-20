@@ -20,8 +20,8 @@ export const listTrades = createEffect(
         if (searchOptions.selectedFilterValue === "All") {
           return combineLatest(
             [
-              service.getSentTrades(searchOptions.showRespondedTrades).pipe(map((response: any) => ({ ...response, isSentTrade: true }))),
-              service.getReceivedTrades(searchOptions.showRespondedTrades).pipe(map((response: any) => ({ ...response, isSentTrade: false })))
+              service.getSentTrades(searchOptions.tradeItemIds, searchOptions.showRespondedTrades).pipe(map((response: any) => ({ ...response, isSentTrade: true }))),
+              service.getReceivedTrades(searchOptions.tradeItemIds, searchOptions.showRespondedTrades).pipe(map((response: any) => ({ ...response, isSentTrade: false })))
             ]
           ).pipe(
             map((responses: any[]) => {
@@ -34,9 +34,9 @@ export const listTrades = createEffect(
             )
           )
         } else if (searchOptions.selectedFilterValue === "Sent") {
-          return of(listSentTrades(searchOptions.showRespondedTrades))
+          return of(listSentTrades(searchOptions.tradeItemIds, searchOptions.showRespondedTrades))
         } else if (searchOptions.selectedFilterValue === "Received") {
-          return of(listReceivedTrades(searchOptions.showRespondedTrades))
+          return of(listReceivedTrades(searchOptions.tradeItemIds, searchOptions.showRespondedTrades))
         } else {
           return of(handleDefaultException("Unknown search options selection filter", searchOptions))
         }
@@ -50,8 +50,8 @@ export const loadSentTrades = createEffect(
   (actions$ = inject(Actions), service = inject(TradesService)) => {
     return actions$.pipe(
       ofType(listSentTrades),
-      exhaustMap(({ loadRespondedTrades }) =>
-        service.getSentTrades(loadRespondedTrades).pipe(
+      exhaustMap(({ tradeItemIds, loadRespondedTrades }) =>
+        service.getSentTrades(tradeItemIds, loadRespondedTrades).pipe(
           map((response: any) =>
             listTradesSucceeded(
               (response as TradesListResponse).tradeOffersIds.map(tradeId => new TradeBaseData({ tradeId: tradeId, isSentTrade: true, isRespondedTrade: loadRespondedTrades }))
@@ -71,8 +71,8 @@ export const loadReceivedTrades = createEffect(
   (actions$ = inject(Actions), service = inject(TradesService)) => {
     return actions$.pipe(
       ofType(listReceivedTrades),
-      exhaustMap(({ loadRespondedTrades }) =>
-        service.getReceivedTrades(loadRespondedTrades).pipe(
+      exhaustMap(({ tradeItemIds, loadRespondedTrades }) =>
+        service.getReceivedTrades(tradeItemIds, loadRespondedTrades).pipe(
           map((response: any) =>
             listTradesSucceeded(
               (response as TradesListResponse).tradeOffersIds.map(tradeId => new TradeBaseData({ tradeId: tradeId, isSentTrade: false, isRespondedTrade: loadRespondedTrades }))

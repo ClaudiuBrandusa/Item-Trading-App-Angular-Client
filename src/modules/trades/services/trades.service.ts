@@ -31,16 +31,24 @@ export class TradesService extends NetworkService<TradeEndpoints> {
     }
   }
 
-  getSentTrades(responded: Boolean = false) {
+  getSentTrades(tradeItemIds: string[], responded: Boolean = false) {
     const endpoint = this.base_path + (responded ? this.endpointsModel.list_sent_responded : this.endpointsModel.list_sent);
-
-    return this.http.get(endpoint).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
+    
+    const params = this.getQueryParamsFromObject({
+      tradeItemIds
+    });
+    
+    return this.http.get(endpoint, { params }).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
-  getReceivedTrades(responded: Boolean = false) {
+  getReceivedTrades(tradeItemIds: string[], responded: Boolean = false) {
     const endpoint = this.base_path + (responded ? this.endpointsModel.list_received_responded : this.endpointsModel.list_received);
 
-    return this.http.get(endpoint).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
+    const params = this.getQueryParamsFromObject({
+      tradeItemIds
+    });
+
+    return this.http.get(endpoint, { params }).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   getSentTrade(tradeId: string, responded: Boolean = false) {

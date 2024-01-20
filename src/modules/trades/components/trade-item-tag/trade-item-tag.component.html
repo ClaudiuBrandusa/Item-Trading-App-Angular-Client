@@ -1,3 +1,4 @@
 <div class="d-flex flex-row bg-red border-normal border-style-solid border-dark-red border-radius-rounded max-w-fit px-2 me-1 mb-1 color-white font-size-medium">
-  {{ itemName }}
+  {{ itemName | truncate:(15) }}
+  <i *ngIf="hasRemoveButton" class="ms-1 my-auto fa-solid fa-xmark cursor-pointer no-select" (click)="remove()"></i>
 </div>

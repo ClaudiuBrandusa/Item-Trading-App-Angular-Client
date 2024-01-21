@@ -10,8 +10,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-top-right-radius: 1vw;
-  border-bottom-right-radius: 1vw;
+  border-top-right-radius: 0.375vw;
+  border-bottom-right-radius: 0.375vw;
 }
 
 .item-option {
@@ -43,4 +43,11 @@
 .item-option.selected {
   font-weight: 650;
   background-color: darkgray;
+}
+
+.results {
+  width: 98%;
+  top: 5rem;
+  padding-top: 0.25rem;
+  border-radius:0.5vh;
 }

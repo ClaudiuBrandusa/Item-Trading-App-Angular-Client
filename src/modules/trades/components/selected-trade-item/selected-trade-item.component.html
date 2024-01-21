@@ -1,30 +1,30 @@
-<div class="bg-white border-thin border-style-solid border-red m-1 min-width">
+<div class="bg-white rounded border-thin border-style-solid border-red m-1 min-width">
   <div class="d-flex p-1">
     <div class="flex-column flex-0 me-2">
-      <div class="position-relative border-bold border-style-solid bg-gunmetal border-dark-red w-3rem h-3rem">
+      <div class="position-relative rounded border-style-solid bg-gunmetal border-dark-red w-3rem h-3rem">
         <i class="fa-solid fa-layer-group icon-size-1-5 position-absolute transform-center color-white">
         </i>
       </div>
     </div>
-    <div class="flex-column flex-grow-1">
-      <strong class="header-font">Item name</strong>:
+    <div class="flex-column flex-grow-1 font-size-medium">
+      <strong>Item name</strong>:
       <span class="field-font">{{ ( item$ | async )?.name }}</span>
       <br>
-      <strong class="header-font">Quantity</strong>:
+      <strong>Quantity</strong>:
       <span class="field-font">{{ ( item$ | async )?.quantity }}</span>
       <br>
-      <strong class="header-font">Price</strong>:
+      <strong>Price</strong>:
       <span class="field-font">{{ ( item$ | async )?.price }}</span>
       <br>
     </div>
-    <div *ngIf="editable" class="d-flex flex-column flex-0">
+    <div *ngIf="editable" class="d-flex flex-column font-size-medium flex-0">
       <div class="d-flex flex-row">
-        <div class="d-flex justify-content-center flex-grow-1 control-button mb-1 bg-cadet-blue color-white no-select cursor-pointer" (click)="edit()">
+        <div class="d-flex justify-content-center flex-grow-1 control-button rounded mb-1 bg-cadet-blue color-white no-select cursor-pointer" (click)="edit()">
           <strong class="button-font">Edit</strong>
         </div>
       </div>
       <div class="d-flex flex-row">
-        <div class="d-flex justify-content-center flex-grow-1 control-button mt-1 bg-dark-red color-white no-select cursor-pointer" (click)="remove()">
+        <div class="d-flex justify-content-center flex-grow-1 control-button rounded mt-1 bg-dark-red color-white no-select cursor-pointer" (click)="remove()">
           <strong class="button-font">Remove</strong>
         </div>
       </div>

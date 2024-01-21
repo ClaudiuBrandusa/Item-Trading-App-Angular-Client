@@ -5,19 +5,19 @@
 </span>
 <div class="d-flex flex-row w-100">
   <div class="d-flex position-relative">
-    <input class="d-flex flex-grow-1 border rounded-pill border-normal ms-2" placeholder="Enter item name" [(ngModel)]="itemSearchString" (keyup.enter)="search()"/>
+    <input class="d-flex flex-grow-1 border rounded border-normal ms-2" placeholder="Enter item name" [(ngModel)]="itemSearchString" (keyup.enter)="search()"/>
     <i class="position-absolute d-flex flex-column justify-content-center h-100 right-0 me-2 no-select cursor-pointer fa-solid fa-xmark color-gray" (click)="clear()"></i>
   </div>
-  <button class="d-flex flex-0 bg-red border-0 color-white rounded-pill ms-1 me-2 p-1 ps-3 pe-3" (click)="search()">Search</button>
+  <button class="d-flex flex-0 bg-red border-0 color-white rounded ms-1 me-2 p-1 ps-3 pe-3" (click)="search()">Search</button>
 </div>
-<div *ngIf="displaySearchResults" class="position-absolute h-min-10rem h-max-15rem border-style-solid border-black border-thin bg-white overflow-y-scroll color-blue" style="width: 98%; top: 5rem; padding-top: 0.25rem; border-radius:0.5vh;">
-  <div *ngIf="searching">
+<div *ngIf="displaySearchResults" class="position-absolute h-min-10rem h-max-15rem border-style-solid border-black border-thin bg-white overflow-y-scroll color-blue results">
+  <div *ngIf="searching" class="font-size-medium">
     Loading
   </div>
   <div *ngIf="!searching && length > 0">
     <div *ngFor="let item of foundItems | keyvalue" class="item-option" [ngClass]="{'selected' : isSelected(item.key)}" (click)="click(item.key)">{{item.key}}</div>
   </div>
-  <div *ngIf="length == 0" class="color-gray p-2">
+  <div *ngIf="length == 0" class="color-gray p-2 font-size-medium">
     No item with name starting with the given string was found.
   </div>
 </div>

@@ -1,5 +1,5 @@
 <app-dark-background (onBackgroundClicked)="exit()">
-  <div class="d-flex position-absolute transform-center">
+  <div class="d-flex position-fixed transform-center">
     <app-huge-dialog class="me-1">
       <app-dialog-body
         title="Select items"
@@ -16,7 +16,7 @@
               <input
                 [(ngModel)]="searchString"
                 type="search"
-                class="w-100 border rounded-pill border-normal"
+                class="w-100 border rounded border-normal"
                 (keyup.enter)="search()"
                 (input)="clearResults()"
                 placeholder="Enter item name"

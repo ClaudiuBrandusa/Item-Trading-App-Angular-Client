@@ -1,6 +1,6 @@
-<div class="d-flex flex-row position-relative my-2 p-2 bg-white border-thin border-style-solid border-red">
+<div class="d-flex font-size-medium flex-row position-relative my-2 p-2 bg-white rounded border-thin border-style-solid border-red">
   <div class="flex-column flex-0 p-0">
-    <div class="position-relative border-normal border-style-solid bg-gunmetal border-dark-red w-5rem h-5rem">
+    <div class="position-relative border-normal rounded border-style-solid bg-gunmetal border-dark-red w-5rem h-5rem">
       <i class="fa-brands fa-angular icon-size-3 position-absolute transform-center color-white">
       </i>
     </div>
@@ -21,12 +21,12 @@
   <app-trade-item-tags [tradeItemNames]="tradeItemNames"></app-trade-item-tags>
   <div class="d-flex flex-row align-content-start flex-wrap flex-0 p-0 ps-1 no-select cursor-pointer">
     <span *ngIf="!isRespondedTrade">
-      <div *ngIf="isSentTrade" class="d-flex my-auto mx-auto p-2 w-7-5rem bg-dark-red color-white no-select cursor-pointer" (click)="cancel()">
+      <div *ngIf="isSentTrade" class="d-flex my-auto mx-auto p-2 w-7-5rem rounded bg-dark-red color-white no-select cursor-pointer" (click)="cancel()">
         <strong>Cancel</strong>
         <i class="fa-solid fa-trash my-auto ms-auto"></i>
       </div>
       
-      <div *ngIf="!isSentTrade" class="d-flex my-auto mx-auto p-2 w-7-5rem bg-cadet-blue color-white no-select cursor-pointer" (click)="respond()">
+      <div *ngIf="!isSentTrade" class="d-flex my-auto mx-auto p-2 w-7-5rem rounded bg-cadet-blue color-white no-select cursor-pointer" (click)="respond()">
         <strong>Respond</strong>
         <i class="fa-solid fa-handshake my-auto ms-auto"></i>
       </div>

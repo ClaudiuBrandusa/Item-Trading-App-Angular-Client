@@ -1,8 +1,6 @@
 .font-size-small { font-size: 0.7rem }
 
-.header-font {
-	font-size: 14px;
-}
+.font-size-medium { font-size: 0.9rem }
 
 .field-font {
 	font-size: 11px;
@@ -11,3 +9,9 @@
 .button-font {
 	font-size: 12px;
 }
+
+.icon-size-1-5 { font-size: 1.5rem; }
+
+.icon-size-3 { font-size: 3rem; }
+
+.icon-size-5 { font-size: 5rem; }

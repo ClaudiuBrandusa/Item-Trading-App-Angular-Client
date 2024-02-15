@@ -1,4 +1,4 @@
 export class WalletEndpoints {
-    get: string;
-    update: string;
+  get: string;
+  update: string;
 }

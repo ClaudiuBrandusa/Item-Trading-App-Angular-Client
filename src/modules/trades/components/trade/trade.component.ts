@@ -1,111 +1,107 @@
-import { Component, OnDestroy } from '@angular/core';
-import { ListItemDirective } from 'src/modules/shared/directives/list/list-item/list-item.directive';
-import { DialogEvents } from '../../../shared/enums/dialog-events.enum';
-import { EventBusService } from '../../../shared/services/event-bus.service';
-import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
-import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
-import { TradeEvents } from '../../enums/trade-events';
-import { TradeResponse } from '../../enums/trade-response';
+import { Component, Input, OnInit } from '@angular/core';
 import { Trade } from '../../models/responses/trade';
-import { TradesService } from '../../services/trades.service';
 import { getTradeReceiverOrSender } from '../../utils/trade-utils';
+import { NavigationService } from '../../../shared/services/navigation.service';
+import { TradeRoutes } from '../../enums/trade-routes';
+import { Store } from '@ngrx/store';
+import { currentTradeSelectionInitiated, loadTradeInit } from '../../store/trade/trade.actions';
+import { selectTradeById } from '../../store/trade/trade.selector';
+import { Observable, map } from 'rxjs';
+import { TradeItem } from '../../models/trade-item';
+import { addTradeItems } from '../../store/trade-item/trade-item.actions';
+import { clearArray } from '../../../shared/utils/array-utils';
 
 @Component({
   selector: 'app-trade',
   templateUrl: './trade.component.html',
   styleUrls: ['./trade.component.css']
 })
-export class TradeComponent extends ListItemDirective implements OnDestroy {
+export class TradeComponent implements OnInit {
 
   totalPrice: number = 0;
   trade: Trade;
+  trade$: Observable<Trade>;
+
+  @Input()
+  tradeId: string;
+
+  @Input()
   isSentTrade: boolean;
+  
+  @Input()
   isRespondedTrade: boolean;
+
   response: string;
-  userId: string;
-  loading = true;
+  userName: string = "";
   respondedButtonClass: string;
-  private baseRespondedButtonClass = "p-2 color-white no-select cursor-pointer";
-  private eventBusUtility: EventBusUtils;
+  respondedIcon: string;
+  private baseRespondedButtonClass = "d-flex p-2 w-7-5rem color-white no-select";
+  private baseRespondedIconClass = " my-auto ms-auto";
 
-  constructor(eventBus: EventBusService, private service: TradesService) {
-    super();
-    this.eventBusUtility = new EventBusUtils(eventBus);
-  }
+  tradeItemNames = new Array<string>();
 
-  ngOnDestroy(): void {
-    this.eventBusUtility.clearSubscriptions();
-  }
+  constructor(private navigationService: NavigationService, private store: Store<Trade>, private tradeItemStore: Store<TradeItem>) {}
+  
+  ngOnInit() {
+    this.trade$ = this.store.select(selectTradeById(this.tradeId)).pipe(map(trade => {
+      if (!trade) return new Trade();
+      this.trade = trade;
+      this.userName = getTradeReceiverOrSender(trade);
+      this.totalPrice = 0;
+      clearArray(this.tradeItemNames);
+      trade.items.forEach(item => {
+        this.totalPrice += item.price;
+        this.tradeItemNames.push(item.name);
+      });
+      if (trade.response != null) {
+        this.isRespondedTrade = true;
+        this.handleTradeResponse();
+      }
+      return trade;
+    }));
 
-  protected override onSetItemId() {
-    this.isSentTrade = this.service.isSentTrade(this.itemId);
-    this.isRespondedTrade = this.service.isRespondedTrade(this.itemId);
-    this.initSubscriptions();
-  }
+    this.trade$.subscribe();
 
-  protected override loadData() {
     this.getTrade();
   }
 
   getTrade() {
-    this.service.getTrade(this.itemId).subscribe({
-      next: (response) => {
-        this.trade = response as Trade;
-        this.totalPrice = 0;
-        this.trade.items.forEach(item => this.totalPrice += item.price);
-        this.userId = getTradeReceiverOrSender(this.trade);
-        this.handleTradeResponse();
-      },
-      error: (error) => {
-        console.log(`Error found on get trade with id: ${this.itemId}. ${error}`);
-      },
-      complete: () => {
-        this.loading = false;
-      }
-    })
+    this.store.dispatch(loadTradeInit(this.tradeId, this.isSentTrade, this.isRespondedTrade));
   }
 
   respond() {
     this.select();
-    this.openDialog(TradeDialogsEvents.Respond);
+    this.openDialog(TradeRoutes.Respond);
   }
 
   cancel() {
-    this.select();
-    this.openDialog(TradeDialogsEvents.Cancel);
+    this.select(false);
+    this.openDialog(TradeRoutes.Cancel);
   }
 
   details() {
     this.select();
-    this.openDialog(TradeDialogsEvents.Details);
+    this.openDialog(TradeRoutes.Details);
   }
 
-  private select() {
-    this.service.select(this.trade.tradeId, this.trade.items);
+  private select(selectTradeItems: Boolean = true) {
+    this.store.dispatch(currentTradeSelectionInitiated(this.trade.tradeId, this.trade.items, this.isSentTrade, this.isRespondedTrade));
+    selectTradeItems && this.tradeItemStore.dispatch(addTradeItems(this.trade.items));
   }
 
   private openDialog(dialog: string) {
-    this.eventBusUtility.emit(DialogEvents.Open, dialog);
+    this.navigationService.navigate(dialog, true);
   }
 
   private handleTradeResponse() {
     if (this.trade.response) {
       this.response = "Accepted";
       this.respondedButtonClass = this.baseRespondedButtonClass + " bg-cadet-blue";
+      this.respondedIcon = "fa-solid fa-check" + this.baseRespondedIconClass;
     } else {
       this.response = "Rejected";
       this.respondedButtonClass = this.baseRespondedButtonClass + " bg-dark-red";
+      this.respondedIcon = "fa-solid fa-xmark" + this.baseRespondedIconClass;
     }
-  }
-
-  // Subscriptions
-
-  private initSubscriptions() {
-    this.eventBusUtility.on(TradeEvents.Update+this.itemId, (response: TradeResponse) => {
-      this.trade.response = response == TradeResponse.Accept ? true : false;
-      this.service.cacheTrade(this.itemId, false, true);
-      this.handleTradeResponse();
-      this.eventBusUtility.emit(TradeEvents.Update, this.itemId);
-    })
   }
 }

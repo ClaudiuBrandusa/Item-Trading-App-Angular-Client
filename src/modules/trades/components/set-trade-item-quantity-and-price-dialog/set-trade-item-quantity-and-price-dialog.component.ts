@@ -1,61 +1,73 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { InventoryService } from '../../../inventory/services/inventory.service';
-import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
-import { EventBusService } from '../../../shared/services/event-bus.service';
-import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
+import { TradePopupNames } from '../../enums/trade-popup-names';
 import { TradeItem } from '../../models/trade-item';
-import { TradesService } from '../../services/trades.service';
 import { InventoryItem } from '../../../inventory/models/responses/inventory-item';
 import { LockedInventoryItemAmount } from '../../../inventory/models/responses/locked-inventory-item-amount.response';
-import { ItemError } from '../../../shared/models/errors/item-error';
-import { DialogEvents } from '../../../shared/enums/dialog-events.enum';
-import { TradeItemEvents } from '../../enums/trade-item-events';
+import { Store } from '@ngrx/store';
+import { selectCurrentTradeItem } from '../../store/trade-item/trade-item.selector';
+import { selectItemById } from '../../../inventory/store/inventory/inventory.selector';
+import { selectLockedAmountById } from '../../../inventory/store/locked-amount/locked-amount.selector';
+import { loadInventoryItemLockedAmountInit } from '../../../inventory/store/locked-amount/locked-amount.actions';
+import { addTradeItem, deselectTradeItem } from '../../store/trade-item/trade-item.actions';
+import { NavigationService } from '../../../shared/services/navigation.service';
 
 @Component({
   selector: 'dialog-set-trade-item-quantity-and-price',
   templateUrl: './set-trade-item-quantity-and-price-dialog.component.html',
   styleUrls: ['./set-trade-item-quantity-and-price-dialog.component.css']
 })
-export class SetTradeItemQuantityAndPriceDialogComponent extends BaseDialogComponent {
-
+export class SetTradeItemQuantityAndPriceDialogComponent implements OnInit {
   currentTradeItem: TradeItem;
   inventoryItem: InventoryItem;
   lockedItemAmount: LockedInventoryItemAmount;
   errorMessage = "";
-  itemDataLoaded = false;
-  lockedItemAmountLoaded = false;
+  eventId = TradePopupNames.SetItemQuantityAndPrice;
 
-  constructor(private fb: FormBuilder, protected eventBus: EventBusService, private service: TradesService, private inventoryService: InventoryService) {
-    super(eventBus);
-    this.eventId = TradeDialogsEvents.SetItemQuantityAndPrice;
+  constructor(private fb: FormBuilder, private navigationService: NavigationService, private store: Store<TradeItem>, inventoryStore: Store<InventoryItem>, private lockedAmountStore: Store<LockedInventoryItemAmount>) {
+    store.select(selectCurrentTradeItem).subscribe(currentTradeItem => {
+      if (!currentTradeItem) return;
+      if (!this.currentTradeItem) {
+        inventoryStore.select(selectItemById(currentTradeItem.id)).subscribe(inventoryItem => {
+          if (!inventoryItem) return;
+          this.inventoryItem = inventoryItem
+        });
+
+        lockedAmountStore.select(selectLockedAmountById(currentTradeItem.id)).subscribe(lockedAmount => {
+          if (!lockedAmount) return;
+          this.lockedItemAmount = lockedAmount;
+        });
+      }
+
+      this.currentTradeItem = { ...currentTradeItem };
+    });
   }
 
   form = this.fb.group({
     quantity: new FormControl('', [Validators.required, Validators.min(1)]),
-    price: new FormControl('', [Validators.required, Validators.min(0)])
+    price: new FormControl('', [Validators.required, Validators.min(1)])
   })
 
-  protected override onDisplay() {
-    this.currentTradeItem = this.service.getCurrentTradeItem();
+  ngOnInit() {
+    this.lockedAmountStore.dispatch(loadInventoryItemLockedAmountInit(this.inventoryItem.itemId));
+
     const quantity = this.currentTradeItem.quantity;
     if (quantity > 0)
       this.form.controls["quantity"].setValue(quantity.toString());
     
     this.form.controls["price"].setValue(this.currentTradeItem.price.toString());
-    this.loadData();
-  }
-
-  protected override onHide() {
-    this.form.reset();
-    this.errorMessage = "";
   }
 
   confirm() {
     this.errorMessage = "";
-    if (!this.isDataLoaded()) return;
+    if (!this.inventoryItem || !this.currentTradeItem || !this.lockedItemAmount) return;
 
     const quantity = Number(this.form.get('quantity')?.value ?? 1);
+
+    if (quantity < 1) {
+      this.errorMessage = "Unable to set a quantity lower than 1";
+      return;
+    }
 
     const availableQuantity = this.inventoryItem.quantity - this.lockedItemAmount.lockedAmount;
     if (quantity > availableQuantity) {
@@ -63,53 +75,25 @@ export class SetTradeItemQuantityAndPriceDialogComponent extends BaseDialogCompo
       return;
     }
     
+    const price = Number(this.form.get('price')?.value ?? 1);
+
+    if (price < 1) {
+      this.errorMessage = "Unable to set a price lower than 1";
+      return;
+    }
+    
     this.currentTradeItem.quantity = quantity;
-    this.currentTradeItem.price = Number(this.form.get('price')?.value ?? 0);
-    this.service.setCurrentTradeItem(this.currentTradeItem);
-    this.emit(TradeItemEvents.ConfirmQuantityAndPriceChange, null);
-    this.emit(DialogEvents.ClosePopup, this.eventId);
-    this.exitDialog();
+    this.currentTradeItem.price = price;
+    this.store.dispatch(addTradeItem({ ...this.currentTradeItem }));
+    this.store.dispatch(deselectTradeItem());
+    this.exit();
   }
 
   cancel() {
-    this.emit(TradeItemEvents.DenyQuantityAndPriceChange, this.currentTradeItem.id);
-    this.emit(DialogEvents.ClosePopup, this.eventId);
+    this.exit();
   }
 
-  private isDataLoaded() {
-    return this.itemDataLoaded && this.lockedItemAmountLoaded;
-  }
-
-  private loadData() {
-    this.loadInventoryItemData();
-    this.loadLockedItemAmount();
-  }
-
-  private loadInventoryItemData() {
-    this.inventoryService.getItem(this.currentTradeItem.id).subscribe({
-      next: (response) => {
-        this.inventoryItem = response as InventoryItem;
-      },
-      error: (error: ItemError) => {
-        this.errorMessage = error.message;
-      },
-      complete: () => {
-        this.itemDataLoaded = true;
-      }
-    })
-  }
-
-  private loadLockedItemAmount() {
-    this.inventoryService.getLockedAmount(this.currentTradeItem.id).subscribe({
-      next: (response) => {
-        this.lockedItemAmount = response as LockedInventoryItemAmount;
-      },
-      error: (error: ItemError) => {
-        this.errorMessage = error.message;
-      },
-      complete: () => {
-        this.lockedItemAmountLoaded = true;
-      }
-    })
+  private exit() {
+    this.navigationService.closePopup();
   }
 }

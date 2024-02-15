@@ -1,35 +1,63 @@
 # Item-Trading-App
-Item Trading App is simulating a trading system of some items using a fake currency.  
+Item Trading App is simulating a trading system of some items using a fictional currency.  
 This client consumes the Item-Trading-App-REST-API which can be found here: https://github.com/ClaudiuBrandusa/Item-Trading-App-REST-API
 
-## App Walkthrough
+## App walkthrough
 ### Identity part
 #### Register
-![image](https://drive.google.com/uc?export=view&id=1B9yx7hkvrKL3v5snwmIj3fHSPmOn9TU8)
+![image](/resources/identity/register.png)
 #### Login
-![image](https://drive.google.com/uc?export=view&id=18iGhwBL5-VGe2EwdMGtca-pJKnpNaoPD)
+![image](/resources/identity/login.png)
 ### Index part
 #### Index
-![image](https://drive.google.com/uc?export=view&id=1FuUFJz2phyLlbnXqRhfwA52grS7php3s)
+![image](/resources/index/index.png)
+![image](/resources/index/notifications.png)
 ### Items part
-#### List Items
+#### List items
 Here we are listing all of the items available in the application.  
-![image](https://drive.google.com/uc?export=view&id=1vMWEF_cUwuHmfyNpje_Ek0JjJIhy6XCU)
-#### Create Item
-![image](https://drive.google.com/uc?export=view&id=1EzpBdDEfoGlRHLSzpHUV06DgBX-6GfK1)
-#### Edit Item
-![image](https://drive.google.com/uc?export=view&id=1ZuzLv1iFZo9WdMK2VhmCgEoKVzIgfjX0)
-#### Delete Item
-![image](https://drive.google.com/uc?export=view&id=1-OwnMeegPuTDXeRhm59Yz7Td0ISruMcA)
+![image](/resources/item/items.png)
+#### Create item
+![image](/resources/item/create_item.png)
+#### Edit item
+![image](/resources/item/edit_item.png)
+#### Delete item
+![image](/resources/item/delete_item.png)
+#### Attempting to delete a used item
+![image](/resources/item/delete_used_item.png)
 ### Inventory part
 Here we are listing all of the items that we have in the inventory.  
-![image](https://drive.google.com/uc?export=view&id=1Qyrtkp4l2Dt7faC9WJbwV-yMaSFPR-qH)
+![image](/resources/inventory/inventory.png)
 #### Add item to inventory
-![image](https://drive.google.com/uc?export=view&id=1lf1frDKG8h4USoBmK0jk9ICipOMoxIef)
-#### Choose the quantity of this item to add
-![image](https://drive.google.com/uc?export=view&id=1WGQP6W4a1ExUxznvi4LxSRX-e_1RDs1F)
-#### Choose the quantity of this item to drop
-![image](https://drive.google.com/uc?export=view&id=1d26ea0ze47q_pik2KOKwp8wlfe9fw5_V)
+##### Select item
+![image](/resources/inventory/select_item.png)
+![image](/resources/inventory/select_item_found.png)
+##### Choose the quantity of this item to add
+![image](/resources/inventory/set_item_quantity.png)
+#### Drop item from the inventory
+![image](/resources/inventory/drop_item.png)
+### Trade part
+#### List trades
+![image](/resources/trade/trades.png)
+#### Use trade search filtering
+![image](/resources/trade/trades_filtering.png)
+#### Create a new trade
+##### Select a trade receiver
+![image](/resources/trade/select_receiver.png)
+##### Select trade items
+![image](/resources/trade/select_trade_items.png)
+##### Select trade item quantity and price
+![image](/resources/trade/set_quantity_and_price.png)
+##### Review your selected trade items and then confirm by clicking on `Create trade` button
+![image](/resources/trade/trade_item_selected.png)
+##### The receiver of the trade will get the following notification
+![image](/resources/trade/received_trade_notification.png)
+### Trade interactions
+#### Cancel a sent trade
+![image](/resources/trade/cancel_trade.png)
+#### Respond to a received trade
+![image](/resources/trade/respond_trade.png)
+#### View trade details
+![image](/resources/trade/trade_details.png)
 
 ## References
 I used [coolors.co](https://coolors.co/) for the css color classes from [colors.css](src/css/colors.css).

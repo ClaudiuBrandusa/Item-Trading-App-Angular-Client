@@ -1,0 +1,16 @@
+.fade-out-05 {
+  opacity: 0;
+  transition: 0.45s linear;
+  transition-property: opacity;
+  animation: scale-animation 0.5s forwards;
+}
+
+@keyframes scale-animation {
+  from {
+    transform: scale(1);
+  }
+  
+  to {
+    transform: scale(0.95, 0.85);
+  }
+}

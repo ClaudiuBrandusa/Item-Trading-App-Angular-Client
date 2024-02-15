@@ -1,0 +1,36 @@
+<app-dark-background (onBackgroundClicked)="cancel()">
+  <app-medium-dialog class="position-fixed transform-center">
+    <app-dialog-body
+      title="Select item"
+      (onExit)="cancel()"
+      [hideNextButton]="true">
+      <div class="d-flex flex-column h-min-5rem">
+        <div class="d-flex flex-row flex-0 m-2">
+          <div class="d-flex flex-grow-1 me-1">
+            <input
+              [(ngModel)]="searchString"
+              (ngModelChange)="onSearchStringChange()"
+              type="search"
+              class="w-100 border rounded border-normal"
+              (keyup.enter)="search()"
+              placeholder="Enter item name"/>
+          </div>
+          <div class="d-flex flex-0 ms-1">
+            <app-button (click)="search()" [rounded]="true">Search</app-button>
+          </div>
+        </div>
+        <div *ngIf="initSearch" class="flex-grow-1 overflow-y-auto mx-2">
+          <div *ngFor="let id of foundItemIds$ | async; let i=index" class="me-1">
+            <app-item
+              (click)="select(id)"
+              class="cursor-pointer no-select"
+              [itemId]="id"
+              [isShort]="true"
+              [hasControls]="false">
+            </app-item>
+          </div>
+        </div>
+      </div>
+    </app-dialog-body>
+  </app-medium-dialog>
+</app-dark-background>

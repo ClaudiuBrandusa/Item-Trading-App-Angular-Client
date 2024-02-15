@@ -15,9 +15,20 @@ import { ItemModule } from '../item/item.module';
 import { SelectedTradeItemComponent } from './components/selected-trade-item/selected-trade-item.component';
 import { SelectedTradeItemsListComponent } from './components/selected-trade-items-list/selected-trade-items-list.component';
 import { SetTradeItemQuantityAndPriceDialogComponent } from './components/set-trade-item-quantity-and-price-dialog/set-trade-item-quantity-and-price-dialog.component';
-import { RemoveTradeItemDialogComponent } from './components/remove-trade-item-dialog/remove-trade-item-dialog.component';
+import { RemoveTradeItemPopupComponent } from './components/remove-trade-item-popup/remove-trade-item-popup.component';
 import { RespondTradeDialogComponent } from './components/respond-trade-dialog/respond-trade-dialog.component';
 import { CancelTradeDialogComponent } from './components/cancel-trade-dialog/cancel-trade-dialog.component';
+import { TradeReducer } from './store/trade/trade.reducer';
+import { StoreModule } from '@ngrx/store';
+import * as tradeEffects from './store/trade/trade.effects';
+import * as lockedAmountEffects from '../inventory/store/locked-amount/locked-amount.effects';
+import { provideEffects } from '@ngrx/effects';
+import { TradeItemReducer } from './store/trade-item/trade-item.reducer';
+import { InventoryModule } from '../inventory/inventory.module';
+import { LockedInventoryItemAmountReducer } from '../inventory/store/locked-amount/locked-amount.reducer';
+import { TradeItemTagComponent } from './components/trade-item-tag/trade-item-tag.component';
+import { TradeItemTagsComponent } from './components/trade-item-tags/trade-item-tags.component';
+import { TradeItemSidebarFilterComponent } from './components/trade-item-sidebar-filter/trade-item-sidebar-filter.component';
 
 
 
@@ -32,21 +43,32 @@ import { CancelTradeDialogComponent } from './components/cancel-trade-dialog/can
     SelectedTradeItemComponent,
     SelectedTradeItemsListComponent,
     SetTradeItemQuantityAndPriceDialogComponent,
-    RemoveTradeItemDialogComponent,
+    RemoveTradeItemPopupComponent,
     RespondTradeDialogComponent,
-    CancelTradeDialogComponent
+    CancelTradeDialogComponent,
+    TradeItemTagComponent,
+    TradeItemTagsComponent,
+    TradeItemSidebarFilterComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     IdentityModule,
     ItemModule,
+    InventoryModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StoreModule.forFeature("trade", TradeReducer),
+    StoreModule.forFeature("trade-item", TradeItemReducer),
+    StoreModule.forFeature("locked-amount", LockedInventoryItemAmountReducer)
   ],
   exports: [
     TradesRoutingModule
   ],
-  providers: [TradesService]
+  providers: [
+    TradesService,
+    provideEffects(tradeEffects),
+    provideEffects(lockedAmountEffects)
+  ]
 })
 export class TradesModule { }

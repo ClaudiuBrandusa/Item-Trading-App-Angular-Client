@@ -3,12 +3,13 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor,
-  HttpErrorResponse
+  HttpInterceptor
 } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { switchMap, filter, catchError, take } from 'rxjs/operators';
 import { RefreshTokenService } from '../../identity/services/refresh-token.service';
+import { Store } from '@ngrx/store';
+import { disconnectInit } from '../../identity/store/identity/identity.actions';
 
 const TOKEN_HEADER_KEY = 'Authorization';
 
@@ -18,7 +19,7 @@ export class AuthenticationInterceptor implements HttpInterceptor {
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
-  constructor(private tokenService: RefreshTokenService) { }
+  constructor(private tokenService: RefreshTokenService, private store: Store) { }
 
   intercept(request: HttpRequest<Object>, next: HttpHandler): Observable<HttpEvent<Object>> {
     let authReq = request;
@@ -26,9 +27,10 @@ export class AuthenticationInterceptor implements HttpInterceptor {
     if(token != null) {
       authReq = this.addTokenHeader(request, token);
     }
-
-    return next.handle(authReq).pipe(catchError(error => {
-      if(error instanceof HttpErrorResponse && !authReq.url.includes('auth/singin') && error.status === 401) {
+    
+    return next.handle(authReq).pipe(
+      catchError(error => {
+      if(error.status === 401) {
         return this.handle401Error(authReq, next);
       }
       return throwError(error);
@@ -44,18 +46,17 @@ export class AuthenticationInterceptor implements HttpInterceptor {
       const token = this.tokenService.getRefreshToken();
 
       if(token) {
-        return this.tokenService.getRefreshTokensRequest().pipe(
+        return this.tokenService.getRefreshTokenObservable().pipe(
           switchMap((token: any) => {
             this.isRefreshing = false;
-            this.tokenService.updateToken(token.token);
-            this.tokenService.updateRefreshToken(token.refreshToken);
+            this.tokenService.setTokens(token);
             this.refreshTokenSubject.next(token.token);
             
             return next.handle(this.addTokenHeader(request, token.token));
           }),
           catchError((err) => {
             this.isRefreshing = false;
-            this.tokenService.signOut();
+            this.store.dispatch(disconnectInit())
             return throwError(err);
           })
         );

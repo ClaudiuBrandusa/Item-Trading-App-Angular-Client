@@ -1,16 +1,16 @@
 input {
-    color: white;
+  color: white;
 }
 
 input:focus {
-    outline: solid #f2545b 0.15rem;
+  outline: solid #f2545b 0.15rem;
 }
 
 button:hover {
-    background-color: #f2545b !important;
-    outline: solid #b52e31 0.1rem;
+  background-color: #f2545b !important;
+  outline: solid #b52e31 0.1rem;
 }
 
 button:active {
-    outline-width: 0.175rem;
+  outline-width: 0.175rem;
 }

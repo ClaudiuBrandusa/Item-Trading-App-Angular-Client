@@ -1,34 +1,31 @@
 import { Component } from '@angular/core';
-import { UserService } from '../../../identity/services/user.service';
-import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
-import { EventBusService } from '../../../shared/services/event-bus.service';
-import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
-import { TradesService } from '../../services/trades.service';
-import { FoundUsersResponse } from '../../models/responses/found-users.response'
+import { NavigationService } from '../../../shared/services/navigation.service';
+import { TradeRoutes } from '../../enums/trade-routes';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { selectUsers } from '../../../identity/store/user/user.selector';
+import { FoundUserResponse } from '../../../identity/models/responses/found-user.response';
+import { listUsersInit, clearUsersList } from '../../../identity/store/user/user.actions';
+import { Trade } from '../../models/responses/trade';
+import { setTradeReceiver } from '../../store/trade/trade.actions';
 
 @Component({
   selector: 'dialog-select-trade-receiver',
   templateUrl: './select-trade-receiver-dialog.component.html',
   styleUrls: ['./select-trade-receiver-dialog.component.css']
 })
-export class SelectTradeReceiverDialogComponent extends BaseDialogComponent {
-
+export class SelectTradeReceiverDialogComponent {
   foundUsersId = new Array<string>();
   searchString : string = "";
-  nextDialogId = TradeDialogsEvents.SelectItems;
+  foundUsers$: Observable<FoundUserResponse[]>;
 
-  constructor(protected eventBus: EventBusService, private service: TradesService, private userService: UserService) {
-    super(eventBus);
-    this.eventId = TradeDialogsEvents.SelectReceiver;
+  constructor(private navigationService: NavigationService, private userStore: Store<FoundUserResponse>, private store: Store<Trade>) {
+    this.foundUsers$ = userStore.select(selectUsers);
   }
 
-  select(userId: string) {
-    this.service.setTradeOfferReceiver(userId);
-    this.navigate(this.nextDialogId);
-  }
-
-  cancel() {
-    this.clearResults();
+  async select(userId: string) {
+    this.store.dispatch(setTradeReceiver(userId));
+    await this.navigationService.navigate(`../${TradeRoutes.SelectItems}`, true);
   }
 
   search() {
@@ -43,27 +40,16 @@ export class SelectTradeReceiverDialogComponent extends BaseDialogComponent {
     this.listItems();
   }
 
-  private clearResults() {
-    while(this.foundUsersId.length > 0)
-      this.foundUsersId.pop();
+  exit() {
+    this.clearResults();
+    this.navigationService.back();
   }
 
-  protected override onHide() {
-    this.clearResults();
-    this.searchString = '';
+  private clearResults() {
+    this.userStore.dispatch(clearUsersList());
   }
 
   private listItems() {
-    this.userService.listUsers(this.searchString).subscribe({
-      next: (response) => {
-        const foundUsers = response as FoundUsersResponse;
-        if (foundUsers) {
-          foundUsers.usersId.forEach(foundUserId => this.foundUsersId.push(foundUserId));
-        }
-      },
-      error: (error) => {
-        console.log('Error found at list users: ', error);
-      }
-    })
+    this.userStore.dispatch(listUsersInit(this.searchString));
   }
 }

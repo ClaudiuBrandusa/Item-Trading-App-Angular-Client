@@ -1,39 +1,45 @@
 html, body {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 html, body, app-root {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    overflow: hidden;
-    flex-direction: column;
-    align-self: stretch;
-    flex-grow: 1;
-    background-color: #292f36; /* gunmetal */
+  overflow: hidden;
+  flex-direction: column;
+  align-self: stretch;
+  flex-grow: 1;
+  background-color: #292f36; /* gunmetal */
 }
 
 input {
-    text-indent: 0.5rem;
+  text-indent: 0.5rem;
 }
 
 app-root, body {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 app-root {
-    flex-direction: column;
+  flex-direction: column;
 }
 
 .no-select {
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+.allow-select {
+  user-select: text;
+  -moz-user-select: text;
+  -webkit-user-select: text;
 }
 
 .cursor-pointer {
-    cursor: pointer;
+  cursor: pointer;
 }

@@ -1,0 +1,22 @@
+<app-dark-background (onBackgroundClicked)="exit()">
+  <app-medium-dialog class="position-fixed transform-center">
+    <app-dialog-body
+      title="Set quantity"
+      [isNextButtonDisabled]="form == undefined ? false : !form.valid"
+      (onContinue)="next()"
+      (onExit)="exit()">
+      <form [formGroup]="form" class="mx-2">
+        <div class="d-flex flex-column mx-auto mt-2">
+          <span class="ms-1">Choose the quantity of <strong>{{ (item$ | async )?.name }}</strong> to drop.</span>
+        </div>
+        <div class="d-flex flex-column mx-auto">
+          <input class="border rounded border-normal my-2" type="number" placeholder="Quantity" formControlName="itemQuantity">
+          <app-error class="text-center" [controlName]="form.controls['quantity']"></app-error>
+        </div>
+      </form>
+      <div *ngIf="errorMessage" class="d-flex flex-column mx-auto mb-2">
+        <span class="color-red ms-2"><strong>Error</strong>: {{errorMessage}}</span>
+      </div>
+    </app-dialog-body>
+  </app-medium-dialog>
+</app-dark-background>

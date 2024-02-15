@@ -1,6 +1,11 @@
-import { Component } from '@angular/core';
-import { RefreshTokenService } from 'src/modules/identity/services/refresh-token.service';
-import { SignalRService } from 'src/modules/shared/services/signal-r.service';
+import { Component, HostListener } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { selectConnected } from '../../identity/store/identity/identity.selector';
+import { SignalRService } from '../../shared/services/signal-r.service';
+import { RefreshTokenService } from '../../identity/services/refresh-token.service';
+import { disconnectInit } from '../../identity/store/identity/identity.actions';
+import { SilentTokenRefreshService } from '../../identity/services/silent-token-refresh.service';
+import { TimeSpan } from '../../shared/utils/time-span';
 
 @Component({
   selector: 'app-root',
@@ -10,12 +15,32 @@ import { SignalRService } from 'src/modules/shared/services/signal-r.service';
 export class AppComponent {
   title = 'Item Trading App';
 
-  constructor(public signalRService: SignalRService, private refreshTokenService: RefreshTokenService) {}
+  constructor(private silentTokenRefreshService: SilentTokenRefreshService, private store: Store, private signalRService: SignalRService, private tokenService: RefreshTokenService) {
 
-  ngOnInit() {
-    if (this.refreshTokenService.isLoggedIn()) {
-      this.signalRService.startConnection(this.refreshTokenService.getToken());
-      this.signalRService.addConnectListener();
-    }
+    this.store.select(selectConnected).subscribe(connected => {
+      const token = this.tokenService.getToken();
+      if (connected) {
+        const duration = this.getDuration();
+
+        this.silentTokenRefreshService.start(duration);
+        
+        this.signalRService.connect(token);
+      } else {
+        this.silentTokenRefreshService.stop();
+        this.signalRService.disconnect();
+      }
+    });
+  }
+
+  private getDuration() {
+    const currentDate = new Date();
+    const expirationDate = this.tokenService.getTokenExpirationDate();
+
+    return expirationDate === null ? 0 : new TimeSpan(expirationDate!.valueOf() - currentDate.valueOf()).milliseconds;
+  }
+  
+  @HostListener('window:beforeunload', ['$event'])
+  public beforeUnloadHandler(_$event) {
+    this.store.dispatch(disconnectInit(true));
   }
 }

@@ -6,6 +6,10 @@
 
 .h-min-0 { min-height: 0; }
 
+.h-inherit { height: inherit; }
+
+.max-w-fit { max-width: fit-content; }
+
 /* virtual */
 
 .w-45 { width: 45vw; }
@@ -22,6 +26,8 @@
 .w-3rem { width: 3rem; }
 
 .w-5rem { width: 5rem; }
+
+.w-7-5rem { width: 7.5rem; }
 
 .w-10rem { width: 10rem; }
 
@@ -45,12 +51,30 @@
 
 .h-10rem { height: 10rem; }
 
+.h-25rem { height: 25rem; }
+
 .h-8rem {
     height: 8rem;
 }
 
 .h-min-5rem {
     min-height: 5rem;
+}
+
+.h-min-10rem {
+    min-height: 10rem;
+}
+
+.h-min-15rem {
+    min-height: 15rem;
+}
+
+.h-max-15rem {
+    max-height: 15rem;
+}
+
+.h-max-30rem {
+    max-height: 30rem;
 }
 
 .h-max-35rem {
@@ -64,3 +88,5 @@
 .w-max { width: 100%; }
 
 .h-max { height: 100%; }
+
+.p-05 { padding: 0.125rem; }

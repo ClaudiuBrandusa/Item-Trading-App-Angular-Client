@@ -1,12 +1,11 @@
+import { TradeBaseData } from "./trade-base-data";
 import { TradeItem } from "./trade-item";
 
-export class CurrentTrade {
-  tradeId: string = "";
-  tradeItems: Array<TradeItem>;
-  isSentTrade: Boolean = false;
-  isRespondedTrade: Boolean = false;
+export class CurrentTrade extends TradeBaseData {
+  tradeItems: Array<TradeItem> = new Array<TradeItem>();
 
   public constructor(init?:Partial<CurrentTrade>) {
+    super(init);
     Object.assign(this, init);
   }
 }

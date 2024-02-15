@@ -6,6 +6,7 @@ import { ItemEndpoints } from '../../shared/models/endpoints/item-endpoints.conf
 import { InventoryEndpoints } from '../../shared/models/endpoints/inventory-endpoints.config';
 import { TradeEndpoints } from '../../shared/models/endpoints/trade-endpoints.config';
 import { WalletEndpoints } from '../../shared/models/endpoints/wallet-endpoints.config';
+import { SignalREndpoints } from '../../shared/models/endpoints/signal-r-endpoints.config';
 
 @Injectable()
 export class EndpointsService {
@@ -16,6 +17,7 @@ export class EndpointsService {
   itemEndpoints: ItemEndpoints;
   tradeEndpoints: TradeEndpoints;
   walletEndpoints: WalletEndpoints;
+  signalREndpoints: SignalREndpoints;
 
   constructor() {
     this.apiOptions = appConfig.APIOptions;
@@ -25,6 +27,7 @@ export class EndpointsService {
     this.itemEndpoints = appConfig.Endpoints.Item;
     this.tradeEndpoints = appConfig.Endpoints.Trade;
     this.walletEndpoints = appConfig.Endpoints.Wallet;
+    this.signalREndpoints = appConfig.Endpoints.SignalR;
   }
 
   getBasePath() {
@@ -51,5 +54,9 @@ export class EndpointsService {
 
   getWallet() {
     return this.walletEndpoints;
+  }
+
+  getSignalR() {
+    return this.signalREndpoints;
   }
 }

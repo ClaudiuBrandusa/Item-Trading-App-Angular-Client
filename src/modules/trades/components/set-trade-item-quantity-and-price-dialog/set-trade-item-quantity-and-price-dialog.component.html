@@ -1,24 +1,30 @@
-<app-event-dialog eventId={{eventId}}>
+<app-dark-background (onBackgroundClicked)="cancel()">
   <app-small-dialog class="position-fixed transform-center">
-    <app-back-next-dialog title="Quantity and price" [form]="form" dialogId={{eventId}} [nextButtonCallback]="confirm.bind(this)" nextButtonCustomName="Confirm" [cancelButtonCallback]="cancel.bind(this)">
-      <form [formGroup]="form" class="mx-2 mb-2">
+    <app-dialog-body
+      title="Quantity and price"
+      (onContinue)="confirm()"
+      (onExit)="cancel()"
+      nextButtonName="Confirm"
+      cancelButtonName="Deny"
+      [isNextButtonDisabled]="!form.valid">
+      <form [formGroup]="form" class="font-size-medium mx-2 mb-2">
         <div class="d-flex flex-column mx-auto my-2">
-            <span class="mx-2 header-font">Set the quantity and the price for <strong>{{currentTradeItem ? currentTradeItem.name : ""}}</strong> item.</span>
+          <span class="mx-2">Set the quantity and the price for <strong>{{currentTradeItem ? currentTradeItem.name : ""}}</strong> item.</span>
         </div>
         <div class="d-flex flex-column mx-auto">
-          <h6>Quantity</h6>
-          <input class="border rounded-pill border-normal" type="number" placeholder="Insert quantity" formControlName="quantity">
+          Quantity
+          <input class="border rounded border-normal" type="number" placeholder="Insert quantity" formControlName="quantity">
           <app-error class="text-center" [controlName]="form.controls['quantity']"></app-error>
         </div>
         <div class="d-flex flex-column mx-auto">
-          <h6>Price</h6>
-          <input class="border rounded-pill border-normal" type="number" placeholder="Insert price" formControlName="price">
+          Price
+          <input class="border rounded border-normal" type="number" placeholder="Insert price" formControlName="price">
           <app-error class="text-center" [controlName]="form.controls['price']"></app-error>
         </div>
       </form>
-      <div *ngIf="errorMessage" class="d-flex flex-column mx-auto mb-2">
-        <span class="color-red ml-2"><strong>Error</strong>: {{errorMessage}}</span>
+      <div *ngIf="errorMessage" class="d-flex flex-column font-size-medium mx-auto mb-2">
+        <span class="color-red ms-2"><strong>Error</strong>: {{errorMessage}}</span>
       </div>
-    </app-back-next-dialog>
+    </app-dialog-body>
   </app-small-dialog>
-</app-event-dialog>
+</app-dark-background>

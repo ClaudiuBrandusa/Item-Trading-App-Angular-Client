@@ -1,23 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ListInventoryComponent } from './components/list-inventory/list-inventory.component';
-import { InventoryComponent } from './components/inventory/inventory.component';
+import { InventoryPageComponent } from './components/inventory-page/inventory-page.component';
 import { InventoryRoutingModule } from './inventory-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { InventoryItemComponent } from './components/inventory-item/inventory-item.component';
 import { InventoryService } from './services/inventory.service';
-import { AddItemQuantityDialogComponent } from './components/dialogs/add-item/add-item-quantity-dialog/add-item-quantity-dialog.component';
+import { AddItemQuantityDialogComponent } from './components/add-item-quantity-dialog/add-item-quantity-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AddItemSelectDialogComponent } from './components/dialogs/add-item/add-item-select-dialog/add-item-select-dialog.component';
+import { AddItemSelectDialogComponent } from './components/add-item-select-dialog/add-item-select-dialog.component';
 import { ItemModule } from '../item/item.module';
-import { DropItemQuantityDialogComponent } from './components/dialogs/drop-item/drop-item-dialog-quantity/drop-item-quantity-dialog.component';
+import { DropItemQuantityDialogComponent } from './components/drop-item-dialog-quantity/drop-item-quantity-dialog.component';
+import { StoreModule } from '@ngrx/store';
+import { InventoryItemReducer } from './store/inventory/inventory.reducer';
+import * as inventoryEffects from './store/inventory/inventory.effects';
+import { provideEffects } from '@ngrx/effects';
 
 
 
 @NgModule({
   declarations: [
     ListInventoryComponent,
-    InventoryComponent,
+    InventoryPageComponent,
     InventoryItemComponent,
     AddItemQuantityDialogComponent,
     AddItemSelectDialogComponent,
@@ -28,14 +32,17 @@ import { DropItemQuantityDialogComponent } from './components/dialogs/drop-item/
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
-    ItemModule
+    ItemModule,
+    StoreModule.forFeature("inventory", InventoryItemReducer)
   ],
   exports: [
-    InventoryComponent,
-    InventoryRoutingModule
+    InventoryPageComponent,
+    InventoryRoutingModule,
+    InventoryItemComponent
   ],
   providers: [
-    InventoryService
+    InventoryService,
+    provideEffects(inventoryEffects)
   ]
 })
 export class InventoryModule { }

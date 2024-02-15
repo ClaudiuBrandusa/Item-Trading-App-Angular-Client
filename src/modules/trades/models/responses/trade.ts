@@ -6,7 +6,7 @@ export class Trade {
   respondedDate: Date | null;
   receiverName: string;
   senderName: string;
-  response: boolean;
+  response: boolean | undefined;
   items: Array<TradeItem>;
 
   public constructor(init?:Partial<Trade>) {

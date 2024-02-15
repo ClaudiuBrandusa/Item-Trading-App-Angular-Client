@@ -1,21 +1,25 @@
-
-<div class="d-flex h-v-max flex-column align-self-stretch">
-  <div class="d-flex bg-outer-space-crayola border-style-solid border-thin border-red border-bottom p-2">
-    <div class="d-flex ml-auto p-0 flex-0 pr-2">
-      <select [(ngModel)]="searchOptions.selectedFilterValue" class="bg-dark-red rounded-pill border-normal color-white border-0 p-1 pl-1 pr-1">
+<app-navbar></app-navbar>
+<div class="d-flex h-v-max flex-column">
+  <div class="d-flex search-bar-elements-gap bg-outer-space-crayola border-style-solid border-thin border-red border-bottom p-2 ps-3 pe-3">
+    <div class="d-flex ms-auto p-0 flex-0 pe-2">
+      <select [(ngModel)]="searchOptions.selectedFilterValue" class="bg-dark-red rounded-pill border-normal color-white border-0 p-1 ps-1 pe-1">
         <option [ngValue]="value" *ngFor="let value of filteringOptions">{{value}}</option>
       </select>
     </div>
-    <div class="d-flex ml-1 p-0 pr-2 color-white">
+    <div class="d-flex ms-1 p-0 pe-2 color-white short-elements-gap">
       <div class="d-flex flex-column justify-content-center">
         Show responded trades
       </div>
-      <input type="checkbox" [(ngModel)]="searchOptions.showRespondedTrades" class="d-flex flex-column justify-content-center ml-1"/>
+      <input type="checkbox" [(ngModel)]="searchOptions.showRespondedTrades" class="d-flex flex-column justify-content-center ms-1"/>
     </div>
-    <div class="d-flex ml-1 p-0 flex-0">
-      <button class="bg-dark-red rounded-pill border-normal color-white border-0 p-1 pl-3 pr-3 no-select" (click)="search()">Search</button>
+    <div class="d-flex ms-1 p-0 flex-grow-1 align-items-end flex-column">
+      <button class="d-flex bg-dark-red rounded-pill border-normal color-white border-0 p-1 ps-3 pe-3 no-select" (click)="search()">
+        Search <i class="fa-solid fa-magnifying-glass color-white my-auto ps-1"></i>
+      </button>
     </div>
   </div>
+
+  <app-trade-item-sidebar-filter (selectedTradeItems)="onTradeItemsSelected($event)"></app-trade-item-sidebar-filter>
 
   <div class="flex-grow-1 overflow-y-auto">
     <div class="container">
@@ -24,14 +28,14 @@
   </div>
 
   <app-menu-bar>
-    <app-menu-button eventId="select_trade_receiver_dialog">Create trade</app-menu-button>
+    <app-menu-button
+      [eventId]="createTradeEventId"
+      [route]="createTradeEventRoute"
+      [icon]="'fa-solid fa-square-pen'"
+      (onClick)="onCreateTradeClicked()">
+        Create trade
+    </app-menu-button>
   </app-menu-bar>
 </div>
 
-<dialog-trade-details></dialog-trade-details>
-<dialog-select-trade-receiver></dialog-select-trade-receiver>
-<dialog-select-items-for-trade></dialog-select-items-for-trade>
-<dialog-set-trade-item-quantity-and-price></dialog-set-trade-item-quantity-and-price>
-<dialog-remove-trade-item></dialog-remove-trade-item>
-<dialog-respond-trade></dialog-respond-trade>
-<dialog-cancel-trade></dialog-cancel-trade>
+<router-outlet></router-outlet>

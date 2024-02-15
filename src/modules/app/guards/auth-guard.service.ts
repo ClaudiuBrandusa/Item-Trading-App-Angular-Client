@@ -1,29 +1,29 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { RefreshTokenService } from 'src/modules/identity/services/refresh-token.service';
+import { inject } from '@angular/core';
+import { NavigationService } from '../../shared/services/navigation.service';
+import { Store } from '@ngrx/store';
+import { selectConnected } from '../../identity/store/identity/identity.selector';
+import { map, take } from 'rxjs';
+import { RefreshTokenService } from '../../identity/services/refresh-token.service';
+import { connected } from '../../identity/store/identity/identity.actions';
 
-@Injectable()
-export class AuthGuardService implements CanActivate {
+export const authGuard = () => {
+  const navigationService = inject(NavigationService);
+  const tokenService = inject(RefreshTokenService);
+  const store = inject(Store);
 
-  constructor(private router: Router, private jwtHelper: JwtHelperService, private refreshTokenService: RefreshTokenService) { }
-
-  async canActivate() {
-    const token = localStorage.getItem("token");
-
-    if(token && !this.jwtHelper.isTokenExpired(token)) {
-      return true;
-    }
-
-    if(this.refreshTokenService.canRefreshTokens())
-    {
-      await this.refreshTokenService.refreshTokens();
-
-      if(this.refreshTokenService.isLoggedIn)
+  return store.select(selectConnected).pipe(
+    take(1),
+    map(isConnected => {
+      if (isConnected) {
         return true;
-    }
+      } else if (tokenService.canRefreshTokens()) {
+        store.dispatch(connected());
+        return true
+      }
 
-    this.router.navigate(["login"]);
-    return false;
-  }
+      tokenService.discardData();
+      navigationService.redirect("login");
+      return false;
+    })
+  );
 }

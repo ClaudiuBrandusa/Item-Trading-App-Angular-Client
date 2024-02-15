@@ -1,7 +1,4 @@
 {
-  "refreshTokenOptions": {
-    "silentRefreshIntervalInSeconds": 300
-  },
   "APIOptions": {
     "Url": "http://localhost:5000"
   },
@@ -23,6 +20,7 @@
     "Item": {
       "get": "/item/get",
       "list": "/item/list",
+      "list_trades_using_the_item": "/item/list_trades_using_the_item",
       "create": "/item/create",
       "update": "/item/update",
       "delete": "/item/delete"
@@ -44,6 +42,9 @@
     "Wallet": {
       "get": "/wallet/get",
       "update": "/wallet/update"
+    },
+    "SignalR": {
+      "hub": "http://localhost:5000/hubs/notification"
     }
   }
 }

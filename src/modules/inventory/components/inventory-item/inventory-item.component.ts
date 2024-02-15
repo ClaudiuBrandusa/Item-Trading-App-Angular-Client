@@ -1,21 +1,20 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { InventoryItem } from 'src/modules/inventory/models/responses/inventory-item';
-import { ListItemDirective } from 'src/modules/shared/directives/list/list-item/list-item.directive';
-import { EventBusService } from 'src/modules/shared/services/event-bus.service';
-import { ItemError } from '../../../shared/models/errors/item-error';
-import { DialogEvents } from '../../../shared/enums/dialog-events.enum';
-import { EventBusUtils } from '../../../shared/utils/event-bus.utility';
-import { EventData } from '../../../shared/utils/event-data';
-import { InventoryDialogEvents } from '../../enums/InventoryDialogEvents';
-import { InventoryEvents } from '../../enums/InventoryEvents';
-import { InventoryService } from '../../services/inventory.service';
+import { InventoryRoutes } from '../../enums/inventory-routes';
+import { NavigationService } from '../../../shared/services/navigation.service';
+import { Store } from '@ngrx/store';
+import { deselectItem, loadItemInit, selectItem } from '../../store/inventory/inventory.actions';
+import { loadItemInitiated } from '../../../item/store/item/item.actions';
+import { Observable } from 'rxjs';
+import { selectItemById } from '../../store/inventory/inventory.selector';
+import { Item } from '../../../item/models/responses/item';
 
 @Component({
   selector: 'app-inventory-item',
   templateUrl: './inventory-item.component.html',
   styleUrls: ['./inventory-item.component.css']
 })
-export class InventoryItemComponent extends ListItemDirective implements OnDestroy {
+export class InventoryItemComponent implements OnInit {
  
   @Input()
   hasControls = true;
@@ -24,53 +23,41 @@ export class InventoryItemComponent extends ListItemDirective implements OnDestr
   isShort = false;
 
   @Input()
+  small = false;
+
+  @Input()
+  itemId: string;
+
+  @Input()
   item = new InventoryItem();
 
-  private eventBusUtility: EventBusUtils;
+  private get ItemId() {
+    if (this.item?.itemId) return this.item.itemId;
+    return this.itemId;
+  }
+
+  item$: Observable<InventoryItem>;
   
-  constructor(private service: InventoryService, private eventBus: EventBusService) {
-    super();
-    this.eventBusUtility = new EventBusUtils(eventBus);
-  }
-
-  ngOnDestroy(): void {
-    this.eventBusUtility.clearSubscriptions();
-  }
-
-  protected override onSetItemId() {
-    this.eventBusUtility.on(InventoryEvents.RefreshItem+this.itemId, () => {
-      this.getItem();
-    });
-  }
-
-  protected override loadData() {
-    this.getItem();
-  }
-
-  getItem() {
-    this.service.getItem(this.itemId).subscribe({
-      next: (response) => {
-        this.item = response as InventoryItem;
-      },
-      error: (error: ItemError) => {
-        if (error.errorCode == 400)
-          this.eventBus.emit(new EventData(InventoryEvents.Remove, this.itemId));
-      }
-    });
+  constructor(private navigationService: NavigationService, private store: Store<InventoryItem>, private itemStore: Store<Item>) {}
+  
+  ngOnInit() {
+    this.item$ = this.store.select(selectItemById(this.ItemId));
+    this.itemStore.dispatch(loadItemInitiated(this.ItemId));
+    this.store.dispatch(loadItemInit(this.ItemId));
   }
 
   add() {
-    this.selectItemOption(InventoryDialogEvents.AddQuantity);
+    this.selectItemOption(InventoryRoutes.Quantity);
   }
 
   drop() {
-    this.selectItemOption(InventoryDialogEvents.Drop);
+    this.selectItemOption(InventoryRoutes.Drop);
   }
 
   // Utils
 
-  private selectItemOption(eventId: string) {
-    this.service.select(this.item.itemId);
-    this.eventBusUtility.emit(DialogEvents.Open, eventId);
+  private async selectItemOption(route: string) {
+    this.store.dispatch(selectItem(this.ItemId));
+    if (!await this.navigationService.navigate(route, true)) this.store.dispatch(deselectItem());
   }
 }

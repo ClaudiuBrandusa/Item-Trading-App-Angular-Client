@@ -1,35 +1,29 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
-import { RegisterRequest } from 'src/modules/identity/models/requests/registerRequest.model';
+import { RegisterRequest } from 'src/modules/identity/models/requests/register-request.model';
 import { EndpointsService } from '../../app/services/endpoints.service';
-import { EventBusService } from '../../shared/services/event-bus.service';
+import { NavigationService } from '../../shared/services/navigation.service';
 import { IdentityService } from './identity.service';
+import { Store } from '@ngrx/store';
+import { AuthenticationResponse } from '../models/responses/authentication.response';
+import { connectInit } from '../store/identity/identity.actions';
 
 @Injectable()
 export class RegisterService extends IdentityService {
 
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router) {
-    super(http, endpointsService, eventBus, router);
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected navigationService: NavigationService, private store: Store) {
+    super(http, endpointsService, navigationService);
     this.register_path = this.base_path + this.endpointsModel.register;
   }
 
   private register_path = "";
 
-  register(form: FormGroup) {
-    let model = this.form2RegisterRequest(form);
-
-    return this.http.post(this.register_path, model).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
+  register(model: RegisterRequest) {
+    return this.http.post<AuthenticationResponse>(this.register_path, model);
   }
-
-  private form2RegisterRequest(form: FormGroup) {
-    var model = new RegisterRequest();
-    model.username = form.get('username')?.value;
-    model.email = form.get('email')?.value;
-    model.password = form.get('password')?.value;
-    model.confirmPassword = form.get('confirm_password')?.value;
-    return model;
+  
+  protected onTokenSet(authenticationResponse: AuthenticationResponse) {
+    this.store.dispatch(connectInit(authenticationResponse));
+    this.redirectToDefaultPage();
   }
 }

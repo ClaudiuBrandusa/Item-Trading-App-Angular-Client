@@ -1,24 +1,28 @@
-.top-0 { top: 0; }
-
 .right-0 { right: 0; }
 
 .bottom-0 { bottom: 0; }
 
+.top-5 {
+  top: 5px;
+}
+
 .transform-center { 
-    top: 50%; 
-    left: 50%; 
-    transform: translate(-50%, -50%); 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
 }
 
 .fixed-top-below-navbar {
-    position: fixed;
-    top: 3.5rem;
+  position: fixed;
+  top: 3.5rem;
 }
 
 .fixed-top-on-bottom-navbar-border {
-    position: fixed;
-    top: 3.3rem;
+  position: fixed;
+  top: 3.3rem;
 }
+
+.z-index-1 { z-index: 1; }
 
 .z-index-10 { z-index: 10; }
 

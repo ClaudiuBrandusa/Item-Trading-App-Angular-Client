@@ -1,53 +1,52 @@
-import { Component } from '@angular/core';
-import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
-import { EventBusService } from '../../../shared/services/event-bus.service';
-import { TradeDialogsEvents } from '../../enums/trade-dialogs-events';
+import { Component, OnDestroy } from '@angular/core';
 import { Trade } from '../../models/responses/trade';
-import { TradesService } from '../../services/trades.service';
-import { getTradeReceiverOrSender, getTradeTotalPrice } from '../../utils/trade-utils';
+import { getTradeReceiverOrSender } from '../../utils/trade-utils';
+import { NavigationService } from '../../../shared/services/navigation.service';
+import { currentTradeSelectionTerminated } from '../../store/trade/trade.actions';
+import { Store } from '@ngrx/store';
+import { selectedTrade, selectCurrentTradeStatus } from '../../store/trade/trade.selector';
+import { Observable, map } from 'rxjs';
+import { TradeItem } from '../../models/trade-item';
+import { discardTradeItems } from '../../store/trade-item/trade-item.actions';
 
 @Component({
   selector: 'dialog-trade-details',
   templateUrl: './trade-details-dialog.component.html',
   styleUrls: ['./trade-details-dialog.component.css']
 })
-export class TradeDetailsDialogComponent extends BaseDialogComponent {
+export class TradeDetailsDialogComponent implements OnDestroy {
 
   trade: Trade;
+  trade$: Observable<Trade>;
   isSentTrade: boolean;
-  userId: string;
+  userName: string;
   totalPrice: number;
-  loading = true;
 
-  constructor(protected eventBus: EventBusService, private service: TradesService) {
-    super(eventBus);
-    this.eventId = TradeDialogsEvents.Details;
-  }
+  constructor(private navigationService: NavigationService, private store: Store<Trade>, private tradeItemStore: Store<TradeItem>) {
+    store.select(selectCurrentTradeStatus).subscribe(currentTrade => {
+      if (!currentTrade) return;
+      this.isSentTrade = currentTrade.isSentTrade;
+    });
 
-  protected override onDisplay() {
-    this.service.getCurrentTrade().subscribe({
-      next: (response) => {
-        this.trade = response as Trade;
-        this.isSentTrade = this.service.isSentTrade(this.trade.tradeId);
-        this.userId = getTradeReceiverOrSender(this.trade);
-        this.totalPrice = getTradeTotalPrice(this.trade);
-        this.service.select(this.trade.tradeId, this.trade.items);
-      },
-      error: (error) => {
-        console.log('Error at get trade: ', error);
-      },
-      complete: () => {
-        this.loading = false;
-      }
-    })
+    this.trade$ = this.store.select(selectedTrade).pipe(map(trade => {
+      if (!trade) return new Trade();
+      this.trade = trade as Trade;
+      const userName = getTradeReceiverOrSender(trade);
+      this.userName = userName;
+      this.totalPrice = 0;
+      trade.items.forEach(item => this.totalPrice += item.price);
+      return trade;
+    }));
+
+    this.trade$.subscribe();
   }
   
-  protected override onHide() {
-    this.service.deselect();
-    this.loading = true;
+  ngOnDestroy() {
+    this.store.dispatch(currentTradeSelectionTerminated());
+    this.tradeItemStore.dispatch(discardTradeItems());
   }
 
   exit() {
-    this.exitDialog();
+    this.navigationService.back();
   }
 }

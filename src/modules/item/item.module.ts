@@ -10,7 +10,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DeleteItemDialogComponent } from './components/delete-item-dialog/delete-item-dialog.component';
 import { EditItemDialogComponent } from './components/edit-item-dialog/edit-item-dialog.component';
 import { DetailsItemDialogComponent } from './components/details-item-dialog/details-item-dialog.component';
-import { ItemsComponent } from './components/items/items.component';
+import { ItemsComponent } from './components/items-page/items-page.component';
+import { RouterModule } from '@angular/router';
+import { ItemReducer } from './store/item/item.reducer';
+import { StoreModule } from '@ngrx/store';
+import { ItemUsedReducer } from './store/item_used/item_used.reducer';
+import { provideEffects } from '@ngrx/effects';
+import * as itemEffects from './store/item/item.effects';
+import * as itemUsedEffects from './store/item_used/item_used.effects';
+
 
 
 
@@ -27,13 +35,20 @@ import { ItemsComponent } from './components/items/items.component';
   imports: [
     CommonModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule,
+    StoreModule.forFeature("item", ItemReducer),
+    StoreModule.forFeature("item_used", ItemUsedReducer)
   ],
   exports: [
     ItemsComponent,
     ItemRoutingModule,
     ItemComponent
   ],
-  providers: [ItemService]
+  providers: [
+    ItemService,
+    provideEffects(itemEffects),
+    provideEffects(itemUsedEffects)
+  ]
 })
 export class ItemModule { }

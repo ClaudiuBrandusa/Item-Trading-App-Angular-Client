@@ -1,12 +1,21 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { UnauthGuardService } from 'src/modules/app/guards/unauth-guard.service';
+import { unauthGuard } from 'src/modules/app/guards/unauth-guard.service';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { IdentityRoutes } from './enums/identity-routes';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent, canActivate: [UnauthGuardService] },
-  { path: 'register', component: RegisterComponent, canActivate: [UnauthGuardService] }
+  {
+    path: IdentityRoutes.Login,
+    component: LoginComponent,
+    canActivate: [unauthGuard]
+  },
+  {
+    path: IdentityRoutes.Register,
+    component: RegisterComponent,
+    canActivate: [unauthGuard]
+  }
 ];
 
 @NgModule({

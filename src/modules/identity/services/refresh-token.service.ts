@@ -1,117 +1,96 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { interval, Observable, Subscription } from 'rxjs';
-import { RefreshTokenOptions } from '../../shared/models/options/refresh-token-options.config';
-import { EventBusService } from '../../shared/services/event-bus.service';
-import { Interval } from '../../shared/utils/async-utils';
-import { EventBusUtils } from '../../shared/utils/event-bus.utility';
+import { Injectable } from '@angular/core';
+import { lastValueFrom } from 'rxjs';
 import { IdentityService } from './identity.service';
 import { RefreshTokenRequest } from 'src/modules/identity/models/requests/refresh-token-request.model';
-import appConfig from '../../../assets/application-config.json';
 import { EndpointsService } from '../../app/services/endpoints.service';
-import { SignalR } from '../../shared/enums/signal-r.enum';
+import { NavigationService } from '../../shared/services/navigation.service';
+import { Store } from '@ngrx/store';
+import { disconnectInit } from '../store/identity/identity.actions';
+import { AuthenticationResponse } from '../models/responses/authentication.response';
 
 @Injectable({
   providedIn: "root"
 })
-export class RefreshTokenService extends IdentityService implements OnInit, OnDestroy {
-
-  private eventBusUtility: EventBusUtils;
-  
-  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected eventBus: EventBusService, protected router: Router, private eventBusService: EventBusService) {
-    super(http, endpointsService, eventBus, router);
+export class RefreshTokenService extends IdentityService {
+  constructor(protected http: HttpClient, protected endpointsService: EndpointsService, protected navigationService: NavigationService, private store: Store) {
+    super(http, endpointsService, navigationService);
     this.refresh_path = this.base_path + this.endpointsModel.refresh;
-    this.eventBusUtility = new EventBusUtils(eventBus);
-    this.options = appConfig.refreshTokenOptions;
   }
 
-  ngOnInit(): void {
-    this.initEventBusSubscription();
-  }
-
-  ngOnDestroy(): void {
-    this.eventBusUtility.clearSubscriptions();
-  }
-
-  options: RefreshTokenOptions;
-  silentRefresh: Subscription;
   private refresh_path = this.base_path + "refresh";
 
   getToken() {
-    var result = localStorage.getItem("token");
+    const result = localStorage.getItem("token");
     return result === null ? "" : result.toString();
   }
 
   getRefreshToken() {
-    var result = localStorage.getItem("refreshToken");
+    const result = localStorage.getItem("refreshToken");
     return result === null ? "" : result.toString();
   }
 
-  private getRefreshTokenRequest() {
+  getTokenExpirationDate() {
+    const result = localStorage.getItem("expirationDateTime");
+    return result === null ? null : new Date(result);
+  }
+
+  isTokenExpired() {
+    const result = localStorage.getItem("expirationDateTime");
+    if (result === null) return false;
+    const expirationDate = new Date(result);
+    return new Date() > expirationDate;
+  }
+
+  private getRefreshTokenOptions() {
     var request = new RefreshTokenRequest();
     request.token = this.getToken();
     request.refreshToken = this.getRefreshToken();
     return request;
   }
 
-  updateToken(token: string) {
-    localStorage.setItem("token", token);
-  }
-
-  updateRefreshToken(refreshToken: string) {
-    localStorage.setItem("refreshToken", refreshToken);
-  }
-
   canRefreshTokens() {
     // if we have token and refresh token then it means that we have the necessarily data for token refresh
-    return this.getToken() !== "" && this.getRefreshToken() !== "";
+    return this.getToken() !== "" && this.getRefreshToken() !== "" && !this.isTokenExpired();
   }
 
-  getRefreshTokensRequest() {
-    return this.http.post(this.refresh_path, this.getRefreshTokenRequest());
+  getRefreshTokenObservable() {
+    return this.http.post<AuthenticationResponse>(this.refresh_path, this.getRefreshTokenOptions());
   }
 
-  async refreshTokens() {
-    if(this.canRefreshTokens()) {
-      let result: Observable<Object>;
-      await Interval(() => {
-        result = this.getRefreshTokensRequest(); 
-        return result == null; // we will continue until we get a non null result
-      }, 100, 4000);
-      if(result == null) {
-        return; 
-      }
-      result.subscribe({
-        next: result => {
-        this.setTokens(result);
-      }, 
-      error: _err => {
-        this.signOut();
-      }});
+  async refresh() {
+    if (!this.canRefreshTokens()) {
+      this.store.dispatch(disconnectInit());
+      return Promise.reject();
     }
-  }
 
-  isLoggedIn() {
-    return this.canRefreshTokens();
+    const promise = new Promise(async (resolve, reject) => {
+      try {
+        const response = await lastValueFrom(this.getRefreshTokenObservable());
+        
+        if (this.setTokens(response))
+        {
+          resolve(1);
+        } else {
+          reject();
+        }
+      } catch (exception) {
+        if (exception.status === 400) {
+          this.store.dispatch(disconnectInit());
+        }
+        reject();
+      }
+    });
+
+    return promise;
   }
 
   signOut() {
-    this.eventBusUtility.emit(SignalR.Disconnected, null);
-    localStorage.clear();
-    this.router.navigate(['login']);
+    this.discardData();
+    this.navigationService.redirect("login");
   }
 
-  private initEventBusSubscription() {
-    this.eventBusUtility.on('silentRefresh', async () => {
-      this.startSilentRefresh();
-    });
-  }
-
-  private async startSilentRefresh() {
-    this.silentRefresh = interval(this.options.silentRefreshIntervalInSeconds * 1000)
-    .subscribe(() => {
-      this.refreshTokens()
-    });
+  discardData() {
+    this.clearTokens();
   }
 }

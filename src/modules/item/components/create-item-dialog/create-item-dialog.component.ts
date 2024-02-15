@@ -1,22 +1,22 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
-import { EventBusService } from 'src/modules/shared/services/event-bus.service';
-import { ItemDialogEvents } from '../../enums/item-dialog-events';
-import { ItemEvents } from '../../enums/item-events';
-import { ItemService } from '../../services/item.service';
+import { Component, OnDestroy } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { NavigationService } from '../../../shared/services/navigation.service';
+import { Store } from '@ngrx/store';
+import { CreateItemRequest } from '../../models/requests/create-item-request.model';
+import { createItemRequestSent, createItemTerminated } from '../../store/item/item.actions';
+import { Item } from '../../models/responses/item';
 
 @Component({
   selector: 'dialog-create-item',
   templateUrl: './create-item-dialog.component.html',
   styleUrls: ['./create-item-dialog.component.css']
 })
-export class CreateItemDialogComponent extends BaseDialogComponent {
+export class CreateItemDialogComponent implements OnDestroy {
 
-  constructor(private fb: FormBuilder, private service: ItemService, protected eventBus: EventBusService) 
-  {
-    super(eventBus);
-    this.eventId = ItemDialogEvents.CreateItem
+  constructor(private fb: FormBuilder, private navigationService: NavigationService, private store: Store<Item>) {}
+  
+  ngOnDestroy() {
+    this.store.dispatch(createItemTerminated());
   }
 
   form = this.fb.group({
@@ -24,19 +24,22 @@ export class CreateItemDialogComponent extends BaseDialogComponent {
     itemDescription: new FormControl('', null)
   });
 
-  protected override onHide() {
-    this.form.reset();
-  }
-
   submit() {
-    this.service.createItem(this.form).subscribe({
-      next: (response: any) => {
-        this.emit(ItemEvents.CreateItem, response.itemId.toString());
-        this.exitDialog();
-      },
-      error: (error) => {
-        console.log('Error at create item found: ', error);
-      }
-    });
+    this.store.dispatch(createItemRequestSent(this.convertFormToRequest(this.form)));
+  }
+  
+  exit() {
+    this.navigationService.back();
+  }
+  
+  convertFormToRequest(form: FormGroup) {
+    if(form == null) return null;
+
+    let model = new CreateItemRequest();
+
+    model.itemName = form.value['itemName'];
+    model.itemDescription = form.value['itemDescription'];
+
+    return model;
   }
 }

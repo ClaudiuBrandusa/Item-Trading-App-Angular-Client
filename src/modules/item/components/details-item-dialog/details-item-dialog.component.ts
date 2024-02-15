@@ -1,48 +1,38 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Item } from 'src/modules/item/models/responses/item';
-import { EventBusService } from 'src/modules/shared/services/event-bus.service';
-import { BaseDialogComponent } from 'src/modules/shared/components/dialog/base-dialog/base-dialog.component';
-import { ItemDialogEvents } from '../../enums/item-dialog-events';
-import { ItemService } from '../../services/item.service';
+import { NavigationService } from '../../../shared/services/navigation.service';
+import { Store } from '@ngrx/store';
+import { deselectItem } from '../../store/item/item.actions';
+import { selectCurrentItem } from '../../store/item/item.selector';
+import { Observable, map } from 'rxjs';
 
 @Component({
   selector: 'dialog-details-item',
   templateUrl: './details-item-dialog.component.html',
   styleUrls: ['./details-item-dialog.component.css']
 })
-export class DetailsItemDialogComponent extends BaseDialogComponent {
+export class DetailsItemDialogComponent implements OnInit, OnDestroy {
 
-  item: Item = null;
+  public item$: Observable<Item>;
 
-  get itemName() {
-    return this.item == null ? "" : this.item.name;
-  }
-
-  get itemDescription() {
-    return this.item == null ? "" : this.item.description;
-  }
-
-  constructor(protected eventBus: EventBusService, private service: ItemService) {
-    super(eventBus);
-    this.eventId = ItemDialogEvents.DetailsItem;
-  }
-
-  protected override onDisplay() {
-    this.service.getItem(this.service.getSelectedItemId()).subscribe({
-      next: (response) => {
-        this.item = response;
-      },
-      error: (error) => {
-        console.log('Error at get item found: ', error);
-      }
-    })
-  }
+  constructor(private navigationService: NavigationService, private store: Store<Item>) {}
   
-  protected override onHide() {
-    this.service.deselect();
+  ngOnInit() {
+    this.item$ = this.store.select(selectCurrentItem).pipe(map(item => {
+      if (!item) {
+        this.exit();
+        return new Item();
+      }
+
+      return item;
+    }));
+  }
+
+  ngOnDestroy() {
+    this.store.dispatch(deselectItem());
   }
 
   exit() {
-    this.exitDialog();
+    this.navigationService.back();
   }
 }

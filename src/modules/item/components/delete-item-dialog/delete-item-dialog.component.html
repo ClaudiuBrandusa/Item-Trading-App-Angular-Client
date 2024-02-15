@@ -1,14 +1,14 @@
-<app-event-dialog eventId={{eventId}}>
+<app-dark-background (onBackgroundClicked)="exit()">
   <app-medium-dialog class="position-fixed transform-center">
-    <app-back-next-dialog
+    <app-dialog-body
       title="Delete item"
-      dialogId={{eventId}}
-      [nextButtonCallback]="delete.bind(this)"
-      nextButtonCustomName="Yes"
-      cancelButtonCustomName="No">
+      (onContinue)="delete()"
+      (onExit)="exit()"
+      nextButtonName="Yes"
+      cancelButtonName="No">
       <div class="d-flex flex-column mx-auto my-2">
-        <span class="ml-2">Do you wish to delete the item with the name <strong>{{itemName}}</strong>?</span>
+        <span class="font-size-medium ms-2">Do you wish to delete the item with the name <strong>{{ ( item$ | async ).name}}</strong>?</span>
       </div>
-    </app-back-next-dialog>
+    </app-dialog-body>
   </app-medium-dialog>
-</app-event-dialog>
+</app-dark-background>

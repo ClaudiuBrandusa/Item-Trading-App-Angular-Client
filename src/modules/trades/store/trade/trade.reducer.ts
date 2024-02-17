@@ -1,6 +1,6 @@
 import { Action, createReducer, on } from "@ngrx/store";
 import { TradeState, adapter, initialState } from "./trade.state";
-import { addTradeData, createTradeInitiated, createTradeTerminated, currentTradeSelectionInitiated, currentTradeSelectionTerminated, listTradesSucceeded, loadTradeSucceeded, removeTradeReceiver, respondTradeSucceeded, sendTradeOfferSucceeded, setTradeReceiver } from "./trade.actions";
+import { addTradeData, createTradeInitiated, createTradeTerminated, currentTradeSelectionInitiated, currentTradeSelectionTerminated, listTradesSucceeded, loadTradeDirectionsSucceeded, loadTradeSucceeded, removeTradeReceiver, respondTradeSucceeded, sendTradeOfferSucceeded, setTradeReceiver } from "./trade.actions";
 import { CurrentTrade } from "../../models/current-trade";
 import { TradeBaseData } from "../../models/trade-base-data";
 import { disconnected } from "../../../identity/store/identity/identity.actions";
@@ -25,7 +25,7 @@ const tradeReducer = createReducer(
   on(addTradeData, (state, { tradeData }) => ({ ...state, tradesData: [ ...state.tradesData, tradeData ]})),
   on(loadTradeSucceeded, (state, { trade }) => adapter.addOne(trade, state)),
   on(respondTradeSucceeded, (state, { response }) => {
-    const tradeId = response.id ?? (response as any).tradeOfferId
+    const tradeId = response.tradeId ?? (response as any).tradeId
     const filteredTradesData = state.tradesData.filter(x => x.tradeId !== tradeId);
     
     if (response.response == null) return adapter.removeOne(tradeId, { ...state, tradesData: [ ...filteredTradesData ] })
@@ -39,5 +39,6 @@ const tradeReducer = createReducer(
     }
     return adapter.updateOne({ id: tradeId, changes: { ...state.entities[tradeId], response: response.response } }, { ...state, tradesData: [ ...newTradesData ]})
   }),
+  on(loadTradeDirectionsSucceeded, (state, { response }) => ({ ...state, tradeDirections: response })),
   on(disconnected, () => adapter.removeAll({ ...initialState }))
 );

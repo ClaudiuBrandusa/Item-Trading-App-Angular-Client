@@ -1,3 +1,4 @@
 export class TradesListResponse {
-  tradeOffersIds: Array<string>;
+  sentTradeOfferIds: Array<string>;
+  receivedTradeOfferIds: Array<string>;
 }

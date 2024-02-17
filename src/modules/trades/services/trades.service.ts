@@ -17,50 +17,26 @@ export class TradesService extends NetworkService<TradeEndpoints> {
     this.endpointsModel = this.endpointsService.getTrade();
   }
 
-  private filteringOptions: Array<string> = new Array<string>("All", "Sent", "Received");
-
-  getFilteringOptions() {
-    return this.filteringOptions;
-  }
-
-  getTrade(tradeId: string, isSentTrade: boolean, isRespondedTrade: boolean = false) {
-    if (isSentTrade) {
-      return this.getSentTrade(tradeId, isRespondedTrade);
-    } else {
-      return this.getReceivedTrade(tradeId, isRespondedTrade);
-    }
-  }
-
-  getSentTrades(tradeItemIds: string[], responded: Boolean = false) {
-    const endpoint = this.base_path + (responded ? this.endpointsModel.list_sent_responded : this.endpointsModel.list_sent);
-    
-    const params = this.getQueryParamsFromObject({
-      tradeItemIds
-    });
-    
-    return this.http.get(endpoint, { params }).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
-  }
-
-  getReceivedTrades(tradeItemIds: string[], responded: Boolean = false) {
-    const endpoint = this.base_path + (responded ? this.endpointsModel.list_received_responded : this.endpointsModel.list_received);
+  getTrade(tradeId: string) {
+    const endpoint = this.base_path + this.endpointsModel.get;
 
     const params = this.getQueryParamsFromObject({
-      tradeItemIds
+      tradeId
     });
 
     return this.http.get(endpoint, { params }).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
-  getSentTrade(tradeId: string, responded: Boolean = false) {
-    const endpoint = this.base_path + (responded ? this.endpointsModel.get_sent_responded : this.endpointsModel.get_sent) + `?tradeId=${tradeId}`;
-
-    return this.http.get(endpoint).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
-  }
-
-  getReceivedTrade(tradeId: string, responded: Boolean = false) {
-    const endpoint = this.base_path + (responded ? this.endpointsModel.get_received_responded : this.endpointsModel.get_received) + `?tradeId=${tradeId}`;
-
-    return this.http.get(endpoint).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
+  loadTradeIds(direction: string, tradeItemIds: string[], responded: Boolean = false) {
+    const endpoint = this.base_path + this.endpointsModel.list;
+    
+    const params = this.getQueryParamsFromObject({
+      direction,
+      tradeItemIds,
+      responded
+    });
+    
+    return this.http.get(endpoint, { params }).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 
   sendTradeOffer(request: TradeOfferRequest) {
@@ -93,5 +69,11 @@ export class TradesService extends NetworkService<TradeEndpoints> {
     }
 
     return request.pipe(catchError((error) => throwError(() => (this.buildError(error)))));
+  }
+
+  loadTradeDirections() {
+    const endpoint = this.base_path + this.endpointsModel.directions;
+
+    return this.http.get(endpoint).pipe(catchError((error) => throwError(() => (this.buildError(error)))));
   }
 }

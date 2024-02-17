@@ -1,8 +1,8 @@
 import { inject } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { TradesService } from "../../services/trades.service";
-import { addTradeData, listReceivedTrades, listSentTrades, listTradesInit, listTradesSucceeded, loadTradeInit, loadTradeSucceeded, respondTradeInit, respondTradeSucceeded, sendTradeOfferInit, sendTradeOfferSucceeded } from "./trade.actions";
-import { catchError, combineLatest, concatMap, exhaustMap, filter, map, mergeMap, of } from "rxjs";
+import { addTradeData, listTradesInit, listTradesSucceeded, loadTradeDirectionsInit, loadTradeDirectionsSucceeded, loadTradeInit, loadTradeSucceeded, respondTradeInit, respondTradeSucceeded, sendTradeOfferInit, sendTradeOfferSucceeded } from "./trade.actions";
+import { catchError, concatMap, exhaustMap, filter, map, mergeMap, of } from "rxjs";
 import { Trade } from "../../models/responses/trade";
 import { TradesListResponse } from "../../models/responses/trades-list.response";
 import { TradeBaseData } from "../../models/trade-base-data";
@@ -16,71 +16,20 @@ export const listTrades = createEffect(
   (actions$ = inject(Actions), service = inject(TradesService)) => {
     return actions$.pipe(
       ofType(listTradesInit),
-      exhaustMap(({ searchOptions }) => {
-        if (searchOptions.selectedFilterValue === "All") {
-          return combineLatest(
-            [
-              service.getSentTrades(searchOptions.tradeItemIds, searchOptions.showRespondedTrades).pipe(map((response: any) => ({ ...response, isSentTrade: true }))),
-              service.getReceivedTrades(searchOptions.tradeItemIds, searchOptions.showRespondedTrades).pipe(map((response: any) => ({ ...response, isSentTrade: false })))
-            ]
-          ).pipe(
-            map((responses: any[]) => {
-              return listTradesSucceeded(
-                responses.map((response: any) => (response as TradesListResponse).tradeOffersIds.map(tradeId => new TradeBaseData({ tradeId: tradeId, isSentTrade: response.isSentTrade, isRespondedTrade: searchOptions.showRespondedTrades }))).reduce((a, b) => a.concat(b))
-              )
-            }),
-            catchError(error =>
-              of(handleDefaultException("Something went wrong while loading the trades", error))
-            )
-          )
-        } else if (searchOptions.selectedFilterValue === "Sent") {
-          return of(listSentTrades(searchOptions.tradeItemIds, searchOptions.showRespondedTrades))
-        } else if (searchOptions.selectedFilterValue === "Received") {
-          return of(listReceivedTrades(searchOptions.tradeItemIds, searchOptions.showRespondedTrades))
-        } else {
-          return of(handleDefaultException("Unknown search options selection filter", searchOptions))
-        }
-      })
-    )
-  },
-  { functional: true }
-);
+      exhaustMap(({ searchOptions }) => 
+        service.loadTradeIds(searchOptions.selectedFilterValue, searchOptions.tradeItemIds, searchOptions.showRespondedTrades).pipe(
+          map((response: any) => {
+            const tradeIds = response as TradesListResponse;
 
-export const loadSentTrades = createEffect(
-  (actions$ = inject(Actions), service = inject(TradesService)) => {
-    return actions$.pipe(
-      ofType(listSentTrades),
-      exhaustMap(({ tradeItemIds, loadRespondedTrades }) =>
-        service.getSentTrades(tradeItemIds, loadRespondedTrades).pipe(
-          map((response: any) =>
-            listTradesSucceeded(
-              (response as TradesListResponse).tradeOffersIds.map(tradeId => new TradeBaseData({ tradeId: tradeId, isSentTrade: true, isRespondedTrade: loadRespondedTrades }))
-            )
-          ),
-          catchError(error =>
-            of(handleDefaultException("Error found at loading the sent trades", error))
-          )
-        )
-      )
-    )
-  },
-  { functional: true }
-);
+            const tradeOfferIds = [
+              ...tradeIds.sentTradeOfferIds?.map(tradeId => new TradeBaseData({ tradeId: tradeId, isSentTrade: true, isRespondedTrade: searchOptions.showRespondedTrades })) ?? [],
+              ...tradeIds.receivedTradeOfferIds?.map(tradeId => new TradeBaseData({ tradeId: tradeId, isSentTrade: false, isRespondedTrade: searchOptions.showRespondedTrades })) ?? []
+            ];
 
-export const loadReceivedTrades = createEffect(
-  (actions$ = inject(Actions), service = inject(TradesService)) => {
-    return actions$.pipe(
-      ofType(listReceivedTrades),
-      exhaustMap(({ tradeItemIds, loadRespondedTrades }) =>
-        service.getReceivedTrades(tradeItemIds, loadRespondedTrades).pipe(
-          map((response: any) =>
-            listTradesSucceeded(
-              (response as TradesListResponse).tradeOffersIds.map(tradeId => new TradeBaseData({ tradeId: tradeId, isSentTrade: false, isRespondedTrade: loadRespondedTrades }))
+            return listTradesSucceeded(
+              tradeOfferIds
             )
-          ),
-          catchError(error =>
-            of(handleDefaultException("Error found at loading the received trades", error))
-          )
+          })
         )
       )
     )
@@ -92,8 +41,8 @@ export const loadTrade = createEffect(
   (actions$ = inject(Actions), service = inject(TradesService)) => {
     return actions$.pipe(
       ofType(loadTradeInit),
-      concatMap(({ tradeId, isSentTrade, isRespondedTrade }) =>
-        service.getTrade(tradeId, isSentTrade, isRespondedTrade).pipe(
+      concatMap(({ tradeId }) =>
+        service.getTrade(tradeId).pipe(
           map((response: any) =>
             loadTradeSucceeded(response as Trade)
           ),
@@ -147,6 +96,25 @@ export const respondTrade = createEffect(
   { functional: true }
 );
 
+export const loadTradeDirections = createEffect(
+  (actions$ = inject(Actions), service = inject(TradesService)) => {
+    return actions$.pipe(
+      ofType(loadTradeDirectionsInit),
+      exhaustMap(() =>
+        service.loadTradeDirections().pipe(
+          map((httpResponse: any) => 
+            loadTradeDirectionsSucceeded(httpResponse as Array<string>)
+          ),
+          catchError(error =>
+            of(handleDefaultException('Error found at loading the trade directions', error))
+          )
+        )
+      )
+    );
+  },
+  { functional: true }
+);
+
 // notification effects
 
 export const createdNotificationEffect = createEffect(
@@ -172,7 +140,7 @@ export const changedNotificationEffect = createEffect(
       mergeMap(( notification: any ) => {
         const responseObject = new RespondedTradeResponse(
           {
-            id: notification.id,
+            tradeId: notification.id,
             response: notification.customData.response as boolean | undefined
           });
           

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { TradesSearchOptions } from '../../models/trades-search-options';
-import { TradesService } from '../../services/trades.service';
 import { TradeRoutes } from '../../enums/trade-routes';
 import { Store } from '@ngrx/store';
 import { TradeState } from '../../store/trade/trade.state';
-import { createTradeInitiated, listTradesInit } from '../../store/trade/trade.actions';
+import { createTradeInitiated, listTradesInit, loadTradeDirectionsInit } from '../../store/trade/trade.actions';
+import { clearArray } from '../../../shared/utils/array-utils';
+import { selectTradeDirections } from '../../store/trade/trade.selector';
 
 @Component({
   selector: 'app-trades-page',
@@ -13,13 +14,20 @@ import { createTradeInitiated, listTradesInit } from '../../store/trade/trade.ac
 })
 export class TradesPageComponent implements OnInit {
   selectedTradeItems = new Array<string>();
-  filteringOptions: Array<string>;
+  filteringOptions = new Array<string>();
   searchOptions = new TradesSearchOptions();
   createTradeEventId = TradeRoutes.SelectReceiver;
   createTradeEventRoute = `${TradeRoutes.Create}/${TradeRoutes.SelectReceiver}`;
 
-  constructor(private service: TradesService, private store: Store<TradeState>) {
-    this.filteringOptions = this.service.getFilteringOptions();
+  constructor(private store: Store<TradeState>) {
+    store.dispatch(loadTradeDirectionsInit());
+
+    store.select(selectTradeDirections).subscribe((tradeDirections: Array<string>) =>
+      {
+        clearArray(this.filteringOptions);
+        tradeDirections.forEach(tradeDirection => this.filteringOptions.push(tradeDirection));
+      }
+    );
   }
 
   ngOnInit() {

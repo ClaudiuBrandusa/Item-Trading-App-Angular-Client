@@ -66,7 +66,7 @@ export class TradeComponent implements OnInit {
   }
 
   getTrade() {
-    this.store.dispatch(loadTradeInit(this.tradeId, this.isSentTrade, this.isRespondedTrade));
+    this.store.dispatch(loadTradeInit(this.tradeId));
   }
 
   respond() {

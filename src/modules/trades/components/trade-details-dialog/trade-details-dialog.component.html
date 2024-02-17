@@ -12,7 +12,7 @@
           </div>
           <div class="d-flex flex-row">
             <strong>{{ isSentTrade ? 'Sent date' : 'Received date' }}</strong>:
-            {{ (trade$ | async)?.sentDate | date }}
+            {{ (trade$ | async)?.creationDate | date }}
           </div>
           <div class="d-flex flex-row">
             <strong>Total price</strong>:

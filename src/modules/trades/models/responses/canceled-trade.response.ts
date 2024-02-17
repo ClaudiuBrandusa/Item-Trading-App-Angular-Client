@@ -1,5 +1,5 @@
 export class CanceledTradeResponse {
-  tradeOfferId: string;
+  tradeId: string;
   receiverId: string;
   receiverName: string;
 }

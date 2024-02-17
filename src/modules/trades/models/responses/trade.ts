@@ -2,7 +2,7 @@ import { TradeItem } from "../trade-item";
 
 export class Trade {
   tradeId: string = "";
-  sentDate: Date;
+  creationDate: Date;
   respondedDate: Date | null;
   receiverName: string;
   senderName: string;

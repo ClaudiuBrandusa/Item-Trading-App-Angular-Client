@@ -26,14 +26,9 @@
       "delete": "/item/delete"
     },
     "Trade": {
-      "get_sent": "/trade/get_sent",
-      "get_sent_responded": "/trade/get_sent_responded",
-      "get_received": "/trade/get_received",
-      "get_received_responded": "/trade/get_received_responded",
-      "list_sent": "/trade/list_sent",
-      "list_sent_responded": "/trade/list_sent_responded",
-      "list_received": "/trade/list_received",
-      "list_received_responded": "/trade/list_received_responded",
+      "get": "/trade/get",
+      "directions": "/trade/directions",
+      "list": "/trade/list",
       "offer": "/trade/offer",
       "accept": "/trade/accept",
       "reject": "/trade/reject",

@@ -1,5 +1,5 @@
 export class RespondedTradeResponse {
-  id: string;
+  tradeId: string;
   senderId: string;
   senderName: string;
   receivedDate: Date;

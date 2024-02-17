@@ -10,6 +10,7 @@ export interface TradeState extends EntityState<Trade> {
   tradeOffer: TradeOfferRequest;
   displayRespondedTrades: boolean;
   tradesData: TradeBaseData[];
+  tradeDirections: Array<string>;
 }
 
 export const adapter: EntityAdapter<Trade> = createEntityAdapter<Trade>({
@@ -21,5 +22,6 @@ export const initialState: TradeState = adapter.getInitialState({
   currentTrade: new CurrentTrade(),
   tradeOffer: new TradeOfferRequest(),
   displayRespondedTrades: false,
-  tradesData: Array<TradeBaseData>()
+  tradesData: Array<TradeBaseData>(),
+  tradeDirections: Array<string>()
 });

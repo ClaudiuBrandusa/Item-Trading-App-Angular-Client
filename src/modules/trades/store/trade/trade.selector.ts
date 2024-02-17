@@ -35,3 +35,9 @@ export const selectTradeOfferReceiverId =
     selectTrade,
     (state: TradeState) => (state.tradeOffer.targetUserId)
 );
+
+export const selectTradeDirections =
+  createSelector(
+    selectTrade,
+    (state: TradeState) => (state.tradeDirections)
+);

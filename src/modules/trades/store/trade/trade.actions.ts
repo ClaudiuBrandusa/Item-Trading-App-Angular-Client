@@ -17,14 +17,14 @@ export enum TradeActionType {
   SendTradeOfferInit = "send_trade_offer_initiated",
   SendTradeOfferSucceeded = "send_trade_offer_succeeded",
   ListTradesInit = "list_trades_initialized",
-  ListSentTrades = "list_sent_trades",
-  ListReceivedTrades = "list_received_trades",
   ListTradesSucceeded = "list_trades_succeeded",
   AddTradeData = "add_trade_data",
   LoadTradeInit = "load_trade_initialized",
   LoadTradeSucceeded = "load_trade_succeeded",
   RespondTradeInit = "respond_trade_initialized",
-  RespondTradeSucceeded = "respond_trade_succeeded"
+  RespondTradeSucceeded = "respond_trade_succeeded",
+  LoadTradeDirectionsInit = "load_trade_directions_initialized",
+  LoadTradeDirectionsSucceeded = "load_trade_directions_succeeded"
 }
 
 export const createTradeInitiated = createAction(TradeActionType.CreateTradeInit);
@@ -45,18 +45,18 @@ export const sendTradeOfferSucceeded = createAction(TradeActionType.SendTradeOff
 
 export const listTradesInit = createAction(TradeActionType.ListTradesInit, (searchOptions: TradesSearchOptions) => ({ searchOptions }));
 
-export const listSentTrades = createAction(TradeActionType.ListSentTrades, (tradeItemIds: string[], loadRespondedTrades: boolean) => ({ tradeItemIds, loadRespondedTrades }));
-
-export const listReceivedTrades = createAction(TradeActionType.ListReceivedTrades, (tradeItemIds: string[], loadRespondedTrades: boolean) => ({ tradeItemIds, loadRespondedTrades }));
-
 export const listTradesSucceeded = createAction(TradeActionType.ListTradesSucceeded, (response: TradeBaseData[]) => ({ response }));
 
 export const addTradeData = createAction(TradeActionType.AddTradeData, (tradeData: TradeBaseData) => ({ tradeData }));
 
-export const loadTradeInit = createAction(TradeActionType.LoadTradeInit, (tradeId: string, isSentTrade: boolean, isRespondedTrade: boolean = false) => ({ tradeId, isSentTrade, isRespondedTrade }));
+export const loadTradeInit = createAction(TradeActionType.LoadTradeInit, (tradeId: string) => ({ tradeId }));
 
 export const loadTradeSucceeded = createAction(TradeActionType.LoadTradeSucceeded, (trade: Trade) => ({ trade }));
 
 export const respondTradeInit = createAction(TradeActionType.RespondTradeInit, (tradeId: string, response: TradeResponse) => ({ tradeId, response }));
 
 export const respondTradeSucceeded = createAction(TradeActionType.RespondTradeSucceeded, (response: RespondedTradeResponse) => ({ response }));
+
+export const loadTradeDirectionsInit = createAction(TradeActionType.LoadTradeDirectionsInit);
+
+export const loadTradeDirectionsSucceeded = createAction(TradeActionType.LoadTradeDirectionsSucceeded, (response: Array<string>) => ({ response }));

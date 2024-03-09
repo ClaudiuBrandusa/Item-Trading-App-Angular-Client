@@ -35,7 +35,8 @@
               "src/css/colors.css",
               "src/css/position.css",
               "src/css/font-sizes.css",
-              "src/css/display.css"
+              "src/css/display.css",
+              "src/css/grid.css"
             ],
             "scripts": []
           },

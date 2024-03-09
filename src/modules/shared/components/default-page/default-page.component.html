@@ -1,0 +1,24 @@
+<div
+  class="grid-container grid-default-areas grid-auto-flow-row grid-fill-page"
+  [ngClass]="{ 'grid-default-row-sizes' : hasSearchBar || hasCustomSearchBar, 'grid-default-no-search-row-sizes' : !hasSearchBar }">
+  <div class="header">
+    <app-navbar></app-navbar>
+    <app-navbar-search-bar *ngIf="hasSearchBar && !hasCustomSearchBar"
+      [placeholder]="searchInputPlaceholder"
+      (searchFunction)="search(getEventValue($event))"
+      [allowEmptySearch]="true">
+    </app-navbar-search-bar>
+    <ng-content select="[header]"></ng-content>
+  </div>
+
+  <div class="main-content">
+    <ng-content select="[sidebar]"></ng-content>
+    <div [ngClass]="{ 'container': hasMainContainer, 'h-100': !hasMainContainer }">
+      <ng-content></ng-content>
+    </div>
+  </div>
+
+  <div class="bottom-action-bar">
+    <ng-content select="[bottom-action-bar]"></ng-content>
+  </div>
+</div>

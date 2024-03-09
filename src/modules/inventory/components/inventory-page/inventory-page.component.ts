@@ -15,14 +15,7 @@ export class InventoryPageComponent {
 
   constructor(private store: Store<InventoryItem>) {}
 
-  search(searchBody) {
-    this.store.dispatch(loadItemsInit(searchBody.searchString));
-  }
-
-  getEventValue(event: Event) {
-    let str = event as unknown as string;
-    if(str != null)
-      return str;
-    return (event.target as HTMLInputElement).value;
+  search(searchString: string) {
+    this.store.dispatch(loadItemsInit(searchString));
   }
 }

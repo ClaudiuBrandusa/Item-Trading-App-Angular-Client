@@ -15,15 +15,8 @@ export class ItemsComponent {
 
   constructor(private store: Store<Item>) {}
 
-  search(searchBody) {
-    this.store.dispatch(loadItemsInitiated(searchBody.searchString));
-  }
-
-  getEventValue(event: Event) {
-    let str = event as unknown as string;
-    if(str != null)
-      return str;
-    return (event.target as HTMLInputElement).value;
+  search(searchString: string) {
+    this.store.dispatch(loadItemsInitiated(searchString));
   }
 
   onSelectItemClicked(_event) {

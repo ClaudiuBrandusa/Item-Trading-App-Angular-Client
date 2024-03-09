@@ -12,12 +12,14 @@ import { PageNavigationService } from './services/page-navigation.service';
 import { PipeModule } from '../pipe/pipe.module';
 import { DialogModule } from '../dialog/dialog.module';
 import { NotificationModule } from '../notification/notification.module';
+import { DefaultPageComponent } from './components/default-page/default-page.component';
 
 
 @NgModule({
   declarations: [
     TitleComponent,
     ErrorComponent,
+    DefaultPageComponent,
     NavbarComponent,
     NavbarButtonComponent,
     SearchBarComponent,
@@ -34,6 +36,7 @@ import { NotificationModule } from '../notification/notification.module';
   exports: [
     DialogModule,
     PipeModule,
+    DefaultPageComponent,
     ErrorComponent,
     TitleComponent,
     NavbarComponent,

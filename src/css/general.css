@@ -43,3 +43,7 @@ app-root {
 .cursor-pointer {
   cursor: pointer;
 }
+
+.place-content-center {
+  place-content: center;
+}

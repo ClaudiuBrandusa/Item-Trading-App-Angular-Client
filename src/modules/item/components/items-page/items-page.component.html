@@ -1,18 +1,9 @@
-<app-navbar></app-navbar>
-<div class="d-flex h-v-max flex-column align-self-stretch">
-  <app-navbar-search-bar
-    placeholder="Enter item name"
-    (searchFunction)="search(getEventValue($event))"
-    [allowEmptySearch]="true">
-  </app-navbar-search-bar>
+<default-page
+  (onSearch)="search($event)"
+  searchInputPlaceholder="Enter item name">
+  <app-list-items></app-list-items>
   
-  <div class="flex-grow-1 overflow-y-auto">
-    <div class="container">
-      <app-list-items></app-list-items>
-    </div>
-  </div>
-  
-  <app-menu-bar>
+  <app-menu-bar bottom-action-bar>
     <app-menu-button
       [eventId]="createEventId"
       (onClick)="onSelectItemClicked($event)"
@@ -20,6 +11,6 @@
         Create item
     </app-menu-button>
   </app-menu-bar>
-</div>
+</default-page>
 
 <router-outlet></router-outlet>

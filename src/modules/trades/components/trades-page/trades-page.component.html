@@ -1,6 +1,7 @@
-<app-navbar></app-navbar>
-<div class="d-flex h-v-max flex-column">
-  <div class="d-flex search-bar-elements-gap bg-outer-space-crayola border-style-solid border-thin border-red border-bottom p-2 ps-3 pe-3">
+<default-page
+  (onSearch)="search()"
+  [hasCustomSearchBar]="true">
+  <div header class="d-flex search-bar-elements-gap bg-outer-space-crayola border-style-solid border-thin border-red border-bottom p-2 ps-3 pe-3">
     <div class="d-flex ms-auto p-0 flex-0 pe-2">
       <select [(ngModel)]="searchOptions.selectedFilterValue" class="bg-dark-red rounded-pill border-normal color-white border-0 p-1 ps-1 pe-1">
         <option [ngValue]="value" *ngFor="let value of filteringOptions">{{value}}</option>
@@ -19,15 +20,11 @@
     </div>
   </div>
 
-  <app-trade-item-sidebar-filter (selectedTradeItems)="onTradeItemsSelected($event)"></app-trade-item-sidebar-filter>
+  <app-trade-item-sidebar-filter sidebar (selectedTradeItems)="onTradeItemsSelected($event)"></app-trade-item-sidebar-filter>
 
-  <div class="flex-grow-1 overflow-y-auto">
-    <div class="container">
-      <app-trades-list></app-trades-list>
-    </div>
-  </div>
+  <app-trades-list></app-trades-list>
 
-  <app-menu-bar>
+  <app-menu-bar bottom-action-bar>
     <app-menu-button
       [eventId]="createTradeEventId"
       [route]="createTradeEventRoute"
@@ -36,6 +33,6 @@
         Create trade
     </app-menu-button>
   </app-menu-bar>
-</div>
+</default-page>
 
 <router-outlet></router-outlet>

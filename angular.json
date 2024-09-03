@@ -103,7 +103,15 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/css/general.css",
+              "src/css/sizes.css",
+              "src/css/borders.css",
+              "src/css/outlines.css",
+              "src/css/colors.css",
+              "src/css/position.css",
+              "src/css/font-sizes.css",
+              "src/css/display.css"
             ],
             "scripts": []
           }

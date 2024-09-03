@@ -11,6 +11,11 @@ export class EventBusService {
 
   constructor() { }
 
+  // method used for automated tests
+  getObservable() {
+    return this.subject$.asObservable();
+  }
+
   // used in order to fire an event
   emit(event: EventData) {
     this.subject$.next(event);
@@ -24,20 +29,9 @@ export class EventBusService {
       map((e: EventData) => e["value"])).subscribe(action);
   }
 
-  // utils
-  initSubscription(subscription: Subscription, eventId: string, callback: (any?) => any) : Subscription {
-    if(subscription != null) {
-        // then it means that the subscription had already been set
-        return subscription;
-    }
-
-    return this.on(eventId, callback);
-  }
-
   clearSubscription(subscription: Subscription) {
     if(subscription != null) {
-        subscription.unsubscribe();
-        subscription = null;
+      subscription.unsubscribe();
     }
 
     return subscription;

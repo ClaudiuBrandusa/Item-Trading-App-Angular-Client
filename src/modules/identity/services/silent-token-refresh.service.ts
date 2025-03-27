@@ -9,7 +9,7 @@ const DEFAULT_REFRESH_TOKEN_MILLISECONDS = 5000;
 })
 export class SilentTokenRefreshService {
   private isRunning = false;
-  private interval: NodeJS.Timeout | undefined;
+  private interval: ReturnType<typeof setInterval> | undefined;
 
   constructor(private refreshTokenService: RefreshTokenService) { }
 

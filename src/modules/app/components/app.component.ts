@@ -16,7 +16,6 @@ export class AppComponent {
   title = 'Item Trading App';
 
   constructor(private silentTokenRefreshService: SilentTokenRefreshService, private store: Store, private signalRService: SignalRService, private tokenService: RefreshTokenService) {
-
     this.store.select(selectConnected).subscribe(connected => {
       const token = this.tokenService.getToken();
       if (connected) {
@@ -40,7 +39,7 @@ export class AppComponent {
   }
   
   @HostListener('window:beforeunload', ['$event'])
-  public beforeUnloadHandler(_$event) {
+  public beforeUnloadHandler(_event) {
     this.store.dispatch(disconnectInit(true));
   }
 }

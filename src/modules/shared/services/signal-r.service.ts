@@ -68,8 +68,11 @@ export class SignalRService extends NetworkService<SignalREndpoints> implements 
       console.log(SignalREvents.Connect, data);
     });
 
-    this.hubConnection.on(SignalREvents.Notify, (data: SignalRNotification) => {
-      this.store.dispatch(handleReceivedNotification(data));
+    this.hubConnection.on(SignalREvents.Notify, (data: string) => {
+      let json = JSON.parse(data);
+      let notification = json as SignalRNotification;
+      
+      this.store.dispatch(handleReceivedNotification(notification));
     });
   }
 }

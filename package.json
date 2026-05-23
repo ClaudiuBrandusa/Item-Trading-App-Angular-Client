@@ -21,7 +21,7 @@
     "@angular/router": "20.3.21",
     "@auth0/angular-jwt": "^5.1.2",
     "@microsoft/signalr": "^7.0.7",
-    "@ng-bootstrap/ng-bootstrap": "18.0.0",
+    "@ng-bootstrap/ng-bootstrap": "19.0.1",
     "@ngrx/effects": "^20.1.0",
     "@ngrx/entity": "^20.1.0",
     "@ngrx/operators": "^20.1.0",

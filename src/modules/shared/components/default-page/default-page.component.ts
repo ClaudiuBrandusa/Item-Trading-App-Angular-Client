@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'default-page',
-  templateUrl: './default-page.component.html',
-  styleUrls: ['./default-page.component.css']
+    selector: 'default-page',
+    templateUrl: './default-page.component.html',
+    styleUrls: ['./default-page.component.css'],
+    standalone: false
 })
 export class DefaultPageComponent {
   @Input()

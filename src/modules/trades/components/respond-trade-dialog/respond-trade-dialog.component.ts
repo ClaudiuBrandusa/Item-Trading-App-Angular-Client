@@ -8,9 +8,10 @@ import { CurrentTrade } from '../../models/current-trade';
 import { currentTradeSelectionTerminated, respondTradeInit } from '../../store/trade/trade.actions';
 
 @Component({
-  selector: 'dialog-respond-trade',
-  templateUrl: './respond-trade-dialog.component.html',
-  styleUrls: ['./respond-trade-dialog.component.css']
+    selector: 'dialog-respond-trade',
+    templateUrl: './respond-trade-dialog.component.html',
+    styleUrls: ['./respond-trade-dialog.component.css'],
+    standalone: false
 })
 export class RespondTradeDialogComponent implements OnInit, OnDestroy {
 

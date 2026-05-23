@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor
-} from '@angular/common/http';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { switchMap, filter, catchError, take } from 'rxjs/operators';
 import { RefreshTokenService } from '../../identity/services/refresh-token.service';

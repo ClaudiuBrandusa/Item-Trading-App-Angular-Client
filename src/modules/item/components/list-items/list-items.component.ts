@@ -5,9 +5,10 @@ import { selectItemIds } from '../../store/item/item.selector';
 import { Item } from '../../models/responses/item';
 
 @Component({
-  selector: 'app-list-items',
-  templateUrl: './list-items.component.html',
-  styleUrls: ['./list-items.component.css']
+    selector: 'app-list-items',
+    templateUrl: './list-items.component.html',
+    styleUrls: ['./list-items.component.css'],
+    standalone: false
 })
 export class ListItemsComponent implements OnInit {
   public itemIds$ = this.store.select(selectItemIds);

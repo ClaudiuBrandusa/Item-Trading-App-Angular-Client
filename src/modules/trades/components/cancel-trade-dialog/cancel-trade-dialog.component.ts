@@ -7,9 +7,10 @@ import { selectCurrentTradeStatus } from '../../store/trade/trade.selector';
 import { currentTradeSelectionTerminated, respondTradeInit } from '../../store/trade/trade.actions';
 
 @Component({
-  selector: 'dialog-cancel-trade',
-  templateUrl: './cancel-trade-dialog.component.html',
-  styleUrls: ['./cancel-trade-dialog.component.css']
+    selector: 'dialog-cancel-trade',
+    templateUrl: './cancel-trade-dialog.component.html',
+    styleUrls: ['./cancel-trade-dialog.component.css'],
+    standalone: false
 })
 export class CancelTradeDialogComponent implements OnInit, OnDestroy {
 

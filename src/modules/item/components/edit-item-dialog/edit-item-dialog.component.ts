@@ -8,9 +8,10 @@ import { selectCurrentItem } from '../../store/item/item.selector';
 import { deselectItem, updateItemInit } from '../../store/item/item.actions';
 
 @Component({
-  selector: 'dialog-edit-item',
-  templateUrl: './edit-item-dialog.component.html',
-  styleUrls: ['./edit-item-dialog.component.css']
+    selector: 'dialog-edit-item',
+    templateUrl: './edit-item-dialog.component.html',
+    styleUrls: ['./edit-item-dialog.component.css'],
+    standalone: false
 })
 export class EditItemDialogComponent implements OnInit, OnDestroy {
 

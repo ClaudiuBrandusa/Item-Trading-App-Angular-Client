@@ -8,9 +8,10 @@ import { Observable, map } from 'rxjs';
 import { selectTradeItem } from '../../store/trade-item/trade-item.actions';
 
 @Component({
-  selector: 'app-selected-trade-item',
-  templateUrl: './selected-trade-item.component.html',
-  styleUrls: ['./selected-trade-item.component.css']
+    selector: 'app-selected-trade-item',
+    templateUrl: './selected-trade-item.component.html',
+    styleUrls: ['./selected-trade-item.component.css'],
+    standalone: false
 })
 export class SelectedTradeItemComponent implements OnInit {
 

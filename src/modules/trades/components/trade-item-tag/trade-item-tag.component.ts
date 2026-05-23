@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-trade-item-tag',
-  templateUrl: './trade-item-tag.component.html',
-  styleUrls: ['./trade-item-tag.component.css']
+    selector: 'app-trade-item-tag',
+    templateUrl: './trade-item-tag.component.html',
+    styleUrls: ['./trade-item-tag.component.css'],
+    standalone: false
 })
 export class TradeItemTagComponent {
   @Input()

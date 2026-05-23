@@ -10,9 +10,10 @@ import { Trade } from '../../models/responses/trade';
 import { setTradeReceiver } from '../../store/trade/trade.actions';
 
 @Component({
-  selector: 'dialog-select-trade-receiver',
-  templateUrl: './select-trade-receiver-dialog.component.html',
-  styleUrls: ['./select-trade-receiver-dialog.component.css']
+    selector: 'dialog-select-trade-receiver',
+    templateUrl: './select-trade-receiver-dialog.component.html',
+    styleUrls: ['./select-trade-receiver-dialog.component.css'],
+    standalone: false
 })
 export class SelectTradeReceiverDialogComponent {
   foundUsersId = new Array<string>();

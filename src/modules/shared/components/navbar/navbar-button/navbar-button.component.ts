@@ -5,9 +5,10 @@ import { NavigationService } from '../../../services/navigation.service';
 import { MenuButtonComponent } from '../../menu-bar/menu-button/menu-button.component';
 
 @Component({
-  selector: 'navbar-button',
-  templateUrl: './navbar-button.component.html',
-  styleUrls: ['./navbar-button.component.css', '../../menu-bar/menu-button/menu-button.component.css']
+    selector: 'navbar-button',
+    templateUrl: './navbar-button.component.html',
+    styleUrls: ['./navbar-button.component.css', '../../menu-bar/menu-button/menu-button.component.css'],
+    standalone: false
 })
 export class NavbarButtonComponent extends MenuButtonComponent {
 

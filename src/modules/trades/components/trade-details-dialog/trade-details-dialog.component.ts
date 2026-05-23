@@ -10,9 +10,10 @@ import { TradeItem } from '../../models/trade-item';
 import { discardTradeItems } from '../../store/trade-item/trade-item.actions';
 
 @Component({
-  selector: 'dialog-trade-details',
-  templateUrl: './trade-details-dialog.component.html',
-  styleUrls: ['./trade-details-dialog.component.css']
+    selector: 'dialog-trade-details',
+    templateUrl: './trade-details-dialog.component.html',
+    styleUrls: ['./trade-details-dialog.component.css'],
+    standalone: false
 })
 export class TradeDetailsDialogComponent implements OnDestroy {
 

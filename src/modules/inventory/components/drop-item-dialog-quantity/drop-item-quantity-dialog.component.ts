@@ -10,9 +10,10 @@ import { deselectItem, dropItem } from '../../store/inventory/inventory.actions'
 import { DropItemRequest } from '../../models/requests/drop-item-request.model';
 
 @Component({
-  selector: 'dialog-drop-item-quantity',
-  templateUrl: './drop-item-quantity-dialog.component.html',
-  styleUrls: ['./drop-item-quantity-dialog.component.css']
+    selector: 'dialog-drop-item-quantity',
+    templateUrl: './drop-item-quantity-dialog.component.html',
+    styleUrls: ['./drop-item-quantity-dialog.component.css'],
+    standalone: false
 })
 export class DropItemQuantityDialogComponent implements OnInit, OnDestroy {
 

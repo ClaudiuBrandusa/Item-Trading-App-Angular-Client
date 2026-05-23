@@ -8,9 +8,10 @@ import { clearArray } from '../../../shared/utils/array-utils';
 import { selectTradeDirections } from '../../store/trade/trade.selector';
 
 @Component({
-  selector: 'app-trades-page',
-  templateUrl: './trades-page.component.html',
-  styleUrls: ['./trades-page.component.css']
+    selector: 'app-trades-page',
+    templateUrl: './trades-page.component.html',
+    styleUrls: ['./trades-page.component.css'],
+    standalone: false
 })
 export class TradesPageComponent implements OnInit {
   selectedTradeItems = new Array<string>();

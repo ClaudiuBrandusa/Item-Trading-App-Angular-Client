@@ -12,9 +12,10 @@ import { selectCurrentItemData } from '../../store/inventory/inventory.selector'
 import { addItem, deselectItem } from '../../store/inventory/inventory.actions';
 
 @Component({
-  selector: 'dialog-add-item-quantity',
-  templateUrl: './add-item-quantity-dialog.component.html',
-  styleUrls: ['./add-item-quantity-dialog.component.css']
+    selector: 'dialog-add-item-quantity',
+    templateUrl: './add-item-quantity-dialog.component.html',
+    styleUrls: ['./add-item-quantity-dialog.component.css'],
+    standalone: false
 })
 export class AddItemQuantityDialogComponent implements OnInit, OnDestroy {
   

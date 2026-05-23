@@ -3,7 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { JwtModule } from '@auth0/angular-jwt';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app.component';
@@ -30,45 +30,37 @@ export function refreshTokenGetter() {
   return localStorage.getItem("refreshToken");
 }
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    ViewReferenceDirective
-  ],
-  providers: [EndpointsService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthenticationInterceptor,
-      multi: true
-    },
-    SignalRService,
-    provideStore()
-  ],
-  exports: [AppRoutingModule],
-  bootstrap: [AppComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    IdentityModule,
-    NgbModule,
-    ReactiveFormsModule,
-    RouterModule,
-    HttpClientModule,
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: tokenGetter,
-        disallowedRoutes: []
-      }
-    }),
-    ItemModule,
-    IndexModule,
-    InventoryModule,
-    TradesModule,
-    NotificationModule,
-    ModalManagerComponent,
-    WarningPopupComponent,
-    StoreModule.forFeature("modal", ModalReducer),
-    StoreModule.forRoot({})
-  ]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        ViewReferenceDirective
+    ],
+    exports: [AppRoutingModule],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        IdentityModule,
+        NgbModule,
+        ReactiveFormsModule,
+        RouterModule,
+        JwtModule.forRoot({
+            config: {
+                tokenGetter: tokenGetter,
+                disallowedRoutes: []
+            }
+        }),
+        ItemModule,
+        IndexModule,
+        InventoryModule,
+        TradesModule,
+        NotificationModule,
+        ModalManagerComponent,
+        WarningPopupComponent,
+        StoreModule.forFeature("modal", ModalReducer),
+        StoreModule.forRoot({})], providers: [EndpointsService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthenticationInterceptor,
+            multi: true
+        },
+        SignalRService,
+        provideStore(), provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }

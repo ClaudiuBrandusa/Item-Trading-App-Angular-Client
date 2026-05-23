@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-  name: 'toString'
+    name: 'toString',
+    standalone: false
 })
 export class ToString implements PipeTransform {
   transform(text: number, ...args: any[]) {

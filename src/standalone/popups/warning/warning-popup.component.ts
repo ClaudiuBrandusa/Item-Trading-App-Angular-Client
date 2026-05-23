@@ -4,11 +4,10 @@ import { NavigationService } from '../../../modules/shared/services/navigation.s
 import { DialogModule } from '../../../modules/dialog/dialog.module';
 
 @Component({
-  selector: 'app-warning',
-  standalone: true,
-  imports: [CommonModule, DialogModule],
-  templateUrl: './warning-popup.component.html',
-  styleUrls: ['./warning-popup.component.css']
+    selector: 'app-warning',
+    imports: [CommonModule, DialogModule],
+    templateUrl: './warning-popup.component.html',
+    styleUrls: ['./warning-popup.component.css']
 })
 export class WarningPopupComponent {
   constructor(private navigationService: NavigationService) {}

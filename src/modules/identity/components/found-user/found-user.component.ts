@@ -2,9 +2,10 @@ import { Component, Input } from '@angular/core';
 import { FoundUserResponse } from '../../models/responses/found-user.response';
 
 @Component({
-  selector: 'app-found-user',
-  templateUrl: './found-user.component.html',
-  styleUrls: ['./found-user.component.css']
+    selector: 'app-found-user',
+    templateUrl: './found-user.component.html',
+    styleUrls: ['./found-user.component.css'],
+    standalone: false
 })
 export class FoundUserComponent {
 

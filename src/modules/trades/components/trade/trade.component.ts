@@ -12,9 +12,10 @@ import { addTradeItems } from '../../store/trade-item/trade-item.actions';
 import { clearArray } from '../../../shared/utils/array-utils';
 
 @Component({
-  selector: 'app-trade',
-  templateUrl: './trade.component.html',
-  styleUrls: ['./trade.component.css']
+    selector: 'app-trade',
+    templateUrl: './trade.component.html',
+    styleUrls: ['./trade.component.css'],
+    standalone: false
 })
 export class TradeComponent implements OnInit {
 

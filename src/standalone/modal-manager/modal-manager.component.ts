@@ -6,10 +6,9 @@ import { modalConfigs } from './modals.data';
 import { openPopupSucceeded, closePopupSucceeded } from './store/modal.actions';
 
 @Component({
-  selector: 'app-modal-manager',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './modal-manager.component.html'
+    selector: 'app-modal-manager',
+    imports: [CommonModule],
+    templateUrl: './modal-manager.component.html'
 })
 export class ModalManagerComponent {
   @ViewChild("viewRef", { read: ViewContainerRef }) viewContainerRef!: ViewContainerRef;

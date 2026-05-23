@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-dark-background',
-  templateUrl: './dark-background.component.html',
-  styleUrls: ['./dark-background.component.css']
+    selector: 'app-dark-background',
+    templateUrl: './dark-background.component.html',
+    styleUrls: ['./dark-background.component.css'],
+    standalone: false
 })
 export class DarkBackgroundComponent {
 

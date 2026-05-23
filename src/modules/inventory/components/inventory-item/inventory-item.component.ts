@@ -10,9 +10,10 @@ import { selectItemById } from '../../store/inventory/inventory.selector';
 import { Item } from '../../../item/models/responses/item';
 
 @Component({
-  selector: 'app-inventory-item',
-  templateUrl: './inventory-item.component.html',
-  styleUrls: ['./inventory-item.component.css']
+    selector: 'app-inventory-item',
+    templateUrl: './inventory-item.component.html',
+    styleUrls: ['./inventory-item.component.css'],
+    standalone: false
 })
 export class InventoryItemComponent implements OnInit {
  

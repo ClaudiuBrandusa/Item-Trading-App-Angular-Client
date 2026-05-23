@@ -8,9 +8,10 @@ import { SilentTokenRefreshService } from '../../identity/services/silent-token-
 import { TimeSpan } from '../../shared/utils/time-span';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
+    standalone: false
 })
 export class AppComponent {
   title = 'Item Trading App';

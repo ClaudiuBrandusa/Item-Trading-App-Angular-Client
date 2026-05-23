@@ -6,9 +6,10 @@ import { selectTradeIds } from '../../store/trade/trade.selector';
 import { TradeBaseData } from '../../models/trade-base-data';
 
 @Component({
-  selector: 'app-trades-list',
-  templateUrl: './trades-list.component.html',
-  styleUrls: ['./trades-list.component.css']
+    selector: 'app-trades-list',
+    templateUrl: './trades-list.component.html',
+    styleUrls: ['./trades-list.component.css'],
+    standalone: false
 })
 export class TradesListComponent {
   tradesData$: Observable<TradeBaseData[]>;

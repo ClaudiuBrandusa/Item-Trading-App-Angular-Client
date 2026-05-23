@@ -2,9 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-identity-dialog',
-  templateUrl: './identity-dialog.component.html',
-  styleUrls: ['./identity-dialog.component.css']
+    selector: 'app-identity-dialog',
+    templateUrl: './identity-dialog.component.html',
+    styleUrls: ['./identity-dialog.component.css'],
+    standalone: false
 })
 export class IdentityDialogComponent {
 

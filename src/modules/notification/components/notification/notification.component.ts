@@ -6,9 +6,10 @@ import { TimeSpan } from '../../../shared/utils/time-span';
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-notification',
-  templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.css', '../../../../css/effects.css']
+    selector: 'app-notification',
+    templateUrl: './notification.component.html',
+    styleUrls: ['./notification.component.css', '../../../../css/effects.css'],
+    standalone: false
 })
 export class NotificationComponent implements OnDestroy {
   private notificationData: MessageNotification;

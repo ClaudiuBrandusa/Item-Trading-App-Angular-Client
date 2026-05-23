@@ -7,9 +7,10 @@ import { createItemRequestSent, createItemTerminated } from '../../store/item/it
 import { Item } from '../../models/responses/item';
 
 @Component({
-  selector: 'dialog-create-item',
-  templateUrl: './create-item-dialog.component.html',
-  styleUrls: ['./create-item-dialog.component.css']
+    selector: 'dialog-create-item',
+    templateUrl: './create-item-dialog.component.html',
+    styleUrls: ['./create-item-dialog.component.css'],
+    standalone: false
 })
 export class CreateItemDialogComponent implements OnDestroy {
 

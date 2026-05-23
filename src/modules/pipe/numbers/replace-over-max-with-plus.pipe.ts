@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-  name: 'replaceOverMaxWithPlus'
+    name: 'replaceOverMaxWithPlus',
+    standalone: false
 })
 export class ReplaceOverMaxWithPlusPipe implements PipeTransform {
   transform(number: Number, maxLimit: Number, ...args: any[]) {

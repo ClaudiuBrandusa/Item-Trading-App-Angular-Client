@@ -9,9 +9,10 @@ import { clearSearchedItems, loadItemsInitiated } from '../../../item/store/item
 import { selectItemIds } from '../../../item/store/item/item.selector';
 
 @Component({
-  selector: 'dialog-add-item-select',
-  templateUrl: './add-item-select-dialog.component.html',
-  styleUrls: ['./add-item-select-dialog.component.css']
+    selector: 'dialog-add-item-select',
+    templateUrl: './add-item-select-dialog.component.html',
+    styleUrls: ['./add-item-select-dialog.component.css'],
+    standalone: false
 })
 export class AddItemSelectDialogComponent {
 

@@ -5,9 +5,10 @@ import { createItemInitiated, loadItemsInitiated } from '../../store/item/item.a
 import { Item } from '../../models/responses/item';
 
 @Component({
-  selector: 'app-items',
-  templateUrl: './items-page.component.html',
-  styleUrls: ['./items-page.component.css']
+    selector: 'app-items',
+    templateUrl: './items-page.component.html',
+    styleUrls: ['./items-page.component.css'],
+    standalone: false
 })
 export class ItemsComponent {
 

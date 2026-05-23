@@ -5,9 +5,10 @@ import { Store } from '@ngrx/store';
 import { loadItemsInit } from '../../store/inventory/inventory.actions';
 
 @Component({
-  selector: 'app-inventory',
-  templateUrl: './inventory-page.component.html',
-  styleUrls: ['./inventory-page.component.css']
+    selector: 'app-inventory',
+    templateUrl: './inventory-page.component.html',
+    styleUrls: ['./inventory-page.component.css'],
+    standalone: false
 })
 export class InventoryPageComponent {
 

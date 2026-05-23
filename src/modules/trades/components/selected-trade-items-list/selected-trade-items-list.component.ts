@@ -7,9 +7,10 @@ import { Trade } from '../../models/responses/trade';
 import { selectCurrentTradeStatus } from '../../store/trade/trade.selector';
 
 @Component({
-  selector: 'app-selected-trade-items-list',
-  templateUrl: './selected-trade-items-list.component.html',
-  styleUrls: ['./selected-trade-items-list.component.css']
+    selector: 'app-selected-trade-items-list',
+    templateUrl: './selected-trade-items-list.component.html',
+    styleUrls: ['./selected-trade-items-list.component.css'],
+    standalone: false
 })
 export class SelectedTradeItemsListComponent {
   

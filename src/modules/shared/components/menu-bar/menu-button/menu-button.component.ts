@@ -6,9 +6,10 @@ import { EventBusUtils } from '../../../utils/event-bus.utility';
 import { EventData } from '../../../utils/event-data';
 
 @Component({
-  selector: 'app-menu-button',
-  templateUrl: './menu-button.component.html',
-  styleUrls: ['./menu-button.component.css']
+    selector: 'app-menu-button',
+    templateUrl: './menu-button.component.html',
+    styleUrls: ['./menu-button.component.css'],
+    standalone: false
 })
 export class MenuButtonComponent implements OnInit, OnDestroy {
 

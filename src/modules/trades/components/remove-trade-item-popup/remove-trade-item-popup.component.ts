@@ -6,9 +6,10 @@ import { selectCurrentTradeItem } from '../../store/trade-item/trade-item.select
 import { deselectTradeItem, removeTradeItem } from '../../store/trade-item/trade-item.actions';
 
 @Component({
-  selector: 'popup-remove-trade-item',
-  templateUrl: './remove-trade-item-popup.component.html',
-  styleUrls: ['./remove-trade-item-popup.component.css']
+    selector: 'popup-remove-trade-item',
+    templateUrl: './remove-trade-item-popup.component.html',
+    styleUrls: ['./remove-trade-item-popup.component.css'],
+    standalone: false
 })
 export class RemoveTradeItemPopupComponent {
 

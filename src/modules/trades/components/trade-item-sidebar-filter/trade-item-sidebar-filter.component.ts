@@ -4,9 +4,10 @@ import { selectItemNames } from '../../../item/store/item/item.selector';
 import { searchItemByNameInit } from '../../../item/store/item/item.actions';
 
 @Component({
-  selector: 'app-trade-item-sidebar-filter',
-  templateUrl: './trade-item-sidebar-filter.component.html',
-  styleUrls: ['./trade-item-sidebar-filter.component.css']
+    selector: 'app-trade-item-sidebar-filter',
+    templateUrl: './trade-item-sidebar-filter.component.html',
+    styleUrls: ['./trade-item-sidebar-filter.component.css'],
+    standalone: false
 })
 export class TradeItemSidebarFilterComponent {
 

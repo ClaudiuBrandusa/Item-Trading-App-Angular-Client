@@ -17,9 +17,10 @@ import { TradeOfferRequest } from '../../models/requests/trade-offer.request';
 import { clearArray } from '../../../shared/utils/array-utils';
 
 @Component({
-  selector: 'dialog-select-items-for-trade',
-  templateUrl: './select-items-for-trade-dialog.component.html',
-  styleUrls: ['./select-items-for-trade-dialog.component.css']
+    selector: 'dialog-select-items-for-trade',
+    templateUrl: './select-items-for-trade-dialog.component.html',
+    styleUrls: ['./select-items-for-trade-dialog.component.css'],
+    standalone: false
 })
 export class SelectItemsForTradeDialogComponent implements OnInit, OnDestroy {
 

@@ -6,9 +6,10 @@ import { Observable } from 'rxjs';
 import { selectInventoryItemIds } from '../../store/inventory/inventory.selector';
 
 @Component({
-  selector: 'app-list-inventory',
-  templateUrl: './list-inventory.component.html',
-  styleUrls: ['./list-inventory.component.css']
+    selector: 'app-list-inventory',
+    templateUrl: './list-inventory.component.html',
+    styleUrls: ['./list-inventory.component.css'],
+    standalone: false
 })
 export class ListInventoryComponent implements OnInit {
 

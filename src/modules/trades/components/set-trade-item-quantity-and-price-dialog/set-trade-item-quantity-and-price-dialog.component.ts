@@ -13,9 +13,10 @@ import { addTradeItem, deselectTradeItem } from '../../store/trade-item/trade-it
 import { NavigationService } from '../../../shared/services/navigation.service';
 
 @Component({
-  selector: 'dialog-set-trade-item-quantity-and-price',
-  templateUrl: './set-trade-item-quantity-and-price-dialog.component.html',
-  styleUrls: ['./set-trade-item-quantity-and-price-dialog.component.css']
+    selector: 'dialog-set-trade-item-quantity-and-price',
+    templateUrl: './set-trade-item-quantity-and-price-dialog.component.html',
+    styleUrls: ['./set-trade-item-quantity-and-price-dialog.component.css'],
+    standalone: false
 })
 export class SetTradeItemQuantityAndPriceDialogComponent implements OnInit {
   currentTradeItem: TradeItem;

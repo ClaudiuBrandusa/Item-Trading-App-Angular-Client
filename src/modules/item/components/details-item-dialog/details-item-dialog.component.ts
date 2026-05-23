@@ -7,9 +7,10 @@ import { selectCurrentItem } from '../../store/item/item.selector';
 import { Observable, map } from 'rxjs';
 
 @Component({
-  selector: 'dialog-details-item',
-  templateUrl: './details-item-dialog.component.html',
-  styleUrls: ['./details-item-dialog.component.css']
+    selector: 'dialog-details-item',
+    templateUrl: './details-item-dialog.component.html',
+    styleUrls: ['./details-item-dialog.component.css'],
+    standalone: false
 })
 export class DetailsItemDialogComponent implements OnInit, OnDestroy {
 

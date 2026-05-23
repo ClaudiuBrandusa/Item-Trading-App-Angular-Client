@@ -3,9 +3,10 @@ import { IdentityPage } from '../../enums/identity-page';
 import { CurrentIdentityPageService } from '../../services/current-identity-page.service';
 
 @Component({
-  selector: 'app-navigation-header',
-  templateUrl: './navigation-header.component.html',
-  styleUrls: ['./navigation-header.component.css']
+    selector: 'app-navigation-header',
+    templateUrl: './navigation-header.component.html',
+    styleUrls: ['./navigation-header.component.css'],
+    standalone: false
 })
 export class NavigationHeaderComponent {
 

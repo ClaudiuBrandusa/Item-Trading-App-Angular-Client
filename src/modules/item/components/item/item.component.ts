@@ -12,9 +12,10 @@ import { clearArray } from '../../../shared/utils/array-utils';
 import { PopupNames } from '../../../../standalone/popups/enums/popup-names';
 
 @Component({
-  selector: 'app-item',
-  templateUrl: './item.component.html',
-  styleUrls: ['./item.component.css']
+    selector: 'app-item',
+    templateUrl: './item.component.html',
+    styleUrls: ['./item.component.css'],
+    standalone: false
 })
 export class ItemComponent implements OnInit {
 

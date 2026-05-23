@@ -7,9 +7,10 @@ import { selectCurrentItem } from '../../store/item/item.selector';
 import { Observable, map } from 'rxjs';
 
 @Component({
-  selector: 'dialog-delete-item',
-  templateUrl: './delete-item-dialog.component.html',
-  styleUrls: ['./delete-item-dialog.component.css']
+    selector: 'dialog-delete-item',
+    templateUrl: './delete-item-dialog.component.html',
+    styleUrls: ['./delete-item-dialog.component.css'],
+    standalone: false
 })
 export class DeleteItemDialogComponent implements OnInit, OnDestroy {
   

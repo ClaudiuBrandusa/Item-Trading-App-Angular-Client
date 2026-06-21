@@ -5,24 +5,33 @@
     </div>
   </div>
   <div class="d-flex flex-column flex-gap me-2 flex-grow-1">
-    <span data-test-id="item-name" class="d-flex flex-row font-size-medium">
-      <strong>Name</strong>:
-      {{ (item$ | async )?.name }}
+    <span data-testid="item-name"
+      class="d-flex flex-row font-size-medium">
+      <strong>Name:</strong>&nbsp;
+      <span data-testid="item-name-value">
+        {{ (item$ | async )?.name }}
+      </span>
     </span>
-    <span data-test-id="item-description" class="d-flex flex-row font-size-medium">
-      <strong>Description</strong>:
-      {{ (item$ | async )?.description }}
+    <span data-testid="item-description" class="d-flex flex-row font-size-medium">
+      <strong>Description:</strong>&nbsp;
+      <span data-testid="item-description-value">
+        {{ (item$ | async )?.description }}
+      </span>
     </span>
     <span class="d-flex flex-row font-size-medium" *ngIf="!isShort">
-      <div (click)="details()" class="d-inline-block color-blue no-select cursor-pointer"><strong>Details</strong></div>
+      <div (click)="details()" class="d-inline-block color-blue no-select cursor-pointer">
+        <strong>Details</strong>
+      </div>
     </span>
   </div>
-  <div *ngIf="hasControls" data-test-id="item-controls" class="d-flex flex-column flex-0 p-0 ps-1 text-center no-select cursor-pointer">
-    <div class="d-flex font-size-medium rounded p-2 bg-cadet-blue color-white" (click)="edit()">
+  <div *ngIf="hasControls"
+    data-testid="item-controls"
+    class="d-flex flex-column flex-0 p-0 ps-1 text-center no-select cursor-pointer">
+    <div data-testid="item-edit-button" class="d-flex font-size-medium rounded p-2 bg-cadet-blue color-white" (click)="edit()">
       <strong>Edit</strong>
       <i class="fa-solid fa-pen my-auto ms-auto ps-1"></i>
     </div>
-    <div class="d-flex font-size-medium rounded mt-1 p-2 bg-dark-red color-white no-select cursor-pointer" (click)="delete()">
+    <div data-testid="item-delete-button" class="d-flex font-size-medium rounded mt-1 p-2 bg-dark-red color-white no-select cursor-pointer" (click)="delete()">
       <strong>Delete</strong>
       <i class="fa-solid fa-trash my-auto ms-auto ps-1"></i>
     </div>

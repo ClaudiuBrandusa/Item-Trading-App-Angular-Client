@@ -47,8 +47,8 @@ describe('ItemComponent', () => {
     component.item$ = of(itemMock);
 
     fixture.detectChanges();
-    const itemNameDiv = fixture.debugElement.query(By.css('[data-test-id="item-name"]'))?.nativeElement;
-    const itemDescriptionDiv = fixture.debugElement.query(By.css('[data-test-id="item-description"]'))?.nativeElement;
+    const itemNameDiv = fixture.debugElement.query(By.css('[data-testid="item-name"]'))?.nativeElement;
+    const itemDescriptionDiv = fixture.debugElement.query(By.css('[data-testid="item-description"]'))?.nativeElement;
   
     expect(itemNameDiv).toBeTruthy();
     expect(itemDescriptionDiv).toBeTruthy();
@@ -64,7 +64,7 @@ describe('ItemComponent', () => {
 
     fixture.detectChanges();
 
-    const controlsDiv = fixture.debugElement.query(By.css('[data-test-id="item-controls"]'))?.nativeElement;
+    const controlsDiv = fixture.debugElement.query(By.css('[data-testid="item-controls"]'))?.nativeElement;
 
     expect(controlsDiv).toBeTruthy();
   });
@@ -74,7 +74,7 @@ describe('ItemComponent', () => {
 
     fixture.detectChanges();
 
-    const controlsDiv = fixture.debugElement.query(By.css('[data-test-id="item-controls"]'))?.nativeElement;
+    const controlsDiv = fixture.debugElement.query(By.css('[data-testid="item-controls"]'))?.nativeElement;
 
     expect(controlsDiv).toBeFalsy();
   });

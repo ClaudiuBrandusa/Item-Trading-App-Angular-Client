@@ -18,7 +18,7 @@
   </ul>
   <ul class="d-flex flex-grow-1 flex-row justify-content-end flex-gap">
     <div>
-      <li data-test="notifications-button" #notificationsButton>
+      <li data-testid="notifications-button" #notificationsButton>
         <div [hidden]="notificationsCount == 0" class="position-absolute notification-bubble-size font-size-small color-white bg-dark-red border-radius-rounded text-center cursor-pointer p-05 px-1 ms-3">
           {{ notificationsCount | replaceOverMaxWithPlus:(99) }}
         </div>

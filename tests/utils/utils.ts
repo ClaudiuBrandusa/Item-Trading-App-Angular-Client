@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import { USERS } from './constants';
+import { USERS } from 'tests/constants';
 
 export async function connectWithDefaultAccount(page: Page) {
     await page.goto('/');

@@ -28,7 +28,8 @@ export class EditItemDialogComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store.select(selectCurrentItem).subscribe((item) => {
       if (item === undefined) {
-        this.exit();
+        if (this.navigationService.currentRoute == "edit")
+          this.exit();
         return;
       }
 

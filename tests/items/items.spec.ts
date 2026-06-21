@@ -1,6 +1,6 @@
 import { test, expect, Locator, Page } from '@playwright/test';
 import { Item } from 'src/modules/item/models/responses/item';
-import { connectWithDefaultAccount, goToItems } from 'tests/utils/utils';
+import { connectWithDefaultAccount, getButtonWithName, goToItems } from 'tests/utils/utils';
 
 test.describe('List items tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -43,6 +43,114 @@ test.describe('List items tests', () => {
       await expect(itemControlsElement).toBeAttached();
       await expect(itemControlsElement).toBeVisible();
     }
+  });
+
+  test('should be able to see the items list and search by item name', async({ page }) => {
+    let itemsListComponent = await page.locator('app-list-items');
+
+    await expect(itemsListComponent).toHaveCount(1);
+    await expect(itemsListComponent).toBeVisible();
+    await expect(itemsListComponent).toBeAttached();
+
+    const items = await itemsListComponent.locator('app-item');
+
+    const itemsCount = await items.count();
+
+    expect(itemsCount).toBeGreaterThan(1);
+
+    const firstItem = items.nth(0);
+
+    await expect(firstItem).toBeVisible();
+      
+    const itemNameElement = await firstItem.getByTestId('item-name');
+    const itemName = await itemNameElement.getByTestId('item-name-value');
+
+    await expect(itemNameElement).toBeAttached();
+    await expect(itemName).not.toBeEmpty();
+    
+    const itemNameText = (await itemName.textContent()).trim();
+
+    let searchBarInput = await page.getByTestId('search-bar-input');
+    await searchBarInput.fill(itemNameText);
+    let searchBarButton = await page.getByTestId('search-bar-submit-button');
+    await searchBarButton.click();
+    
+    const itemsAfterSearch = await getItems(page);
+    const itemsAfterSearchCount = await itemsAfterSearch.count();
+
+    expect(itemsAfterSearchCount).toBeGreaterThan(0);
+
+    const listedItem = itemsAfterSearch.nth(0);
+
+    await expect(listedItem).toBeVisible();
+
+    const listedItemNameElement = await listedItem.getByTestId('item-name');
+    const listedItemName = await listedItemNameElement.getByTestId('item-name-value');
+  
+    await expect(listedItemNameElement).toBeAttached();
+    await expect(listedItemName).not.toBeEmpty();
+
+    const listedItemNameText = (await itemName.textContent()).trim();
+
+    expect(listedItemNameText).toBe(itemNameText);
+  });
+
+  test('should be able to search then clear the search input and then see the list of all items', async({ page }) => {
+    let itemsListComponent = await page.locator('app-list-items');
+
+    await expect(itemsListComponent).toHaveCount(1);
+    await expect(itemsListComponent).toBeVisible();
+    await expect(itemsListComponent).toBeAttached();
+
+    const items = await itemsListComponent.locator('app-item');
+
+    const itemsCount = await items.count();
+
+    expect(itemsCount).toBeGreaterThan(1);
+
+    const firstItem = items.nth(0);
+
+    await expect(firstItem).toBeVisible();
+      
+    const itemNameElement = await firstItem.getByTestId('item-name');
+    const itemName = await itemNameElement.getByTestId('item-name-value');
+
+    await expect(itemNameElement).toBeAttached();
+    await expect(itemName).not.toBeEmpty();
+    
+    const itemNameText = (await itemName.textContent()).trim();
+
+    let searchBarInput = await page.getByTestId('search-bar-input');
+    await searchBarInput.fill(itemNameText);
+    let searchBarButton = await page.getByTestId('search-bar-submit-button');
+    await searchBarButton.click();
+    
+    const itemsAfterSearch = await getItems(page);
+    const itemsAfterSearchCount = await itemsAfterSearch.count();
+
+    expect(itemsAfterSearchCount).toBeGreaterThan(0);
+
+    const listedItem = itemsAfterSearch.nth(0);
+
+    await expect(listedItem).toBeVisible();
+
+    const listedItemNameElement = await listedItem.getByTestId('item-name');
+    const listedItemName = await listedItemNameElement.getByTestId('item-name-value');
+  
+    await expect(listedItemNameElement).toBeAttached();
+    await expect(listedItemName).not.toBeEmpty();
+
+    const listedItemNameText = (await itemName.textContent()).trim();
+
+    expect(listedItemNameText).toBe(itemNameText);
+
+    await searchBarInput.clear();
+    await searchBarButton.click();
+
+    const itemsAfterSearchingAll = await getItems(page);
+    const itemsAfterSearchingAllCount = await itemsAfterSearchingAll.count();
+
+    expect(itemsAfterSearchingAllCount).toBe(itemsCount);
   });
 });
 
@@ -206,10 +314,6 @@ test.describe('Create Item Menu Item Tests', () => {
     await expect(await countItemsWithName(page, itemsAfterDelete, inputItemName)).toBe(0);
   });
 });
-
-function getButtonWithName(source: Locator, name: string): Locator {
-  return source.getByRole('button', { name });
-}
 
 async function getItems(source: Page): Promise<Locator> {
   let itemsListComponent = await source.locator('app-list-items');

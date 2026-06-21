@@ -10,7 +10,9 @@
           <span class="font-size-medium ms-1">Choose the quantity of <strong>{{ (item$ | async ).name }}</strong> to add.</span>
         </div>
         <div class="d-flex flex-column mx-auto">
-          <input class="border rounded border-normal my-2" type="number" placeholder="Quantity" formControlName="itemQuantity">
+          <input
+            data-testid="add-item-dialog-quantity-input"
+            class="border rounded border-normal my-2" type="number" placeholder="Quantity" formControlName="itemQuantity">
           <app-error class="text-center" [controlName]="form.controls['quantity']"></app-error>
         </div>
       </form>

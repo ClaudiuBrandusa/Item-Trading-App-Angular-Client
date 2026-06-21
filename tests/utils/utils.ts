@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { USERS } from 'tests/constants';
 
 export async function connectWithDefaultAccount(page: Page) {
@@ -15,4 +15,12 @@ export async function connectWithDefaultAccount(page: Page) {
 
 export async function goToItems(page: Page) {
     await page.getByText('Items').click();
+}
+
+export async function goToInventory(page: Page) {
+    await page.getByText('Inventory').click();
+}
+
+export function getButtonWithName(source: Locator, name: string): Locator {
+  return source.getByRole('button', { name });
 }

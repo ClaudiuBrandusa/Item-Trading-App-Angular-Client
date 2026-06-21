@@ -8,6 +8,7 @@
         <div class="d-flex flex-row flex-0 m-2">
           <div class="d-flex flex-grow-1 me-1">
             <input
+              data-testid="add-item-dialog-search-input"
               [(ngModel)]="searchString"
               (ngModelChange)="onSearchStringChange()"
               type="search"

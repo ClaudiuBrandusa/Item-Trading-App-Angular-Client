@@ -6,21 +6,28 @@
     </div>
   </div>
   <div class="d-flex flex-column flex-grow-1 flex-gap">
-    <span class="d-flex flex-row font-size-medium">
-      <strong>Name</strong>:
-      {{ ( item$ | async )?.itemName }}
+    <span data-testid="item-name"
+      class="d-flex flex-row font-size-medium">
+      <strong>Name:</strong>&nbsp;
+      <span data-testid="item-name-value">
+        {{ ( item$ | async )?.itemName }}
+      </span>
     </span>
-    <span class="d-flex flex-row font-size-medium">
-      <strong>Quantity</strong>:
-      {{ ( item$ | async )?.quantity }}
+    <span data-testid="item-quantity" class="d-flex flex-row font-size-medium">
+      <strong>Quantity:</strong>&nbsp;
+      <span data-testid="item-quantity-value"
+        [innerText]="( item$ | async )?.quantity">
+      </span>
     </span>
   </div>
-  <div *ngIf="hasControls" class="d-flex flex-column flex-0 p-0 ps-1 text-center no-select cursor-pointer">
-    <div class="d-flex font-size-medium mb-1 p-2 rounded bg-cadet-blue color-white" (click)="add()">
+  <div *ngIf="hasControls"
+    data-testid="item-controls"
+    class="d-flex flex-column flex-0 p-0 ps-1 text-center no-select cursor-pointer">
+    <div data-testid="item-add-button" class="d-flex font-size-medium mb-1 p-2 rounded bg-cadet-blue color-white" (click)="add()">
       <strong>Add</strong>
       <i class="fa-solid fa-plus my-auto ms-auto ps-1"></i>
     </div>
-    <div class="d-flex font-size-medium mt-1 p-2 rounded bg-dark-red color-white no-select cursor-pointer" (click)="drop()">
+    <div data-testid="item-drop-button" class="d-flex font-size-medium mt-1 p-2 rounded bg-dark-red color-white no-select cursor-pointer" (click)="drop()">
       <strong>Drop</strong>
       <i class="fa-solid fa-minus my-auto ms-auto ps-1"></i>
     </div>

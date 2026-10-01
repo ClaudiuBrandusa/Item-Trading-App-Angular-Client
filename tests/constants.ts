@@ -1,5 +1,8 @@
+import { AccountConfig } from "./utils/models/account.config";
+
 export const USERS = {
-    root: { username: 'root', password: '!Ab12345' },
-    claudiu: { username: 'claudiu', password: '!Ab12345' },
-    user: { username: 'user', password: '!Ab12345' }
+    root: new AccountConfig('root', '!Ab12345'),
+    claudiu: new AccountConfig('claudiu', '!Ab12345'),
+    user: new AccountConfig('user', '!Ab12345'),
+    second_user: new AccountConfig('second_user', '!Ab12345')
 };

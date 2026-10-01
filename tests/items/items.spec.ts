@@ -148,9 +148,8 @@ test.describe('List items tests', () => {
     await searchBarButton.click();
 
     const itemsAfterSearchingAll = await getItems(page);
-    const itemsAfterSearchingAllCount = await itemsAfterSearchingAll.count();
 
-    expect(itemsAfterSearchingAllCount).toBe(itemsCount);
+    await expect(itemsAfterSearchingAll).toHaveCount(itemsCount);
   });
 });
 

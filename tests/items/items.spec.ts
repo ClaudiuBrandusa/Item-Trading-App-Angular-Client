@@ -1,24 +1,28 @@
-import { test, expect, Locator, Page } from '@playwright/test';
-import { Item } from 'src/modules/item/models/responses/item';
-import { connectWithDefaultAccount, getButtonWithName, goToItems } from 'tests/utils/utils';
+import { test, expect } from '@playwright/test';
+import { expectMenuButtonToBeSelected, expectMenuButtonToNotBeSelected } from 'tests/assertions/menu-button.assertions';
+import { SearchBarHelper } from 'tests/helpers/search-bar.helper';
+import { ItemsPage } from 'tests/utils/pages/items.page';
+import { connectWithDefaultAccount, getButtonWithName } from 'tests/utils/utils';
 
 test.describe('List items tests', () => {
+  let itemsPage: ItemsPage;
+  let searchBarHelper: SearchBarHelper;
+
   test.beforeEach(async ({ page }) => {
     await connectWithDefaultAccount(page);
-    await goToItems(page);
+    itemsPage = new ItemsPage(page);
+    searchBarHelper = new SearchBarHelper(page);
+    await itemsPage.navigateToItemsPage();
   });
 
-  test('should be able to see the items list and validate each item data', async ({ page }) => {
-    let itemsListComponent = await page.locator('app-list-items');
+  test('should be able to see the items list and validate each item data', async () => {
+    let itemsListComponent = await itemsPage.getItemsListLocator();
 
     await expect(itemsListComponent).toHaveCount(1);
-
     await expect(itemsListComponent).toBeVisible();
-    
     await expect(itemsListComponent).toBeAttached();
 
     const items = await itemsListComponent.locator('app-item');
-
     const itemsCount = await items.count();
 
     expect(itemsCount).toBeGreaterThan(1);
@@ -45,8 +49,8 @@ test.describe('List items tests', () => {
     }
   });
 
-  test('should be able to see the items list and search by item name', async ({ page }) => {
-    let itemsListComponent = await page.locator('app-list-items');
+  test('should be able to see the items list and search by item name', async () => {
+    let itemsListComponent = await itemsPage.getItemsListLocator();
 
     await expect(itemsListComponent).toHaveCount(1);
     await expect(itemsListComponent).toBeVisible();
@@ -70,12 +74,12 @@ test.describe('List items tests', () => {
     
     const itemNameText = (await itemName.textContent()).trim();
 
-    let searchBarInput = await page.getByTestId('search-bar-input');
+    let searchBarInput = await searchBarHelper.getSearchBarInputLocator();
     await searchBarInput.fill(itemNameText);
-    let searchBarButton = await page.getByTestId('search-bar-submit-button');
+    let searchBarButton = await searchBarHelper.getSearchBarSubmitButtonLocator();
     await searchBarButton.click();
     
-    const itemsAfterSearch = await getItems(page);
+    const itemsAfterSearch = await itemsPage.getItemsLocator();
     const itemsAfterSearchCount = await itemsAfterSearch.count();
 
     expect(itemsAfterSearchCount).toBeGreaterThan(0);
@@ -95,8 +99,8 @@ test.describe('List items tests', () => {
     expect(listedItemNameText).toBe(itemNameText);
   });
 
-  test('should be able to search then clear the search input and then see the list of all items', async ({ page }) => {
-    let itemsListComponent = await page.locator('app-list-items');
+  test('should be able to search then clear the search input and then see the list of all items', async () => {
+    let itemsListComponent = await itemsPage.getItemsListLocator();
 
     await expect(itemsListComponent).toHaveCount(1);
     await expect(itemsListComponent).toBeVisible();
@@ -120,12 +124,12 @@ test.describe('List items tests', () => {
     
     const itemNameText = (await itemName.textContent()).trim();
 
-    let searchBarInput = await page.getByTestId('search-bar-input');
+    let searchBarInput = await searchBarHelper.getSearchBarInputLocator();
     await searchBarInput.fill(itemNameText);
-    let searchBarButton = await page.getByTestId('search-bar-submit-button');
+    let searchBarButton = await searchBarHelper.getSearchBarSubmitButtonLocator();
     await searchBarButton.click();
     
-    const itemsAfterSearch = await getItems(page);
+    const itemsAfterSearch = await itemsPage.getItemsLocator();
     const itemsAfterSearchCount = await itemsAfterSearch.count();
 
     expect(itemsAfterSearchCount).toBeGreaterThan(0);
@@ -147,45 +151,43 @@ test.describe('List items tests', () => {
     await searchBarInput.clear();
     await searchBarButton.click();
 
-    const itemsAfterSearchingAll = await getItems(page);
+    const itemsAfterSearchingAll = await itemsPage.getItemsLocator();
 
     await expect(itemsAfterSearchingAll).toHaveCount(itemsCount);
   });
 });
 
 test.describe('Create Item Menu Item Tests', () => {
+  let itemsPage: ItemsPage;
+
   test.beforeEach(async ({ page }) => {
     await connectWithDefaultAccount(page);
-    await goToItems(page);
+    itemsPage = new ItemsPage(page);
+    await itemsPage.navigateToItemsPage();
   });
 
-  test('should select the `create item` menu item when clicked', async ({ page }) => {
-    const menuButton = await page.locator('app-menu-button');
-    const createItemMenuButton = await menuButton.nth(0).getByRole('listitem');
+  test('should select the `create item` menu item when clicked', async () => {
+    const createItemMenuButton = await itemsPage.getCreateItemMenuButtonLocator();
 
     await createItemMenuButton.click();
 
-    const classAttr = await createItemMenuButton.getAttribute('class');
-    expect(classAttr).toBe('selected');
+    expectMenuButtonToBeSelected(createItemMenuButton);
   });
 
-  test('should deselect the `create item` menu item when the dialog is closed', async ({ page }) => {
-    const menuButton = await page.locator('app-menu-button');
-    const createItemMenuButton = await menuButton.nth(0).getByRole('listitem');
-    const dialog = await page.locator('dialog-create-item');
+  test('should deselect the `create item` menu item when the dialog is closed', async () => {
+    const createItemMenuButton = await itemsPage.getCreateItemMenuButtonLocator();
+    const dialog = await itemsPage.getCreateItemDialogLocator();
     const cancelButton = await getButtonWithName(dialog, 'Cancel');
 
     await createItemMenuButton.click();
     await cancelButton.click();
 
-    const classAttr = await createItemMenuButton.getAttribute('class');
-    expect(classAttr).toBe('');
+    expectMenuButtonToNotBeSelected(createItemMenuButton);
   });
 
-  test('should not allow creating an item with invalid data', async ({ page }) => {
-    const menuButton = await page.locator('app-menu-button');
-    const createItemMenuButton = await menuButton.nth(0).getByRole('listitem');
-    const dialog = await page.locator('dialog-create-item');
+  test('should not allow creating an item with invalid data', async () => {
+    const createItemMenuButton = await itemsPage.getCreateItemMenuButtonLocator();
+    const dialog = await itemsPage.getCreateItemDialogLocator();
     const createButton = await getButtonWithName(dialog, 'Create');
     const cancelButton = await getButtonWithName(dialog, 'Cancel');
 
@@ -196,23 +198,21 @@ test.describe('Create Item Menu Item Tests', () => {
     await cancelButton.click();
   });
 
-  test('should create an item with valid data (no description) and delete it', async ({ page }) => {
-    const menuButton = await page.locator('app-menu-button');
-    const createItemMenuButton = await menuButton.nth(0).getByRole('listitem');
-    const dialog = await page.locator('dialog-create-item');
+  test('should create an item with valid data (no description) and delete it', async () => {
+    const createItemMenuButton = await itemsPage.getCreateItemMenuButtonLocator();
+    const dialog = await itemsPage.getCreateItemDialogLocator();
     const createButton = await getButtonWithName(dialog, 'Create');
 
     const inputItemName = 'Test Item 0';
 
     await createItemMenuButton.click();
-    await page.fill('input[formControlName="itemName"]', inputItemName);
+    await itemsPage.fillCreateItemDialogItemName(inputItemName);
     await createButton.click();
 
-    const items = await getItems(page);
     const {
       item: createdItem,
       locator: createdItemLocator
-    } = await getItem(page, items, inputItemName);
+    } = await itemsPage.getItemWithLocator(inputItemName);
   
     // currently the api returns '  ' instead of empty or undefined when no description was provided
     expect(createdItem.description).toBe('  ');
@@ -220,70 +220,60 @@ test.describe('Create Item Menu Item Tests', () => {
     const deleteButton = await createdItemLocator.getByTestId('item-delete-button');
     await deleteButton.click();
 
-    const deleteItemDialog = await page.locator('dialog-delete-item');
+    const deleteItemDialog = await itemsPage.getDeleteItemDialogLocator();
     const deleteButtonConfirm = await getButtonWithName(deleteItemDialog, 'Yes');
     await deleteButtonConfirm.click();
 
-    await page.waitForTimeout(200);
-
-    const itemsAfterDelete = await getItems(page);
-    await expect(await countItemsWithName(page, itemsAfterDelete, inputItemName)).toBe(0);
+    const itemsAfterDelete = await itemsPage.getItemLocator(inputItemName);
+    await expect(itemsAfterDelete).toHaveCount(0);
   });
 
-  test('should create an item with valid data (with description) and delete it', async ({ page }) => {
-    const menuButton = await page.locator('app-menu-button');
-    const createItemMenuButton = await menuButton.nth(0).getByRole('listitem');
-    const dialog = await page.locator('dialog-create-item');
+  test('should create an item with valid data (with description) and delete it', async () => {
+    const createItemMenuButton = await itemsPage.getCreateItemMenuButtonLocator();
+    const dialog = await itemsPage.getCreateItemDialogLocator();
     const createButton = await getButtonWithName(dialog, 'Create');
 
     const inputItemName = 'Test Item 1';
     const inputDescriptionName = 'This is a test description';
 
     await createItemMenuButton.click();
-    await page.fill('input[formControlName="itemName"]', inputItemName);
-    await page.fill('input[formControlName="itemDescription"]', inputDescriptionName);
+    await itemsPage.fillCreateItemDialogInputData(inputItemName, inputDescriptionName);
     await createButton.click();
 
-    const items = await getItems(page);
     const {
       item: createdItem,
       locator: createdItemLocator
-    } = await getItem(page, items, inputItemName);
+    } = await itemsPage.getItemWithLocator(inputItemName);
 
     expect(createdItem.description).toBe(` ${inputDescriptionName} `);
 
     const deleteButton = await createdItemLocator.getByTestId('item-delete-button');
     await deleteButton.click();
 
-    const deleteItemDialog = await page.locator('dialog-delete-item');
+    const deleteItemDialog = await itemsPage.getDeleteItemDialogLocator();
     const deleteButtonConfirm = await getButtonWithName(deleteItemDialog, 'Yes');
     await deleteButtonConfirm.click();
 
-    await page.waitForTimeout(200);
-
-    const itemsAfterDelete = await getItems(page);
-    await expect(await countItemsWithName(page, itemsAfterDelete, inputItemName)).toBe(0);
+    const itemsAfterDelete = await itemsPage.getItemLocator(inputItemName);
+    await expect(itemsAfterDelete).toHaveCount(0);
   });
 
-  test('should create an item with valid data and update its name and description then delete it', async ({ page }) => {
-    const menuButton = await page.locator('app-menu-button');
-    const createItemMenuButton = await menuButton.nth(0).getByRole('listitem');
-    const dialog = await page.locator('dialog-create-item');
+  test('should create an item with valid data and update its name and description then delete it', async () => {
+    const createItemMenuButton = await itemsPage.getCreateItemMenuButtonLocator();
+    const dialog = await itemsPage.getCreateItemDialogLocator();
     const createButton = await getButtonWithName(dialog, 'Create');
 
     const inputItemName = 'Test Item 2';
     const inputDescriptionName = 'This is a test description';
 
     await createItemMenuButton.click();
-    await page.fill('input[formControlName="itemName"]', inputItemName);
-    await page.fill('input[formControlName="itemDescription"]', inputDescriptionName);
+    await itemsPage.fillCreateItemDialogInputData(inputItemName, inputDescriptionName);
     await createButton.click();
 
-    const items = await getItems(page);
     const {
       item: createdItem,
       locator: createdItemLocator
-    } = await getItem(page, items, inputItemName);
+    } = await itemsPage.getItemWithLocator(inputItemName);
 
     expect(createdItem.name).toBe(` ${inputItemName} `);
     expect(createdItem.description).toBe(` ${inputDescriptionName} `);
@@ -294,52 +284,19 @@ test.describe('Create Item Menu Item Tests', () => {
     const updateButton = await createdItemLocator.getByTestId('item-edit-button');
     await updateButton.click();
 
-    const updateItemDialog = await page.locator('dialog-edit-item');
-    await page.fill('input[formControlName="itemName"]', updatedItemName);
-    await page.fill('input[formControlName="itemDescription"]', updatedDescriptionName);
+    const updateItemDialog = await itemsPage.getEditItemDialogLocator();
+    await itemsPage.fillCreateItemDialogInputData(updatedItemName, updatedDescriptionName);
     const updateButtonConfirm = await getButtonWithName(updateItemDialog, 'Update');
     await updateButtonConfirm.click();
 
     const deleteButton = await createdItemLocator.getByTestId('item-delete-button');
     await deleteButton.click();
 
-    const deleteItemDialog = await page.locator('dialog-delete-item');
+    const deleteItemDialog = await itemsPage.getDeleteItemDialogLocator();
     const deleteButtonConfirm = await getButtonWithName(deleteItemDialog, 'Yes');
     await deleteButtonConfirm.click();
 
-    await page.waitForTimeout(200);
-
-    const itemsAfterDelete = await getItems(page);
-    await expect(await countItemsWithName(page, itemsAfterDelete, inputItemName)).toBe(0);
+    const itemsAfterDelete = await await itemsPage.getItemLocator(inputItemName);
+    await expect(itemsAfterDelete).toHaveCount(0);
   });
 });
-
-async function getItems(source: Page): Promise<Locator> {
-  let itemsListComponent = await source.locator('app-list-items');
-
-  return await itemsListComponent.locator('app-item');
-}
-
-async function getItem(page: Page, items: Locator, expectedItemName: string): Promise<{ item: Item, locator: Locator }> {
-  const itemLocator = await filterItemLocator(page, items, expectedItemName);
-  
-  const itemNameElement = await itemLocator.getByTestId('item-name');
-  const itemName = await itemNameElement.getByTestId('item-name-value');
-  const itemDescriptionElement = await itemLocator.getByTestId('item-description');
-  const itemDescription = await itemDescriptionElement.getByTestId('item-description-value');
-
-  let name = await itemName.textContent();
-  let description = await itemDescription.textContent();
-
-  return { item: new Item({ name, description }), locator: itemLocator };
-}
-
-async function filterItemLocator(page: Page, items: Locator, expectedItemName: string): Promise<Locator> {
-  return await items.filter({
-    has: page.getByTestId('item-name').filter({ hasText: expectedItemName })
-  });
-}
-
-async function countItemsWithName(page: Page, items: Locator, itemName: string): Promise<number> {
-  return (await filterItemLocator(page, items, itemName)).count();
-}

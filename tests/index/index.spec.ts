@@ -6,7 +6,7 @@ test.describe('Access module pages', () => {
     await connectWithDefaultAccount(page);
   });
 
-  test('reach index page by logging in', async({ page }) => {
+  test('reach index page by logging in', async ({ page }) => {
     await expect(page.locator('app-navbar')).toBeVisible();
     await expect(page.locator('li', { hasText: 'Index' })).toHaveClass('selected');
     let notificationsButton = await page.locator('[data-testid="notifications-button"]');
@@ -24,7 +24,7 @@ test.describe('Access module pages', () => {
     let notificationElements = await notificationsComponent.locator('app-notification');
   });
 
-  test('should be able to access items', async({ page }) => {
+  test('should be able to access items', async ({ page }) => {
     await expectNavbarElementToNotBeSelected(page, 'Items');
     await expectNavbarElementToBeSelected(page, 'Index');
 
@@ -36,7 +36,7 @@ test.describe('Access module pages', () => {
     await expect(page).toHaveURL('items');
   });
 
-  test('should be able to access inventory', async({ page }) => {
+  test('should be able to access inventory', async ({ page }) => {
     await expectNavbarElementToNotBeSelected(page, 'Inventory');
     await expectNavbarElementToBeSelected(page, 'Index');
 
@@ -48,7 +48,7 @@ test.describe('Access module pages', () => {
     await expect(page).toHaveURL('inventory');
   });
 
-  test('should be able to access trades', async({ page }) => {
+  test('should be able to access trades', async ({ page }) => {
     await expectNavbarElementToNotBeSelected(page, 'Trades');
     await expectNavbarElementToBeSelected(page, 'Index');
 
@@ -61,7 +61,7 @@ test.describe('Access module pages', () => {
   });
 
   // Disabled for now (until the Wallet component is implemented)
-  // test('should be able to access wallet', async({ page }) => {
+  // test('should be able to access wallet', async ({ page }) => {
   //   await expectNavbarElementToNotBeSelected(page, 'Wallet');
   //   await expectNavbarElementToBeSelected(page, 'Index');
 
@@ -73,7 +73,7 @@ test.describe('Access module pages', () => {
   //   await expect(page).toHaveURL('wallet');
   // });
 
-  test('log out', async({ page }) => {
+  test('log out', async ({ page }) => {
     await page.getByText('Logout').click();
 
     await expect(page.getByRole('button', { name: ' Login ' })).toBeVisible();

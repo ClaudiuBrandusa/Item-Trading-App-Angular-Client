@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
+import { USERS } from 'tests/constants';
+import { connectWithAccount, connectWithDefaultAccount, logout } from 'tests/utils/utils';
 
-test('login form should work', async({ page }) => {
+test('login form should work', async ({ page }) => {
   await page.goto('/');
 
   // the submit button is named register
@@ -22,7 +24,7 @@ test('login form should work', async({ page }) => {
   await expect(page.getByRole('button', { name: ' Login ' })).toBeEnabled();
 });
 
-test('pick register option', async({ page }) => {
+test('pick register option', async ({ page }) => {
   await page.goto('/');
   await page.click('text=Register');
 
@@ -50,4 +52,18 @@ test('pick register option', async({ page }) => {
   await expect(confirm_password).toHaveValue(expectedPassword);
 
   await expect(page.getByRole('button', { name: ' Register ' })).toBeEnabled();
+});
+
+test('login to multiple accounts', async ({ page }) => {
+  await connectWithDefaultAccount(page);
+
+  await expect(page.locator('app-navbar')).toBeVisible();
+
+  await logout(page);
+
+  await expect(page.getByText(' Login ')).toBeTruthy();
+
+  await connectWithAccount(page, USERS.second_user);
+
+  await expect(page.locator('app-navbar')).toBeVisible();
 });

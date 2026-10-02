@@ -8,7 +8,7 @@ test.describe('List items tests', () => {
     await goToItems(page);
   });
 
-  test('should be able to see the items list and validate each item data', async({ page }) => {
+  test('should be able to see the items list and validate each item data', async ({ page }) => {
     let itemsListComponent = await page.locator('app-list-items');
 
     await expect(itemsListComponent).toHaveCount(1);
@@ -45,7 +45,7 @@ test.describe('List items tests', () => {
     }
   });
 
-  test('should be able to see the items list and search by item name', async({ page }) => {
+  test('should be able to see the items list and search by item name', async ({ page }) => {
     let itemsListComponent = await page.locator('app-list-items');
 
     await expect(itemsListComponent).toHaveCount(1);
@@ -95,7 +95,7 @@ test.describe('List items tests', () => {
     expect(listedItemNameText).toBe(itemNameText);
   });
 
-  test('should be able to search then clear the search input and then see the list of all items', async({ page }) => {
+  test('should be able to search then clear the search input and then see the list of all items', async ({ page }) => {
     let itemsListComponent = await page.locator('app-list-items');
 
     await expect(itemsListComponent).toHaveCount(1);

@@ -7,7 +7,7 @@ test.describe('List items tests', () => {
         await goToInventory(page);
     });
 
-    test('should be able to see the inventory items list and validate the first inventory item data', async({ page }) => {
+    test('should be able to see the inventory items list and validate the first inventory item data', async ({ page }) => {
         let inventoryItemsListComponent = await page.locator('app-list-inventory');
 
         await expect(inventoryItemsListComponent).toHaveCount(1);
@@ -54,7 +54,7 @@ test.describe('List items tests', () => {
         await expect(itemDropButtonElement).toBeEnabled();
     });
 
-    test('should be able to see the inventory items list and search by item name', async({ page }) => {
+    test('should be able to see the inventory items list and search by item name', async ({ page }) => {
         let itemsListComponent = await page.locator('app-list-inventory');
     
         await expect(itemsListComponent).toBeVisible();
@@ -109,7 +109,7 @@ test.describe('List items tests', () => {
         expect(listedItemQuantity).toBeGreaterThan(0);
     });
 
-    test('should be able to search then clear the search input and then see the list of all items', async({ page }) => {
+    test('should be able to search then clear the search input and then see the list of all items', async ({ page }) => {
         let itemsListComponent = await page.locator('app-list-inventory');
     
         await expect(itemsListComponent).toBeVisible();

@@ -1,57 +1,68 @@
 import { test, expect } from '@playwright/test';
 import { USERS } from 'tests/constants';
+import { IdentityPage } from 'tests/utils/pages/identity.page';
 import { connectWithAccount, connectWithDefaultAccount, logout } from 'tests/utils/utils';
 
-test('login form should work', async ({ page }) => {
-  await page.goto('/');
 
-  // the submit button is named register
-  // meaning that we managed to get to the register part of the page
-  await expect(page.getByText(' Login ')).toBeTruthy();
+test.describe('Identity tests', () => {
+  let identityPage: IdentityPage;
 
-  const username = page.locator('[formcontrolname="username"]');
-  const password = page.locator('[formcontrolname="password"]');
+  test.beforeEach(async ({ page }) => {
+    identityPage = new IdentityPage(page);
+    await identityPage.navigateToPage();
+  });
 
-  let expectedUsername = 'user';
-  let expectedPassword = '!Ab12345';
+  test('login form should work', async ({ page }) => {
+    await identityPage.navigateToPage();
 
-  await username.fill(expectedUsername);
-  await password.fill(expectedPassword);
+    // the submit button is named register
+    // meaning that we managed to get to the register part of the page
+    await expect(page.getByText(' Login ')).toBeTruthy();
 
-  await expect(username).toHaveValue(expectedUsername);
-  await expect(password).toHaveValue(expectedPassword);
+    const username = await identityPage.getUsernameFormControlLocator();
+    const password = await identityPage.getPasswordFormControlLocator();
 
-  await expect(page.getByRole('button', { name: ' Login ' })).toBeEnabled();
-});
+    const expectedUsername = 'user';
+    const expectedPassword = '!Ab12345';
 
-test('pick register option', async ({ page }) => {
-  await page.goto('/');
-  await page.click('text=Register');
+    await username.fill(expectedUsername);
+    await password.fill(expectedPassword);
 
-  // the submit button is named register
-  // meaning that we managed to get to the register part of the page
-  await expect(page.getByText(' Register ')).toBeTruthy();
+    await expect(username).toHaveValue(expectedUsername);
+    await expect(password).toHaveValue(expectedPassword);
 
-  const username = page.locator('[formcontrolname="username"]');
-  const email = page.locator('[formcontrolname="email"]');
-  const password = page.locator('[formcontrolname="password"]');
-  const confirm_password = page.locator('[formcontrolname="confirm_password"]');
+    await expect(page.getByRole('button', { name: ' Login ' })).toBeEnabled();
+  });
 
-  let expectedUsername = 'user';
-  let expectedEmail = 'a@a.com';
-  let expectedPassword = '!Ab12345';
+  test('pick register option', async ({ page }) => {
+    await identityPage.navigateToPage();
+    await identityPage.goToRegister();
 
-  await username.fill(expectedUsername);
-  await email.fill(expectedEmail);
-  await password.fill(expectedPassword);
-  await confirm_password.fill(expectedPassword);
+    // the submit button is named register
+    // meaning that we managed to get to the register part of the page
+    await expect(page.getByText(' Register ')).toBeTruthy();
 
-  await expect(username).toHaveValue(expectedUsername);
-  await expect(email).toHaveValue(expectedEmail);
-  await expect(password).toHaveValue(expectedPassword);
-  await expect(confirm_password).toHaveValue(expectedPassword);
+    const username = await identityPage.getUsernameFormControlLocator();
+    const email = await identityPage.getEmailFormControlLocator();
+    const password = await identityPage.getPasswordFormControlLocator();
+    const confirm_password = await identityPage.getConfirmPasswordFormControlLocator();
 
-  await expect(page.getByRole('button', { name: ' Register ' })).toBeEnabled();
+    const expectedUsername = 'user';
+    const expectedEmail = 'a@a.com';
+    const expectedPassword = '!Ab12345';
+
+    await username.fill(expectedUsername);
+    await email.fill(expectedEmail);
+    await password.fill(expectedPassword);
+    await confirm_password.fill(expectedPassword);
+
+    await expect(username).toHaveValue(expectedUsername);
+    await expect(email).toHaveValue(expectedEmail);
+    await expect(password).toHaveValue(expectedPassword);
+    await expect(confirm_password).toHaveValue(expectedPassword);
+
+    await expect(page.getByRole('button', { name: ' Register ' })).toBeEnabled();
+  });
 });
 
 test('login to multiple accounts', async ({ page }) => {

@@ -1,19 +1,25 @@
-import test, { expect, Locator, Page } from "@playwright/test";
+import test, { expect } from "@playwright/test";
+import { expectMenuButtonToBeSelected, expectMenuButtonToNotBeSelected } from "tests/assertions/menu-button.assertions";
+import { SearchBarHelper } from "tests/helpers/search-bar.helper";
+import { InventoryPage } from "tests/utils/pages/inventory.page";
 import { connectWithDefaultAccount, getButtonWithName, goToInventory } from "tests/utils/utils";
 
 test.describe('List items tests', () => {
+    let inventoryPage: InventoryPage;
+    let searchBarHelper: SearchBarHelper;
+
     test.beforeEach(async ({ page }) => {
         await connectWithDefaultAccount(page);
-        await goToInventory(page);
+        inventoryPage = new InventoryPage(page);
+        searchBarHelper = new SearchBarHelper(page);
+        await inventoryPage.navigateToPage();
     });
 
-    test('should be able to see the inventory items list and validate the first inventory item data', async ({ page }) => {
-        let inventoryItemsListComponent = await page.locator('app-list-inventory');
+    test('should be able to see the inventory items list and validate the first inventory item data', async () => {
+        let inventoryItemsListComponent = await inventoryPage.getInventoryItemsListLocator();
 
         await expect(inventoryItemsListComponent).toHaveCount(1);
-
         await expect(inventoryItemsListComponent).toBeVisible();
-        
         await expect(inventoryItemsListComponent).toBeAttached();
 
         const items = await inventoryItemsListComponent.locator('app-inventory-item');
@@ -54,8 +60,8 @@ test.describe('List items tests', () => {
         await expect(itemDropButtonElement).toBeEnabled();
     });
 
-    test('should be able to see the inventory items list and search by item name', async ({ page }) => {
-        let itemsListComponent = await page.locator('app-list-inventory');
+    test('should be able to see the inventory items list and search by item name', async () => {
+        let itemsListComponent = await inventoryPage.getInventoryItemsListLocator();
     
         await expect(itemsListComponent).toBeVisible();
         await expect(itemsListComponent).toBeAttached();
@@ -78,12 +84,12 @@ test.describe('List items tests', () => {
         
         const itemNameText = (await itemName.textContent()).trim();
     
-        let searchBarInput = await page.getByTestId('search-bar-input');
+        let searchBarInput = await searchBarHelper.getSearchBarInputLocator();
         await searchBarInput.fill(itemNameText);
-        let searchBarButton = await page.getByTestId('search-bar-submit-button');
+        let searchBarButton = await searchBarHelper.getSearchBarSubmitButtonLocator();
         await searchBarButton.click();
         
-        const itemsAfterSearch = await getInventoryItems(page);
+        const itemsAfterSearch = await inventoryPage.getInventoryItemsLocator();
         const itemsAfterSearchCount = await itemsAfterSearch.count();
     
         expect(itemsAfterSearchCount).toBeGreaterThan(0);
@@ -109,8 +115,8 @@ test.describe('List items tests', () => {
         expect(listedItemQuantity).toBeGreaterThan(0);
     });
 
-    test('should be able to search then clear the search input and then see the list of all items', async ({ page }) => {
-        let itemsListComponent = await page.locator('app-list-inventory');
+    test('should be able to search then clear the search input and then see the list of all items', async () => {
+        let itemsListComponent = await inventoryPage.getInventoryItemsListLocator();
     
         await expect(itemsListComponent).toBeVisible();
         await expect(itemsListComponent).toBeAttached();
@@ -133,12 +139,12 @@ test.describe('List items tests', () => {
         
         const itemNameText = (await itemName.textContent()).trim();
     
-        let searchBarInput = await page.getByTestId('search-bar-input');
+        let searchBarInput = await searchBarHelper.getSearchBarInputLocator();
         await searchBarInput.fill(itemNameText);
-        let searchBarButton = await page.getByTestId('search-bar-submit-button');
+        let searchBarButton = await searchBarHelper.getSearchBarSubmitButtonLocator();
         await searchBarButton.click();
         
-        const itemsAfterSearch = await getInventoryItems(page);
+        const itemsAfterSearch = await inventoryPage.getInventoryItemsLocator();
         const itemsAfterSearchCount = await itemsAfterSearch.count();
     
         expect(itemsAfterSearchCount).toBeGreaterThan(0);
@@ -166,49 +172,47 @@ test.describe('List items tests', () => {
         await searchBarInput.clear();
         await searchBarButton.click();
     
-        const itemsAfterSearchingAll = await getInventoryItems(page);
+        const itemsAfterSearchingAll = await inventoryPage.getInventoryItemsLocator();
     
         await expect(itemsAfterSearchingAll).toHaveCount(itemsCount);
-      });
+    });
 });
 
 test.describe('Add Item Menu Tests', () => {
+    let inventoryPage: InventoryPage;
+
     test.beforeEach(async ({ page }) => {
         await connectWithDefaultAccount(page);
-        await goToInventory(page);
+        inventoryPage = new InventoryPage(page);
+        await inventoryPage.navigateToPage();
     });
 
-    test('should select the `add item` menu item when clicked', async ({ page }) => {
-        const menuButton = await page.locator('app-menu-button');
-        const addItemMenuButton = await menuButton.nth(0).getByRole('listitem');
+    test('should select the `add item` menu item when clicked', async () => {
+        const addItemMenuButton = await inventoryPage.getAddInventoryItemMenuButtonLocator();
 
         await addItemMenuButton.click();
 
-        const classAttr = await addItemMenuButton.getAttribute('class');
-        expect(classAttr).toBe('selected');
+        expectMenuButtonToBeSelected(addItemMenuButton);
     });
 
-    test('should deselect the `add item` menu item when the dialog is closed', async ({ page }) => {
-        const menuButton = await page.locator('app-menu-button');
-        const addItemMenuButton = await menuButton.nth(0).getByRole('listitem');
-        const dialog = await page.locator('dialog-add-item-select');
+    test('should deselect the `add item` menu item when the dialog is closed', async () => {
+        const addItemMenuButton = await inventoryPage.getAddInventoryItemMenuButtonLocator();
+        const dialog = await inventoryPage.getAddInventoryItemSelectDialogLocator();
         const cancelButton = await getButtonWithName(dialog, 'Cancel');
 
         await addItemMenuButton.click();
         await cancelButton.click();
 
-        const classAttr = await addItemMenuButton.getAttribute('class');
-        expect(classAttr).toBe('');
+        expectMenuButtonToNotBeSelected(addItemMenuButton);
     });
 
-    test('should not allow searching an item to add without filling the item name search input', async ({ page }) => {
-        const menuButton = await page.locator('app-menu-button');
-        const createItemMenuButton = await menuButton.nth(0).getByRole('listitem');
-        const dialog = await page.locator('dialog-add-item-select');
+    test('should not allow searching an item to add without filling the item name search input', async () => {
+        const addItemMenuButton = await inventoryPage.getAddInventoryItemMenuButtonLocator();
+        const dialog = await inventoryPage.getAddInventoryItemSelectDialogLocator();
         const searchButton = await getButtonWithName(dialog, 'Search');
         const cancelButton = await getButtonWithName(dialog, 'Cancel');
 
-        await createItemMenuButton.click();
+        await addItemMenuButton.click();
         await searchButton.click();
 
         await expect(dialog.locator('app-item')).toHaveCount(0);
@@ -216,17 +220,16 @@ test.describe('Add Item Menu Tests', () => {
         await cancelButton.click();
     });
 
-    test('should allow searching an item to add by filling the correct item name in the search input', async ({ page }) => {
-        const menuButton = await page.locator('app-menu-button');
-        const createItemMenuButton = await menuButton.nth(0).getByRole('listitem');
-        const dialog = await page.locator('dialog-add-item-select');
+    test('should allow searching an item to add by filling the correct item name in the search input', async () => {
+        const addItemMenuButton = await inventoryPage.getAddInventoryItemMenuButtonLocator();
+        const dialog = await inventoryPage.getAddInventoryItemSelectDialogLocator();
         const searchButton = await getButtonWithName(dialog, 'Search');
         const cancelButton = await getButtonWithName(dialog, 'Cancel');
         const searchItemInput = await dialog.getByTestId('add-item-dialog-search-input');
 
         const expectedItemName = 'Iron';
 
-        await createItemMenuButton.click();
+        await addItemMenuButton.click();
         await searchItemInput.fill(expectedItemName);
         await searchButton.click();
 
@@ -237,17 +240,16 @@ test.describe('Add Item Menu Tests', () => {
         await cancelButton.click();
     });
 
-    test('should allow searching an item then selecting it and be able to go back', async ({ page }) => {
-        const menuButton = await page.locator('app-menu-button');
-        const createItemMenuButton = await menuButton.nth(0).getByRole('listitem');
-        const dialog = await page.locator('dialog-add-item-select');
+    test('should allow searching an item then selecting it and be able to go back', async () => {
+        const addItemMenuButton = await inventoryPage.getAddInventoryItemMenuButtonLocator();
+        const dialog = await inventoryPage.getAddInventoryItemSelectDialogLocator();
         const searchButton = await getButtonWithName(dialog, 'Search');
         const cancelButton = await getButtonWithName(dialog, 'Cancel');
         const searchItemInput = await dialog.getByTestId('add-item-dialog-search-input');
 
         const expectedItemName = 'Iron';
 
-        await createItemMenuButton.click();
+        await addItemMenuButton.click();
         await searchItemInput.fill(expectedItemName);
         await searchButton.click();
 
@@ -259,7 +261,7 @@ test.describe('Add Item Menu Tests', () => {
 
         await foundItem.click();
 
-        const nextDialog = await page.locator('dialog-add-item-quantity');
+        const nextDialog = await inventoryPage.getAddInventoryItemQuantityDialogLocator();
 
         await expect(nextDialog).toBeAttached();
         
@@ -269,16 +271,15 @@ test.describe('Add Item Menu Tests', () => {
         await cancelButton.click();
     });
 
-    test('should allow searching an item then selecting it', async ({ page }) => {
-        const menuButton = await page.locator('app-menu-button');
-        const createItemMenuButton = await menuButton.nth(0).getByRole('listitem');
-        const dialog = await page.locator('dialog-add-item-select');
+    test('should allow searching an item then selecting it', async () => {
+        const addItemMenuButton = await inventoryPage.getAddInventoryItemMenuButtonLocator();
+        const dialog = await inventoryPage.getAddInventoryItemSelectDialogLocator();
         const searchButton = await getButtonWithName(dialog, 'Search');
         const searchItemInput = await dialog.getByTestId('add-item-dialog-search-input');
 
         const expectedItemName = 'Iron';
 
-        await createItemMenuButton.click();
+        await addItemMenuButton.click();
         await searchItemInput.fill(expectedItemName);
         await searchButton.click();
 
@@ -290,21 +291,20 @@ test.describe('Add Item Menu Tests', () => {
 
         await foundItem.click();
 
-        const nextDialog = await page.locator('dialog-add-item-quantity');
+        const nextDialog = await inventoryPage.getAddInventoryItemQuantityDialogLocator();
 
         await expect(nextDialog).toBeAttached();
     });
 
-    test('should allow searching an item and selecting it then setting a quantity', async ({ page }) => {
-        const menuButton = await page.locator('app-menu-button');
-        const createItemMenuButton = await menuButton.nth(0).getByRole('listitem');
-        const dialog = await page.locator('dialog-add-item-select');
+    test('should allow searching an item and selecting it then setting a quantity', async () => {
+        const addItemMenuButton = await inventoryPage.getAddInventoryItemMenuButtonLocator();
+        const dialog = await inventoryPage.getAddInventoryItemSelectDialogLocator();
         const searchButton = await getButtonWithName(dialog, 'Search');
         const searchItemInput = await dialog.getByTestId('add-item-dialog-search-input');
 
         const expectedItemName = 'Iron';
 
-        await createItemMenuButton.click();
+        await addItemMenuButton.click();
         await searchItemInput.fill(expectedItemName);
         await searchButton.click();
 
@@ -316,7 +316,7 @@ test.describe('Add Item Menu Tests', () => {
 
         await foundItem.click();
 
-        const nextDialog = await page.locator('dialog-add-item-quantity');
+        const nextDialog = await inventoryPage.getAddInventoryItemQuantityDialogLocator();
 
         await expect(nextDialog).toBeAttached();
 
@@ -333,16 +333,10 @@ test.describe('Add Item Menu Tests', () => {
 
         await nextButton.click();
 
-        const inventoryItems = await page.locator('app-inventory-item');
+        const inventoryItems = await inventoryPage.getInventoryItemsLocator();
         const inventoryItem = await inventoryItems.nth(0);
 
         await expect(inventoryItem).toBeAttached();
         await expect(inventoryItem).toBeVisible();
     });
 });
-
-async function getInventoryItems(source: Page): Promise<Locator> {
-  let inventoryItemsListComponent = await source.locator('app-list-inventory');
-
-  return await inventoryItemsListComponent.locator('app-inventory-item');
-}

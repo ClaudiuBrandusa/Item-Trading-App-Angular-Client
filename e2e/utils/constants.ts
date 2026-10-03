@@ -1,4 +1,4 @@
-import { AccountConfig } from "./utils/models/account.config";
+import { AccountConfig } from "./models/account.config";
 
 export const USERS = {
     root: new AccountConfig('root', '!Ab12345'),

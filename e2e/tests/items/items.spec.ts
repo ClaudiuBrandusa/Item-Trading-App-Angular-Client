@@ -1,17 +1,21 @@
 import { test, expect } from '@playwright/test';
-import { expectMenuButtonToBeSelected, expectMenuButtonToNotBeSelected } from 'tests/assertions/menu-button.assertions';
-import { SearchBarHelper } from 'tests/helpers/search-bar.helper';
-import { ItemsPage } from 'tests/utils/pages/items.page';
-import { connectWithDefaultAccount, getButtonWithName } from 'tests/utils/utils';
+import { expectMenuButtonToBeSelected, expectMenuButtonToNotBeSelected } from 'e2e/utils/assertions/menu-button.assertions';
+import { AuthHelper } from 'e2e/utils/helpers/auth.helper';
+import { SearchBarHelper } from 'e2e/utils/helpers/search-bar.helper';
+import { ItemsPage } from 'e2e/utils/pages/items.page';
+import { getButtonWithName } from 'e2e/utils/utils';
 
 test.describe('List items tests', () => {
   let itemsPage: ItemsPage;
   let searchBarHelper: SearchBarHelper;
-
+  let authHelper: AuthHelper;
+    
   test.beforeEach(async ({ page }) => {
-    await connectWithDefaultAccount(page);
+    authHelper = new AuthHelper(page);
     itemsPage = new ItemsPage(page);
     searchBarHelper = new SearchBarHelper(page);
+    
+    await authHelper.connectWithDefaultAccount();
     await itemsPage.navigateToItemsPage();
   });
 
@@ -159,10 +163,13 @@ test.describe('List items tests', () => {
 
 test.describe('Create Item Menu Item Tests', () => {
   let itemsPage: ItemsPage;
-
+  let authHelper: AuthHelper;
+  
   test.beforeEach(async ({ page }) => {
-    await connectWithDefaultAccount(page);
+    authHelper = new AuthHelper(page);
     itemsPage = new ItemsPage(page);
+
+    await authHelper.connectWithDefaultAccount();
     await itemsPage.navigateToItemsPage();
   });
 

@@ -1,9 +1,12 @@
 import { test, expect, Page } from '@playwright/test';
-import { connectWithDefaultAccount } from 'tests/utils/utils';
+import { AuthHelper } from 'e2e/utils/helpers/auth.helper';
 
 test.describe('Access module pages', () => {
+  let authHelper: AuthHelper;
+  
   test.beforeEach(async ({ page }) => {
-    await connectWithDefaultAccount(page);
+    authHelper = new AuthHelper(page);
+    await authHelper.connectWithDefaultAccount();
   });
 
   test('reach index page by logging in', async ({ page }) => {

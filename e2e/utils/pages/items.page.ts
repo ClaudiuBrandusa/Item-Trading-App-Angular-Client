@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import { Item } from "src/modules/item/models/responses/item";
-import { goToItems } from "tests/utils/utils";
+import { goToItems } from "e2e/utils/utils";
 import { BasePage } from "./base.page";
 
 export class ItemsPage extends BasePage {

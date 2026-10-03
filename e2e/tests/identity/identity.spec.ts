@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { USERS } from 'tests/constants';
-import { IdentityPage } from 'tests/utils/pages/identity.page';
-import { connectWithAccount, connectWithDefaultAccount, logout } from 'tests/utils/utils';
+import { USERS } from 'e2e/utils/constants';
+import { AuthHelper } from 'e2e/utils/helpers/auth.helper';
+import { IdentityPage } from 'e2e/utils/pages/identity.page';
 
 
 test.describe('Identity tests', () => {
@@ -66,15 +66,17 @@ test.describe('Identity tests', () => {
 });
 
 test('login to multiple accounts', async ({ page }) => {
-  await connectWithDefaultAccount(page);
+  const authHelper = new AuthHelper(page);
+
+  await authHelper.connectWithDefaultAccount();
 
   await expect(page.locator('app-navbar')).toBeVisible();
 
-  await logout(page);
+  await authHelper.logout();
 
   await expect(page.getByText(' Login ')).toBeTruthy();
 
-  await connectWithAccount(page, USERS.second_user);
+  await authHelper.connectWithAccount(USERS.second_user);
 
   await expect(page.locator('app-navbar')).toBeVisible();
 });

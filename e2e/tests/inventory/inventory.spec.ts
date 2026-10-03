@@ -1,17 +1,20 @@
 import test, { expect } from "@playwright/test";
-import { expectMenuButtonToBeSelected, expectMenuButtonToNotBeSelected } from "tests/assertions/menu-button.assertions";
-import { SearchBarHelper } from "tests/helpers/search-bar.helper";
-import { InventoryPage } from "tests/utils/pages/inventory.page";
-import { connectWithDefaultAccount, getButtonWithName, goToInventory } from "tests/utils/utils";
+import { expectMenuButtonToBeSelected, expectMenuButtonToNotBeSelected } from "e2e/utils/assertions/menu-button.assertions";
+import { AuthHelper } from "e2e/utils/helpers/auth.helper";
+import { SearchBarHelper } from "e2e/utils/helpers/search-bar.helper";
+import { InventoryPage } from "e2e/utils/pages/inventory.page";
+import { getButtonWithName } from "e2e/utils/utils";
 
 test.describe('List items tests', () => {
     let inventoryPage: InventoryPage;
-    let searchBarHelper: SearchBarHelper;
-
+    let searchBarHelper: SearchBarHelper;let authHelper: AuthHelper;
+      
     test.beforeEach(async ({ page }) => {
-        await connectWithDefaultAccount(page);
+        authHelper = new AuthHelper(page);
         inventoryPage = new InventoryPage(page);
         searchBarHelper = new SearchBarHelper(page);
+        
+        await authHelper.connectWithDefaultAccount();
         await inventoryPage.navigateToPage();
     });
 
@@ -180,10 +183,13 @@ test.describe('List items tests', () => {
 
 test.describe('Add Item Menu Tests', () => {
     let inventoryPage: InventoryPage;
-
+    let authHelper: AuthHelper;
+  
     test.beforeEach(async ({ page }) => {
-        await connectWithDefaultAccount(page);
+        authHelper = new AuthHelper(page);
         inventoryPage = new InventoryPage(page);
+
+        await authHelper.connectWithDefaultAccount();
         await inventoryPage.navigateToPage();
     });
 

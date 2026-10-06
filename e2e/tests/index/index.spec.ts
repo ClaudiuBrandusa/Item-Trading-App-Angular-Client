@@ -12,7 +12,7 @@ test.describe('Access module pages', () => {
   test('reach index page by logging in', async ({ page }) => {
     await expect(page.locator('app-navbar')).toBeVisible();
     await expect(page.locator('li', { hasText: 'Index' })).toHaveClass('selected');
-    let notificationsButton = await page.locator('[data-testid="notifications-button"]');
+    let notificationsButton = await page.getByTestId('notifications-button');
     await expect(notificationsButton).toBeVisible();
     await notificationsButton.click();
 

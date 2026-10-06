@@ -36,8 +36,4 @@ export class IdentityPage extends BasePage {
     async getConfirmPasswordFormControlLocator(): Promise<Locator> {
         return await this.getFormControlLocatorByName('confirm_password');
     }
-
-    private async getFormControlLocatorByName(name: string): Promise<Locator> {
-        return this.page.locator(`[formcontrolname="${name}"]`);
-    }
 }

@@ -6,4 +6,8 @@ export class BasePage {
     async getMenuButtonsListLocator(): Promise<Locator> {
         return await this.page.locator('app-menu-button');
     }
+
+    async getFormControlLocatorByName(name: string): Promise<Locator> {
+        return this.page.locator(`[formcontrolname="${name}"]`);
+    }
 }

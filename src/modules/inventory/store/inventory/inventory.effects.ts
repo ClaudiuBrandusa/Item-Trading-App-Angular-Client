@@ -94,10 +94,10 @@ export const changedNotificationEffect = createEffect(
           const customData =
           {
             itemId: notification.id,
-            quantity: notification.customData.amount
+            quantity: notification.amount
           } as InventoryItem;
           
-          if (notification.customData.addAmount as boolean) {
+          if (notification.content.addAmount as boolean) {
             return of(addItemSucceeded(customData));
           } else {
             return of(dropItemSucceeded(customData));
